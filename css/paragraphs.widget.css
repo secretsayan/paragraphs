@@ -46,6 +46,24 @@
   background-image: url("../icons/icon-error.svg");
 }
 
+.paragraphs-badge {
+  display: inline-block;
+  padding: 0.15em 0.3em;
+  background: #787878;
+  border-radius: 4px;
+  color: #fff;
+  cursor: default;
+  font-size: 90%;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.paragraphs-badge:empty {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .button.paragraphs-icon-button {
     padding: 0;
@@ -71,11 +89,15 @@
   }
 }
 
-.paragraph-type-info {
+.paragraph-info {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .paragraphs-tabs-wrapper .paragraphs-tabs {
@@ -129,7 +151,7 @@
   text-align: right;
 }
 
-.js .paragraph-type-top {
+.js .paragraph-top {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 100px auto 1fr auto;
@@ -143,14 +165,15 @@
           align-items: center;
 }
 
-.js .paragraph-type-top .paragraph-type-title {
+.js .paragraph-top .paragraph-type {
   grid-column: 1 / 2;
+  -ms-grid-column: 1;
   -ms-grid-row-span: 1;
   -ms-grid-row: 1;
       grid-row: 1 / span 1;
 }
 
-.js .paragraph-type-top .paragraph-type-info {
+.js .paragraph-top .paragraph-info {
   grid-column: 2 / 3;
   -ms-grid-column: 2;
   -ms-grid-row-span: 1;
@@ -158,7 +181,7 @@
       grid-row: 1 / span 1;
 }
 
-.js .paragraph-type-top .paragraph-type-summary {
+.js .paragraph-top .paragraph-summary {
   grid-column: 1 / 5;
   -ms-grid-column: 1;
   -ms-grid-column-span: 5;
@@ -168,7 +191,7 @@
 }
 
 @media (min-width: 600px) {
-  .js .paragraph-type-top .paragraph-type-summary {
+  .js .paragraph-top .paragraph-summary {
     grid-column: 3 / 4;
     -ms-grid-column: 3;
     -ms-grid-column-span: 1;
@@ -178,7 +201,7 @@
   }
 }
 
-.js .paragraph-type-top .paragraphs-actions {
+.js .paragraph-top .paragraphs-actions {
   grid-column: 3 / 5;
   -ms-grid-column: 3;
   -ms-grid-column-span: 2;
@@ -190,7 +213,7 @@
 }
 
 @media (min-width: 600px) {
-  .js .paragraph-type-top .paragraphs-actions {
+  .js .paragraph-top .paragraphs-actions {
     grid-column: 4 / 5;
     -ms-grid-column: 4;
     -ms-grid-column-span: 1;

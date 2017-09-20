@@ -476,12 +476,39 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       }
     }
 
-    if ($this->summaryCount) {
-      array_unshift($summary, (string) \Drupal::translation()->formatPlural($this->summaryCount, '1 child', '@count children'));
-    }
-
     $collapsed_summary_text = implode(', ', $summary);
     return strip_tags($collapsed_summary_text);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getIcons(array $options = []) {
+    $show_behavior_info = isset($options['show_behavior_icon']) ? $options['show_behavior_icon'] : TRUE;
+    $icons = [];
+
+    // For now we depend here on the fact that summaryCount is already
+    // initialized. That means that getSummary() should be called before
+    // getIcons().
+    // @todo - should we fix this dependency somehow?
+    if ($this->summaryCount) {
+      $icons['count'] = [
+        '#markup' => $this->summaryCount,
+        '#prefix' => '<span class="paragraphs-badge" title="' . (string) \Drupal::translation()->formatPlural($this->summaryCount, '1 child', '@count children') . '">',
+        '#suffix' => '</span>',
+      ];
+    }
+
+    if ($show_behavior_info) {
+      $paragraphs_type = $this->getParagraphType();
+      foreach ($paragraphs_type->getEnabledBehaviorPlugins() as $plugin_id => $plugin) {
+        if ($plugin_info = $plugin->settingsIcon($this)) {
+          $icons = array_merge($icons, $plugin_info);
+        }
+      }
+    }
+
+    return $icons;
   }
 
   /**

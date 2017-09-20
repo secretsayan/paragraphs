@@ -479,15 +479,12 @@ class ParagraphsExperimentalAdministrationTest extends ParagraphsExperimentalTes
     $node->delete();
     // Edit the node with the reference.
     $this->clickLink(t('Edit'));
-    // Since we have validation error (reference to deleted node), paragraph is
-    // by default in edit mode.
+    // Validate that the reference is removed.
+    $this->assertNoErrorsLogged();
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][0][target_id]');
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
-    // Assert the validation error message.
-    $this->assertText('The referenced entity (node: 4) does not exist');
-    // Triggering unrelated button, assert that error message is still present.
+    $this->assertNoText('Nested twins');
     $this->drupalPostForm(NULL, [], t('Add another item'));
-    $this->assertText('The referenced entity (node: 4) does not exist');
     $this->assertText('Entity reference (value 1) field is required.');
     // Try to collapse with an invalid reference.
     $this->drupalPostAjaxForm(NULL, ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'], 'field_paragraphs_0_collapse');

@@ -39,6 +39,20 @@ interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterfac
   public function getSummary(array $options = []);
 
   /**
+   * Returns info icons render array for a paragraph.
+   *
+   * @param array $options
+   *   (optional) Array of additional options, with the following elements:
+   *   - 'show_behavior_icon': Whether the icons should contain the
+   *     behavior settings. Defaults to TRUE to show behavior icons in the
+   *     summary.
+   *
+   * @return array
+   *   A list of render arrays that will be rendered as icons.
+   */
+  public function getIcons(array $options = []);
+
+  /**
    * Returns a flag whether a current revision has been changed.
    *
    * The current instance is being compared with the latest saved revision.

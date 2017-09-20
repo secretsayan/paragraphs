@@ -118,6 +118,13 @@ abstract class ParagraphsBehaviorBase extends PluginBase implements ParagraphsBe
   /**
    * {@inheritdoc}
    */
+  public function settingsIcon(Paragraph $paragraph) {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildBehaviorForm(ParagraphInterface $paragraph, array &$form, FormStateInterface $form_state) {
     return $form;
   }

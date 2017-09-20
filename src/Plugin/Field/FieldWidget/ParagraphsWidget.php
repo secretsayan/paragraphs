@@ -305,7 +305,6 @@ class ParagraphsWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $field_name = $this->fieldDefinition->getName();
     $parents = $element['#field_parents'];
-    $info = [];
 
     /** @var \Drupal\paragraphs\Entity\Paragraph $paragraphs_entity */
     $paragraphs_entity = NULL;
@@ -437,35 +436,38 @@ class ParagraphsWidget extends WidgetBase {
       $element['#prefix'] = '<div id="' . $wrapper_id . '">';
       $element['#suffix'] = '</div>';
 
+      // Create top section structure with all needed subsections.
+      $element['top'] = [
+        '#type' => 'container',
+        '#weight' => -1000,
+        '#attributes' => ['class' => ['paragraph-top']],
+        // Section for paragraph type information.
+        'type' => [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['paragraph-type']],
+        ],
+        // Section for info icons.
+        'icons' => [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['paragraph-info']],
+        ],
+        'summary' => [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['paragraph-summary']],
+        ],
+        // Paragraphs actions element for actions and dropdown actions.
+        'actions' => [
+          '#type' => 'paragraphs_actions',
+        ],
+      ];
+      // Holds information items.
+      $info = [];
+
       $item_bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($target_type);
       if (isset($item_bundles[$paragraphs_entity->bundle()])) {
         $bundle_info = $item_bundles[$paragraphs_entity->bundle()];
 
-        // Create top section structure with all needed subsections.
-        $element['top'] = [
-          '#type' => 'container',
-          '#weight' => -1000,
-          '#attributes' => ['class' => ['paragraph-type-top']],
-          // Section for paragraph type information.
-          'type' => [
-            '#type' => 'container',
-            '#attributes' => ['class' => ['paragraph-type-title']],
-            'label' => ['#markup' => $bundle_info['label']],
-          ],
-          // Section for information icons.
-          'info' => [
-            '#type' => 'container',
-            '#attributes' => ['class' => ['paragraph-type-info']],
-          ],
-          'summary' => [
-            '#type' => 'container',
-            '#attributes' => ['class' => ['paragraph-type-summary']],
-          ],
-          // Paragraphs actions element for actions and dropdown actions.
-          'actions' => [
-            '#type' => 'paragraphs_actions',
-          ],
-        ];
+        $element['top']['type']['label'] = ['#markup' => $bundle_info['label']];
 
         // Type icon and label bundle.
         if ($icon_url = $paragraphs_entity->type->entity->getIconUrl()) {
@@ -602,21 +604,14 @@ class ParagraphsWidget extends WidgetBase {
           ];
         }
 
-        if (!$paragraphs_entity->access('update') && !$paragraphs_entity->access('delete')) {
-          $info['edit'] = [
-            '#theme' => 'paragraphs_info_icon',
-            '#message' => $this->t('You are not allowed to edit or remove this @title.', ['@title' => $this->getSetting('title')]),
-            '#icon' => 'lock',
-          ];
-        }
-        elseif (!$paragraphs_entity->access('update')) {
+        if (!$paragraphs_entity->access('update') && $paragraphs_entity->access('delete')) {
           $info['edit'] = [
             '#theme' => 'paragraphs_info_icon',
             '#message' => $this->t('You are not allowed to edit this @title.', ['@title' => $this->getSetting('title')]),
             '#icon' => 'edit-disabled',
           ];
         }
-        elseif (!$paragraphs_entity->access('delete')) {
+        elseif (!$paragraphs_entity->access('delete') && $paragraphs_entity->access('update')) {
           $info['remove'] = [
             '#theme' => 'paragraphs_info_icon',
             '#message' => $this->t('You are not allowed to remove this @title.', ['@title' => $this->getSetting('title')]),
@@ -647,15 +642,6 @@ class ParagraphsWidget extends WidgetBase {
           // Expand all dropdown actions to proper submit elements and add
           // them to top dropdown actions sub component.
           $element['top']['actions']['dropdown_actions'] = array_map([$this, 'expandButton'], $widget_actions['dropdown_actions']);
-        }
-
-        if (count($info)) {
-          foreach ($info as $info_item) {
-            if (!isset($info_item['#access']) || $info_item['#access']) {
-              $element['top']['info']['items'] = $info;
-              break;
-            }
-          }
         }
       }
 
@@ -755,11 +741,23 @@ class ParagraphsWidget extends WidgetBase {
                 '#access' => $paragraphs_entity->access('view'),
               ];
             }
+
+            $info = array_merge($info, $paragraphs_entity->getIcons());
           }
         }
       }
       else {
         $element['subform'] = array();
+      }
+
+      // If we have any info items lets add them to the top section.
+      if (count($info)) {
+        foreach ($info as $info_item) {
+          if (!isset($info_item['#access']) || $info_item['#access']) {
+            $element['top']['icons']['items'] = $info;
+            break;
+          }
+        }
       }
 
       $element['subform']['#attributes']['class'][] = 'paragraphs-subform';
@@ -1251,10 +1249,10 @@ class ParagraphsWidget extends WidgetBase {
   protected function buildAddActions() {
     if (count($this->getAccessibleOptions()) === 0) {
       if (count($this->getAllowedTypes()) === 0) {
-        $add_more_elements['info'] = $this->createMessage($this->t('You are not allowed to add any of the @title types.', ['@title' => $this->getSetting('title')]));
+        $add_more_elements['icons'] = $this->createMessage($this->t('You are not allowed to add any of the @title types.', ['@title' => $this->getSetting('title')]));
       }
       else {
-        $add_more_elements['info'] = $this->createMessage($this->t('You did not add any @title types yet.', ['@title' => $this->getSetting('title')]));
+        $add_more_elements['icons'] = $this->createMessage($this->t('You did not add any @title types yet.', ['@title' => $this->getSetting('title')]));
       }
 
       return $add_more_elements;

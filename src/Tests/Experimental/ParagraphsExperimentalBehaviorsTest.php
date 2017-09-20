@@ -241,10 +241,16 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
-    // Assert that the summary includes the text of the behavior plugins.
     $this->clickLink('Edit');
+
+    // Assert that info section includes the information from behavior plugins.
+    $this->assertFieldByXPath('//*[@id="edit-field-paragraphs-0-top-icons"]/span[@class="paragraphs-icon paragraphs-icon-bold"]');
+    $this->assertFieldByXPath('//*[@id="edit-field-paragraphs-1-top-icons"]/span[@class="paragraphs-badge" and @title="1 child"]');
+    $this->assertFieldByXPath('//*[@id="edit-field-paragraphs-1-top-icons"]/span[@class="paragraphs-icon paragraphs-icon-bold"]');
+
+    // Assert that the summary includes the text of the behavior plugins.
     $this->assertRaw('class="paragraphs-collapsed-description">first_paragraph, Text color: blue, Bold: Yes');
-    $this->assertRaw('class="paragraphs-collapsed-description">1 child, nested_paragraph, Text color: blue, Bold: No, Bold: Yes');
+    $this->assertRaw('class="paragraphs-collapsed-description">nested_paragraph, Text color: blue, Bold: No, Bold: Yes');
 
     // Add an empty nested paragraph.
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
