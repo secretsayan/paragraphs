@@ -330,7 +330,7 @@ function template_preprocess_paragraphs_actions(&$variables) {
  * Implements hook_preprocess_HOOK() for field_multiple_value_form().
  */
 function paragraphs_preprocess_field_multiple_value_form(&$variables) {
-  if (count($variables['element']['#field_parents']) === 0 && isset($variables['table']['#rows'])) {
+  if (!empty($variables['table']['#header']) && isset($variables['table']['#rows'])) {
     // Find paragraph_actions and move to header.
     // @see template_preprocess_field_multiple_value_form()
     if (!empty($variables['table']['#rows'][0]['data'][1]['data']['#paragraphs_header'])) {

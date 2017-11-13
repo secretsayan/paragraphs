@@ -2232,15 +2232,10 @@ class ParagraphsWidget extends WidgetBase {
    */
   public function buildHeaderActions(array $field_state, FormStateInterface $form_state) {
     $actions = [];
+    $field_name = $this->fieldDefinition->getName();
+    $id_prefix = implode('-', array_merge($this->fieldParents, [$field_name]));
+
     if (empty($this->fieldParents)) {
-      // Set actions.
-      $actions = [
-        '#type' => 'paragraphs_actions',
-      ];
-
-      $field_name = $this->fieldDefinition->getName();
-      $id_prefix = implode('-', array_merge($this->fieldParents, [$field_name]));
-
       // Only show the dragdrop mode if we can find the sortable library.
       $library_discovery = \Drupal::service('library.discovery');
       $library = $library_discovery->getLibraryByName('paragraphs', 'paragraphs-dragdrop');
@@ -2271,62 +2266,69 @@ class ParagraphsWidget extends WidgetBase {
           $actions['dropdown_actions']['dragdrop_mode'] = $dragdrop_mode;
         }
       }
+    }
 
-      if ($this->realItemCount > 1 && empty($field_state['dragdrop'])) {
+    // Collapse & expand all.
+    if ($this->fieldDefinition->getType() == 'entity_reference_revisions' &&  $this->realItemCount > 1 && empty($field_state['dragdrop'])) {
+      $collapse_all = $this->expandButton([
+        '#type' => 'submit',
+        '#value' => $this->t('Collapse all'),
+        '#submit' => [[get_class($this), 'changeAllEditModeSubmit']],
+        '#name' => $id_prefix . '_collapse_all',
+        '#paragraphs_mode' => 'closed',
+        '#limit_validation_errors' => [
+          array_merge($this->fieldParents, [$field_name, 'collapse_all']),
+        ],
+        '#ajax' => [
+          'callback' => [get_class($this), 'allActionsAjax'],
+          'wrapper' => $this->fieldWrapperId,
+        ],
+        '#weight' => -1,
+        '#paragraphs_show_warning' => TRUE,
+      ]);
 
-        $collapse_all = $this->expandButton([
-          '#type' => 'submit',
-          '#value' => $this->t('Collapse all'),
-          '#submit' => [[get_class($this), 'changeAllEditModeSubmit']],
-          '#name' => $id_prefix . '_collapse_all',
-          '#paragraphs_mode' => 'closed',
-          '#limit_validation_errors' => [
-            array_merge($this->fieldParents, [$field_name, 'collapse_all']),
-          ],
-          '#ajax' => [
-            'callback' => [get_class($this), 'allActionsAjax'],
-            'wrapper' => $this->fieldWrapperId,
-          ],
-          '#weight' => -1,
-          '#paragraphs_show_warning' => TRUE,
-        ]);
+      $edit_all = $this->expandButton([
+        '#type' => 'submit',
+        '#value' => $this->t('Edit all'),
+        '#submit' => [[get_class($this), 'changeAllEditModeSubmit']],
+        '#name' => $id_prefix . '_edit-all',
+        '#paragraphs_mode' => 'edit',
+        '#limit_validation_errors' => [],
+        '#ajax' => [
+          'callback' => [get_class($this), 'allActionsAjax'],
+          'wrapper' => $this->fieldWrapperId,
+        ],
+      ]);
 
-        $edit_all = $this->expandButton([
-          '#type' => 'submit',
-          '#value' => $this->t('Edit all'),
-          '#submit' => [[get_class($this), 'changeAllEditModeSubmit']],
-          '#name' => $id_prefix . '_edit-all',
-          '#paragraphs_mode' => 'edit',
-          '#limit_validation_errors' => [],
-          '#ajax' => [
-            'callback' => [get_class($this), 'allActionsAjax'],
-            'wrapper' => $this->fieldWrapperId,
-          ],
-        ]);
+      // Take the default edit mode if we don't have anything in state.
+      $mode = isset($field_state['paragraphs'][0]['mode']) ? $field_state['paragraphs'][0]['mode'] : $this->settings['edit_mode'];
 
-        if (isset($field_state['paragraphs'][0]['mode']) && $field_state['paragraphs'][0]['mode'] === 'closed') {
-          $edit_all['#attributes'] = [
-            'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit'],
-            'title' => $this->t('Edit all'),
-          ];
-          $edit_all['#title'] = $this->t('Edit All');
-          $actions['actions']['edit_all'] = $edit_all;
-          $actions['dropdown_actions']['collapse_all'] = $collapse_all;
-        }
-        else {
-          $collapse_all['#attributes'] = [
-            'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse'],
-            'title' => $this->t('Collapse all'),
-          ];
-          $actions['actions']['collapse_all'] = $collapse_all;
-          $actions['dropdown_actions']['edit_all'] = $edit_all;
-        }
+      // Depending on the state of the widget output close/edit all in the right
+      // order and with the right settings.
+      if ($mode === 'closed') {
+        $edit_all['#attributes'] = [
+          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit'],
+          'title' => $this->t('Edit all'),
+        ];
+        $edit_all['#title'] = $this->t('Edit All');
+        $actions['actions']['edit_all'] = $edit_all;
+        $actions['dropdown_actions']['collapse_all'] = $collapse_all;
+      }
+      else {
+        $collapse_all['#attributes'] = [
+          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse'],
+          'title' => $this->t('Collapse all'),
+        ];
+        $actions['actions']['collapse_all'] = $collapse_all;
+        $actions['dropdown_actions']['edit_all'] = $edit_all;
       }
     }
 
     // Add paragraphs_header flag which we use later in preprocessor to move
     // header actions to table header.
     if ($actions) {
+      // Set actions.
+      $actions['#type'] = 'paragraphs_actions';
       $actions['#paragraphs_header'] = TRUE;
     }
 

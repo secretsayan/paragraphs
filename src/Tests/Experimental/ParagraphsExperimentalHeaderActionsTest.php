@@ -143,6 +143,10 @@ class ParagraphsExperimentalHeaderActionsTest extends ParagraphsExperimentalTest
       []
     );
 
+    $this->drupalGet('admin/structure/paragraphs_type/nested_paragraph/form-display');
+    $this->drupalPostForm(NULL, ['fields[field_nested][type]' => 'paragraphs'], t('Save'));
+    $this->setParagraphsWidgetSettings($nested_paragraph_type, 'nested', ['edit_mode' => 'closed'], 'paragraphs', 'paragraph');
+
     // Checks that Collapse/Edit all button is presented.
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_nested_paragraph_add_more');
@@ -174,6 +178,15 @@ class ParagraphsExperimentalHeaderActionsTest extends ParagraphsExperimentalTest
     $this->drupalGet('node/' . $node->id());
     $this->clickLink('Edit');
     $this->assertNoText('No Paragraph added yet.');
+
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_text_add_more');
+    $edit = [
+      'field_paragraphs[0][subform][field_nested][1][subform][field_text][0][value]' => 'Second nested text',
+    ];
+    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->assertRaw('field_paragraphs_0_subform_field_nested_collapse_all');
+    $this->assertRaw('field_paragraphs_0_subform_field_nested_edit_all');
   }
 
   /**
