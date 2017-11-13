@@ -151,9 +151,9 @@ class ParagraphsTypeForm extends EntityForm {
 
     $paragraphs_type = $this->entity;
 
-    $icon_fild = $form_state->getValue(['icon_file', '0']);
+    $icon_file = $form_state->getValue(['icon_file', '0']);
     // Set the file UUID to the paragraph configuration.
-    if (!empty($icon_fild) && $file = $this->entityTypeManager->getStorage('file')->load($icon_fild)) {
+    if (!empty($icon_file) && $file = $this->entityTypeManager->getStorage('file')->load($icon_file)) {
       $paragraphs_type->set('icon_uuid', $file->uuid());
     }
     else {
