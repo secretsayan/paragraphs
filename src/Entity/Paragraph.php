@@ -358,7 +358,6 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       ->setLabel(t('Revision user ID'))
       ->setDescription(t('The user ID of the author of the current revision.'))
       ->setSetting('target_type', 'user')
-      ->setQueryable(FALSE)
       ->setRevisionable(TRUE);
 
     $fields['parent_id'] = BaseFieldDefinition::create('string')
