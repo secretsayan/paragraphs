@@ -331,7 +331,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       ->setDefaultValueCallback('Drupal\paragraphs\Entity\Paragraph::getCurrentUserId')
       ->setTranslatable(TRUE)
       ->setDisplayOptions('form', array(
-        'type' => 'hidden',
+        'region' => 'hidden',
         'weight' => 0,
       ))
       ->setDisplayConfigurable('form', TRUE);
@@ -349,7 +349,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE)
       ->setDisplayOptions('form', array(
-        'type' => 'hidden',
+        'region' => 'hidden',
         'weight' => 0,
       ))
       ->setDisplayConfigurable('form', TRUE);
