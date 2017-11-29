@@ -362,7 +362,7 @@ function paragraphs_libraries_info() {
         // characters long.
         'file' => 'Sortable.min.js',
         'pattern' => '/\.version="(.*?)"/',
-        'lines' => 2,
+        'lines' => 5,
         'cols' => 20000
       ]
     ],
