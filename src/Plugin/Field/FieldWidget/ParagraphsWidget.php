@@ -525,7 +525,7 @@ class ParagraphsWidget extends WidgetBase {
               'wrapper' => $widget_state['ajax_wrapper_id'],
             ],
             // Hide the button when translating.
-            '#access' => $paragraphs_entity->access('delete') && !$this->isTranslating,
+            '#access' => $paragraphs_entity->access('delete') && $this->allowReferenceChanges(),
             '#paragraphs_mode' => 'remove',
           ];
         }
@@ -627,6 +627,8 @@ class ParagraphsWidget extends WidgetBase {
           'element' => $element,
           'form_state' => $form_state,
           'paragraphs_entity' => $paragraphs_entity,
+          'is_translating' => $this->isTranslating,
+          'access_global_actions' => $this->allowReferenceChanges(),
         ];
 
         // Allow modules to alter widget actions.
@@ -800,7 +802,7 @@ class ParagraphsWidget extends WidgetBase {
           'first-button',
         ],
       ],
-      '#access' => !$this->isTranslating,
+      '#access' => $this->allowReferenceChanges(),
       '#weight' => -2000,
     ];
 
@@ -1049,7 +1051,7 @@ class ParagraphsWidget extends WidgetBase {
     $host = $items->getEntity();
     $this->initIsTranslating($form_state, $host);
 
-    if (($this->realItemCount < $cardinality || $cardinality == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) && !$form_state->isProgrammed() && !$this->isTranslating) {
+    if (($this->realItemCount < $cardinality || $cardinality == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) && !$form_state->isProgrammed() && $this->allowReferenceChanges()) {
       $elements['add_more'] = $this->buildAddActions();
     }
 
@@ -2388,6 +2390,16 @@ class ParagraphsWidget extends WidgetBase {
     }
 
     return $widget_state;
+  }
+
+  /**
+   * Checks if we can allow reference changes.
+   *
+   * @return bool
+   *   TRUE if we can allow reference changes, otherwise FALSE.
+   */
+  protected function allowReferenceChanges() {
+    return !$this->isTranslating;
   }
 
 }
