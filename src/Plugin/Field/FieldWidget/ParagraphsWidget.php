@@ -628,7 +628,7 @@ class ParagraphsWidget extends WidgetBase {
           'form_state' => $form_state,
           'paragraphs_entity' => $paragraphs_entity,
           'is_translating' => $this->isTranslating,
-          'access_global_actions' => $this->allowReferenceChanges(),
+          'allow_reference_changes' => $this->allowReferenceChanges(),
         ];
 
         // Allow modules to alter widget actions.
