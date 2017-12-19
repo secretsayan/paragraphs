@@ -2236,10 +2236,11 @@ class ParagraphsWidget extends WidgetBase {
     $id_prefix = implode('-', array_merge($this->fieldParents, [$field_name]));
 
     if (empty($this->fieldParents)) {
-      // Only show the dragdrop mode if we can find the sortable library.
+      // Only show the drag&drop mode if we have some items to actually drag
+      // around and can find the sortable library.
       $library_discovery = \Drupal::service('library.discovery');
       $library = $library_discovery->getLibraryByName('paragraphs', 'paragraphs-dragdrop');
-      if ($library || \Drupal::state()->get('paragraphs_test_dragdrop_force_show', FALSE)) {
+      if ($this->realItemCount > 0 && ($library || \Drupal::state()->get('paragraphs_test_dragdrop_force_show', FALSE))) {
         $dragdrop_mode = $this->expandButton([
           '#type' => 'submit',
           '#name' => $this->fieldIdPrefix . '_dragdrop_mode',
