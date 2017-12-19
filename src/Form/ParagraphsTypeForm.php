@@ -114,6 +114,10 @@ class ParagraphsTypeForm extends EntityForm {
         '#open' => TRUE
       ];
       $config = $paragraphs_type->get('behavior_plugins');
+      // Alphabetically sort plugins by plugin label.
+      uasort($behavior_plugin_definitions, function ($a, $b) {
+        return strcmp($a['label'], $b['label']);
+      });
       foreach ($behavior_plugin_definitions as $id => $behavior_plugin_definition) {
         $description = $behavior_plugin_definition['description'];
         $form['behavior_plugins'][$id]['enabled'] = [

@@ -97,7 +97,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
       'field_paragraphs[0][behavior_plugins][test_text_color][text_color]' => $plugin_text,
     ];
     // Assert that the behavior form is after the dropbutton.
-    $behavior_xpath = $this->xpath("//div[@id = 'edit-field-paragraphs-0-top']/following-sibling::*[1][@id = 'edit-field-paragraphs-0-behavior-plugins-test-text-color']");
+    $behavior_xpath = $this->xpath("//div[@id = 'edit-field-paragraphs-0-top']/following-sibling::*[1][@id = 'edit-field-paragraphs-0-behavior-plugins-test-bold-text']");
     $this->assertNotEqual($behavior_xpath, FALSE, 'Behavior form position incorrect');
 
     $this->drupalPostForm(NULL, $edit, t('Save'));
@@ -124,7 +124,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertNoRaw('class="red_plugin_text');
-    $this->assertRaw('class="blue_plugin_text bold_plugin_text');
+    $this->assertRaw('class="bold_plugin_text blue_plugin_text');
     $this->clickLink('Edit');
     // Assert the plugin fields populate the stored values.
     $this->assertFieldByName('field_paragraphs[0][behavior_plugins][test_text_color][text_color]', $updated_text);
@@ -145,7 +145,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     // Make sure that values don't change if a user without the 'edit behavior
     // plugin settings' permission saves a node with paragraphs and enabled
     // behaviors.
-    $this->assertRaw('class="blue_plugin_text bold_plugin_text');
+    $this->assertRaw('class="bold_plugin_text blue_plugin_text');
     $this->assertNoRaw('class="red_plugin_text');
 
     // Test plugin applicability. Add a paragraph type.
@@ -249,8 +249,8 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     $this->assertFieldByXPath('//*[@id="edit-field-paragraphs-1-top-icons"]/span[@class="paragraphs-icon paragraphs-icon-bold"]');
 
     // Assert that the summary includes the text of the behavior plugins.
-    $this->assertRaw('class="paragraphs-collapsed-description">first_paragraph, Text color: blue, Bold: Yes');
-    $this->assertRaw('class="paragraphs-collapsed-description">nested_paragraph, Text color: blue, Bold: No, Bold: Yes');
+    $this->assertRaw('class="paragraphs-collapsed-description">first_paragraph, Bold: Yes, Text color: blue');
+    $this->assertRaw('class="paragraphs-collapsed-description">nested_paragraph, Bold: No, Text color: blue, Bold: Yes');
 
     // Add an empty nested paragraph.
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
