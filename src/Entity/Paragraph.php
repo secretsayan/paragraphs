@@ -4,6 +4,7 @@ namespace Drupal\paragraphs\Entity;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -112,6 +113,16 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     }
 
     return $parent;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setParentEntity(ContentEntityInterface $parent, $parent_field_name) {
+    $this->set('parent_type', $parent->getEntityTypeId());
+    $this->set('parent_id', $parent->id());
+    $this->set('parent_field_name', $parent_field_name);
+    return $this;
   }
 
   /**

@@ -347,6 +347,7 @@ class ParagraphsWidget extends WidgetBase {
       $paragraphs_entity = $entity_type_manager->getStorage($target_type)->create(array(
         $bundle_key => $widget_state['selected_bundle'],
       ));
+      $paragraphs_entity->setParentEntity($host, $field_name);
 
       $item_mode = 'edit';
     }
@@ -884,9 +885,12 @@ class ParagraphsWidget extends WidgetBase {
       if ($default_type) {
         // Place the default paragraph.
         $target_type = $this->getFieldSetting('target_type');
+
+        /** @var \Drupal\paragraphs\ParagraphInterface $paragraphs_entity */
         $paragraphs_entity = $entity_type_manager->getStorage($target_type)->create([
           'type' => $default_type,
         ]);
+        $paragraphs_entity->setParentEntity($items->getEntity(), $field_name);
         $field_state['selected_bundle'] = $default_type;
         $display = EntityFormDisplay::collectRenderDisplay($paragraphs_entity, $this->getSetting('form_display_mode'));
         $field_state['paragraphs'][0] = [

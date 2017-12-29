@@ -23,6 +23,18 @@ interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterfac
   public function getParentEntity();
 
   /**
+   * Set the parent entity of the paragraph.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $parent
+   *   The parent entity.
+   * @param string $parent_field_name
+   *   The parent field name.
+   *
+   * @return $this
+   */
+  public function setParentEntity(ContentEntityInterface $parent, $parent_field_name);
+
+  /**
    * Returns short summary for paragraph.
    *
    * @param array $options
