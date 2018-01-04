@@ -151,6 +151,10 @@
     grid-gap: $gutter-top $gutter-top;
     align-items: center;
 
+    @media (min-width: map-get($grid-breakpoints, 'lg')) {
+      grid-template-columns: 150px auto 1fr auto;
+    }
+
     .paragraph-type {
       grid-column: 1 / 2;
       // PostCSS autoprefixer does not support -ms-grid-column and some other
@@ -238,6 +242,9 @@
   }
 
   .paragraph-type {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     &-title {
       display: flex;
       flex-basis: 100px;

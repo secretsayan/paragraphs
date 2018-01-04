@@ -165,6 +165,13 @@
           align-items: center;
 }
 
+@media (min-width: 992px) {
+  .js .paragraph-top {
+    -ms-grid-columns: 150px auto 1fr auto;
+        grid-template-columns: 150px auto 1fr auto;
+  }
+}
+
 .js .paragraph-top .paragraph-type {
   grid-column: 1 / 2;
   -ms-grid-column: 1;
@@ -256,6 +263,12 @@
 tr:hover .paragraphs-collapsed-description::after {
   background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 221, 0)), to(#f7fcff));
   background: linear-gradient(to right, rgba(255, 255, 221, 0) 0%, #f7fcff 100%);
+}
+
+.js .paragraph-type {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .js .paragraph-type-title {
