@@ -3,6 +3,7 @@
 namespace Drupal\paragraphs\Tests\Experimental;
 
 use Drupal\field_ui\Tests\FieldUiTestTrait;
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
 
 /**
@@ -22,6 +23,8 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
    */
   public static $modules = [
     'paragraphs_test',
+    'language',
+    'content_translation',
   ];
 
   /**
@@ -112,7 +115,14 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
   public function testButtonsVisibility() {
     $this->addParagraphedContentType('paragraphed_test');
 
-    $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content']);
+    $this->loginAsAdmin([
+      'create paragraphed_test content',
+      'edit any paragraphed_test content',
+      'administer content translation',
+      'administer languages',
+      'create content translations',
+      'translate any entity',
+    ]);
     // Add a Paragraph type.
     $paragraph_type = 'text_paragraph';
     $this->addParagraphsType($paragraph_type);
@@ -182,6 +192,20 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, t('Add text'));
     $this->assertNoField('edit-field-paragraphs-0-top-links-test-button');
+
+    ConfigurableLanguage::createFromLangcode('sr')->save();
+
+    // Enable translation for test content.
+    $this->drupalGet('admin/config/regional/content-language');
+    $edit = [
+      'entity_types[node]' => TRUE,
+      'settings[node][paragraphed_test][translatable]' => TRUE,
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+
+    // Check that operation is hidden during translation.
+    $this->drupalGet('sr/node/' . $node->id() . '/translations/add/en/sr');
+    $this->assertNoField('edit-field-paragraphs-1-top-actions-dropdown-actions-test-button');
   }
 
 }
