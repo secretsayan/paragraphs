@@ -17,6 +17,7 @@ use Drupal\Core\Form\SubformState;
 use Drupal\Core\Render\Element;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
@@ -1913,7 +1914,6 @@ class ParagraphsWidget extends WidgetBase {
       if ($widget_state['paragraphs'][$delta]['mode'] == 'edit') {
         // Extract the form values on submit for getting the current paragraph.
         $display->extractFormValues($entity, $element['subform'], $form_state);
-        $display->validateFormValues($entity, $element['subform'], $form_state);
 
         // Validate all enabled behavior plugins.
         $paragraphs_type = $entity->getParagraphType();
@@ -1951,6 +1951,19 @@ class ParagraphsWidget extends WidgetBase {
       return parent::flagErrors($items, $violations, $form, $form_state);
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function errorElement(array $element, ConstraintViolationInterface $error, array $form, FormStateInterface $form_state) {
+    // Validation errors might be a about a specific (behavior) form element
+    // attempt to find a matching element.
+    if (!empty($error->arrayPropertyPath) && $sub_element = NestedArray::getValue($element, $error->arrayPropertyPath)) {
+      return $sub_element;
+    }
+    return $element;
+  }
+
 
   /**
    * Special handling to validate form elements with multiple values.
@@ -2037,6 +2050,8 @@ class ParagraphsWidget extends WidgetBase {
             }
           }
         }
+
+        $display->validateFormValues($paragraphs_entity, $element[$item['_original_delta']]['subform'], $form_state);
 
         $paragraphs_entity->setNeedsSave(TRUE);
         $item['entity'] = $paragraphs_entity;
