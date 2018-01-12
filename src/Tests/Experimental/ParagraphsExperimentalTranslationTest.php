@@ -230,9 +230,9 @@ class ParagraphsExperimentalTranslationTest extends ParagraphsExperimentalTestBa
     $this->drupalPostForm(NULL, $edit, t('Save settings'));
 
     // Create a node with an image paragraph, its alt and title text.
-    $text = 'Trust me I\'m an image';
-    file_put_contents('temporary://Image.jpg', $text);
-    $file_path = $this->container->get('file_system')->realpath('temporary://Image.jpg');
+    $files = $this->drupalGetTestFiles('image');
+    $file_system = \Drupal::service('file_system');
+    $file_path = $file_system->realpath($file_system->realpath($files[0]->uri));
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->drupalPostForm(NULL, [], t('Add Images'));
     $this->drupalPostForm(NULL, ['files[field_paragraphs_demo_0_subform_field_images_demo_0][]' => $file_path], t('Upload'));
@@ -240,8 +240,6 @@ class ParagraphsExperimentalTranslationTest extends ParagraphsExperimentalTestBa
       'title[0][value]' => 'Title EN',
       'field_paragraphs_demo[0][subform][field_images_demo][0][alt]' => 'Image alt',
       'field_paragraphs_demo[0][subform][field_images_demo][0][title]' => 'Image title',
-      'field_paragraphs_demo[0][subform][field_images_demo][0][width]' => 100,
-      'field_paragraphs_demo[0][subform][field_images_demo][0][height]' => 100,
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
