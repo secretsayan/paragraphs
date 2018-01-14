@@ -510,7 +510,7 @@ class ParagraphsWidget extends WidgetBase {
             'callback' => [get_class($this), 'itemAjax'],
             'wrapper' => $widget_state['ajax_wrapper_id'],
           ],
-          '#access' => $paragraphs_entity->access('update'),
+          '#access' => $paragraphs_entity->access('update') && $this->allowReferenceChanges(),
         ];
 
         if ($item_mode != 'remove') {
