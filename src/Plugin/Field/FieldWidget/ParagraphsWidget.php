@@ -936,19 +936,20 @@ class ParagraphsWidget extends WidgetBase {
     // Persist the widget state so formElement() can access it.
     static::setWidgetState($this->fieldParents, $field_name, $form_state, $field_state);
 
-    $header_actions = $this->buildHeaderActions($field_state, $form_state);
-    if ($header_actions) {
-      $elements['header_actions'] = $header_actions;
-      // Add a weight element so we guaranty that header actions will stay in
-      // first row. We will use this later in
-      // paragraphs_preprocess_field_multiple_value_form().
-      $elements['header_actions']['_weight'] = [
-        '#type' => 'weight',
-        '#default_value' => -100,
-      ];
-    }
-
     if (!empty($field_state['dragdrop'])) {
+      $elements['header_actions']['actions']['complete_button'] = $this->expandButton([
+        '#type' => 'submit',
+        '#name' => $this->fieldIdPrefix . '_dragdrop_mode',
+        '#value' => $this->t('Complete drag & drop'),
+        '#attributes' => ['class' => ['field-dragdrop-mode-submit']],
+        '#submit' => [[get_class($this), 'dragDropModeSubmit']],
+        '#ajax' => [
+          'callback' => [get_class($this), 'dragDropModeAjax'],
+          'wrapper' => $this->fieldWrapperId,
+        ],
+        '#button_type' => 'primary',
+      ]);
+
       $elements['#attached']['library'][] = 'paragraphs/paragraphs-dragdrop';
       //$elements['dragdrop_mode']['#button_type'] = 'primary';
       $elements['dragdrop'] = $this->buildNestedParagraphsFoDragDrop($form_state, NULL, []);
@@ -1055,6 +1056,18 @@ class ParagraphsWidget extends WidgetBase {
 
     $host = $items->getEntity();
     $this->initIsTranslating($form_state, $host);
+
+    $header_actions = $this->buildHeaderActions($field_state, $form_state);
+    if ($header_actions) {
+      $elements['header_actions'] = $header_actions;
+      // Add a weight element so we guaranty that header actions will stay in
+      // first row. We will use this later in
+      // paragraphs_preprocess_field_multiple_value_form().
+      $elements['header_actions']['_weight'] = [
+        '#type' => 'weight',
+        '#default_value' => -100,
+      ];
+    }
 
     if (($this->realItemCount < $cardinality || $cardinality == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) && !$form_state->isProgrammed() && $this->allowReferenceChanges()) {
       $elements['add_more'] = $this->buildAddActions();
@@ -2265,10 +2278,10 @@ class ParagraphsWidget extends WidgetBase {
       $library_discovery = \Drupal::service('library.discovery');
       $library = $library_discovery->getLibraryByName('paragraphs', 'paragraphs-dragdrop');
       if ($this->realItemCount > 0 && ($library || \Drupal::state()->get('paragraphs_test_dragdrop_force_show', FALSE))) {
-        $dragdrop_mode = $this->expandButton([
+        $actions['dropdown_actions']['dragdrop_mode'] = $this->expandButton([
           '#type' => 'submit',
           '#name' => $this->fieldIdPrefix . '_dragdrop_mode',
-          '#value' => !empty($field_state['dragdrop']) ? $this->t('Complete drag & drop') : $this->t('Drag & drop'),
+          '#value' => $this->t('Drag & drop'),
           '#attributes' => ['class' => ['field-dragdrop-mode-submit']],
           '#submit' => [[get_class($this), 'dragDropModeSubmit']],
           '#weight' => 8,
@@ -2276,20 +2289,11 @@ class ParagraphsWidget extends WidgetBase {
             'callback' => [get_class($this), 'dragDropModeAjax'],
             'wrapper' => $this->fieldWrapperId,
           ],
-        ]);
-
-        // Make the complete button a primary button, limit validation errors
-        // only for enabling drag and drop mode.
-        if (!empty($field_state['dragdrop'])) {
-          $dragdrop_mode['#button_type'] = 'primary';
-          $actions['actions']['dragdrop_mode'] = $dragdrop_mode;
-        }
-        else {
-          $dragdrop_mode['#limit_validation_errors'] = [
+          '#limit_validation_errors' => [
             array_merge($this->fieldParents, [$field_name, 'dragdrop_mode']),
-          ];
-          $actions['dropdown_actions']['dragdrop_mode'] = $dragdrop_mode;
-        }
+          ],
+          '#access' => $this->allowReferenceChanges()
+        ]);
       }
     }
 
