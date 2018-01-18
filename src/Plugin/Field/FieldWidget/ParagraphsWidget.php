@@ -1797,15 +1797,18 @@ class ParagraphsWidget extends WidgetBase {
 
           NestedArray::setValue($new_field_storage, $new_keys, $item_state);
           if (isset($item_values['dragdrop'])) {
-            $reorder_paragraphs(
-              $item_values['dragdrop'], array_merge(
-              $parents, [
-                $field_name,
-                $delta,
-                'subform'
-              ]
-            ), $item_state['entity']
-            );
+
+            // If there is no field storage yet for the new position, initialize
+            // it to an empty array in case all paragraphs have been moved away
+            // from it.
+            foreach (array_keys($item_values['dragdrop']) as $sub_field_name) {
+              $new_widget_state_keys = array_merge($parents, [$field_name, $item_values['_weight'] ,'subform', '#fields', $sub_field_name]);
+              if (!NestedArray::getValue($new_field_storage, $new_widget_state_keys)) {
+                NestedArray::setValue($new_field_storage, $new_widget_state_keys, ['paragraphs' => []]);
+              }
+            }
+
+            $reorder_paragraphs($item_values['dragdrop'], array_merge($parents, [$field_name, $delta, 'subform']), $item_state['entity']);
           }
         }
       }
