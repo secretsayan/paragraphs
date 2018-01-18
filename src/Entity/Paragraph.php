@@ -475,6 +475,18 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
           $summary[] = $block_admin_label;
         }
       }
+
+      if ($field_definition->getType() == 'link') {
+        if (!empty($this->get($field_name)->first())) {
+          // If title is not set, fallback to the uri.
+          if ($title = $this->get($field_name)->title) {
+            $summary[] = $title;
+          }
+          else {
+            $summary[] = $this->get($field_name)->uri;
+          }
+        }
+      }
     }
 
     if ($show_behavior_summary) {

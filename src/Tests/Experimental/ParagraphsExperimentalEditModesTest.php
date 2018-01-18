@@ -21,6 +21,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
   public static $modules = [
     'image',
     'block_field',
+    'link'
   ];
 
   /**
@@ -135,6 +136,30 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     ];
     $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
     $this->assertRaw('<div class="paragraphs-collapsed-description">Breadcrumbs');
+
+    // Test the summary of a Block field.
+    $paragraph_type = 'link_paragraph';
+    $this->addParagraphsType($paragraph_type);
+    static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'link', 'Link', 'link', [], []);
+    // Create a node with a link paragraph.
+    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_link_paragraph_add_more');
+    $edit = [
+      'title[0][value]' => 'Test link',
+      'field_paragraphs[0][subform][field_link][0][uri]' => 'http://www.google.com',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    // Check the summary when no link title is provided.
+    $this->clickLink(t('Edit'));
+    $this->assertRaw('<div class="paragraphs-collapsed-description">http://www.google.com');
+    // Set a link title.
+    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_0_edit');
+    $edit = [
+      'field_paragraphs[0][subform][field_link][0][title]' => 'Link title',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    // Check the summary when the link title is set.
+    $this->clickLink(t('Edit'));
+    $this->assertRaw('<div class="paragraphs-collapsed-description">Link title');
   }
 
 }
