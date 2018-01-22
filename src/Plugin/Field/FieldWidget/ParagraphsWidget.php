@@ -2109,7 +2109,9 @@ class ParagraphsWidget extends WidgetBase {
   }
 
   /**
-   * Initializes the translation form state.
+   * Determine if widget is in translation.
+   *
+   * Initializes $this->isTranslating.
    *
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param \Drupal\Core\Entity\ContentEntityInterface $host
@@ -2130,11 +2132,13 @@ class ParagraphsWidget extends WidgetBase {
       return;
     }
 
+    // Supporting \Drupal\content_translation\Controller\ContentTranslationController.
     if (!empty($form_state->get('content_translation'))) {
-      // Adding a language through the ContentTranslationController.
+      // Adding a translation.
       $this->isTranslating = TRUE;
     }
-    if ($host->hasTranslation($form_state->get('langcode')) && $host->getTranslation($form_state->get('langcode'))->get($default_langcode_key)->value == 0) {
+    $langcode = $form_state->get('langcode');
+    if ($host->hasTranslation($langcode) && $host->getTranslation($langcode)->get($default_langcode_key)->value == 0) {
       // Editing a translation.
       $this->isTranslating = TRUE;
     }
