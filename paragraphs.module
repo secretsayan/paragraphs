@@ -341,6 +341,20 @@ function paragraphs_preprocess_field_multiple_value_form(&$variables) {
       unset($variables['table']['#rows'][0]);
     }
   }
+  if (isset($variables['element']['#allow_reference_changes']) && !$variables['element']['#allow_reference_changes']) {
+    if (isset($variables['table']['#tabledrag'])) {
+      // Remove the tabledrag.
+      unset($variables['table']['#tabledrag']);
+      unset($variables['table']['#header'][1]);
+      foreach ($variables['table']['#rows'] as $key => $value) {
+        $variables['table']['#rows'][$key]['data'][0]['class'][] = 'paragraph-bullet';
+        // Restore the removed weight and give access FALSE.
+        $variables['table']['#rows'][$key]['data'][1]['data']['_weight'] = $value['data'][2]['data'];
+        unset($variables['table']['#rows'][$key]['data'][2]);
+        $variables['table']['#rows'][$key]['data'][1]['data']['_weight']['#access'] = FALSE;
+      }
+    }
+  }
 }
 
 /**

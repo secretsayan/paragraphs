@@ -104,6 +104,24 @@
   display: none;
 }
 
+.paragraph-bullet {
+  text-align: center;
+}
+
+.paragraph-bullet:after {
+  content: "\25cf";
+  padding: 0 10px;
+  color: #777;
+  font-size: 0.75em;
+  line-height: 3.5em;
+}
+
+@media (min-width: 768px) {
+  .paragraph-bullet:after {
+    line-height: 2.5em;
+  }
+}
+
 .js .field--widget-paragraphs th .paragraphs-actions {
   float: right;
   margin-right: -11px;

@@ -1073,6 +1073,7 @@ class ParagraphsWidget extends WidgetBase {
       $elements['add_more'] = $this->buildAddActions();
     }
 
+    $elements['#allow_reference_changes'] = $this->allowReferenceChanges();
     $elements['#attached']['library'][] = 'paragraphs/drupal.paragraphs.widget';
 
     return $elements;
