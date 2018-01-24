@@ -6,6 +6,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\RevisionLogEntityTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -52,6 +53,9 @@ use Drupal\user\UserInterface;
  *     "bundle" = "type",
  *     "langcode" = "langcode",
  *     "revision" = "revision_id"
+ *   },
+ *   revision_metadata_keys = {
+ *     "revision_user" = "revision_uid",
  *   },
  *   bundle_entity_type = "paragraphs_type",
  *   field_ui_base_route = "entity.paragraphs_type.edit_form",
@@ -305,28 +309,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('ID'))
-      ->setDescription(t('The ID of the Paragraphs entity.'))
-      ->setReadOnly(TRUE)
-      ->setSetting('unsigned', TRUE);
-
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the paragraphs entity.'))
-      ->setReadOnly(TRUE);
-
-    $fields['revision_id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Revision ID'))
-      ->setDescription(t('The paragraphs entity revision ID.'))
-      ->setReadOnly(TRUE)
-      ->setSetting('unsigned', TRUE);
-
-    $fields['type'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Type'))
-      ->setDescription(t('The Paragraphs type.'))
-      ->setSetting('target_type', 'paragraphs_type')
-      ->setReadOnly(TRUE);
+    $fields = parent::baseFieldDefinitions($entity_type);
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
@@ -543,9 +526,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     // A list of revision fields which should be skipped from the comparision.
     $fields = [
       $this->getEntityType()->getKey('revision'),
-      'revision_uid',
-      'revision_log',
-      'revision_log_message',
+      'revision_uid'
     ];
 
     return $fields;
