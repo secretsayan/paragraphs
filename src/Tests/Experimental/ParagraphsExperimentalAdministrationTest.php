@@ -482,19 +482,27 @@ class ParagraphsExperimentalAdministrationTest extends ParagraphsExperimentalTes
     $node->delete();
     // Edit the node with the reference.
     $this->clickLink(t('Edit'));
+
+    // Adding another required paragraph and deleting that again should not
+    // validate closed paragraphs but trying to save the node should.
+    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_node_test_add_more');
+    $this->assertNoText('The referenced entity (node: ' . $node->id() . ') does not exist.');
+    $this->assertFieldByName('field_paragraphs[1][subform][field_entity_reference][0][target_id]');
+    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_1_remove');
+    $this->assertNoText('The referenced entity (node: ' . $node->id() . ') does not exist.');
+    $this->assertNoFieldByName('field_paragraphs[1][subform][field_entity_reference][0][target_id]');
+    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->assertText('The referenced entity (node: ' . $node->id() . ') does not exist.');
+
+    // Attempt to edit the Paragraph.
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
     // Validate that the reference is removed.
     $this->assertNoErrorsLogged();
-    $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][0][target_id]');
-    $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
-    $this->assertNoText('Nested twins');
-    $this->drupalPostForm(NULL, [], t('Add another item'));
-    $this->assertText('Entity reference (value 1) field is required.');
     // Try to collapse with an invalid reference.
     $this->drupalPostAjaxForm(NULL, ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'], 'field_paragraphs_0_collapse');
     // Paragraph should be still in edit mode.
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][0][target_id]');
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
-    $this->drupalPostForm(NULL, [], t('Add another item'));
     // Assert the validation message.
     $this->assertText('There are no entities matching "foo".');
     // Fix the broken reference.
@@ -516,11 +524,9 @@ class ParagraphsExperimentalAdministrationTest extends ParagraphsExperimentalTes
     $node = $this->drupalGetNodeByTitle('choke test');
     // Attempt to edit the Paragraph.
     $this->drupalGet('node/' . $node->id() . '/edit');
-    // Since we have another validation error, the paragraph is by default in
-    // the edit mode again.
-    $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][0][target_id]');
-    $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
-    // Try to save with and invalid reference.
+    // Attempt to edit the Paragraph.
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
+    // Try to save with an invalid reference.
     $edit = ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertText('There are no entities matching "foo".');

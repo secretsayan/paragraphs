@@ -353,21 +353,6 @@ class ParagraphsWidget extends WidgetBase {
       $item_mode = 'edit';
     }
 
-    if ($item_mode == 'closed') {
-      // Validate closed paragraphs and expand if needed.
-      // @todo Consider recursion.
-      $violations = $paragraphs_entity->validate();
-      $violations->filterByFieldAccess();
-      if (count($violations) > 0) {
-        $item_mode = 'edit';
-        $messages = [];
-        foreach ($violations as $violation) {
-          $messages[] = $violation->getMessage();
-        }
-        $info['validation_error'] = $this->createMessage($this->t('@messages', ['@messages' => strip_tags(implode('\n', $messages))]));
-      }
-    }
-
     if ($paragraphs_entity) {
       // Detect if we are translating.
       $this->initIsTranslating($form_state, $host);
@@ -504,7 +489,7 @@ class ParagraphsWidget extends WidgetBase {
           '#name' => $id_prefix . '_duplicate',
           '#weight' => 502,
           '#submit' => [[get_class($this), 'duplicateSubmit']],
-          '#limit_validation_errors' => [array_merge($parents, [$field_name, 'add_more'])],
+          '#limit_validation_errors' => [array_merge($parents, [$field_name, $delta])],
           '#delta' => $delta,
           '#ajax' => [
             'callback' => [get_class($this), 'itemAjax'],
@@ -520,7 +505,9 @@ class ParagraphsWidget extends WidgetBase {
             '#name' => $id_prefix . '_remove',
             '#weight' => 501,
             '#submit' => [[get_class($this), 'paragraphsItemSubmit']],
-            '#limit_validation_errors' => [array_merge($parents, [$field_name, 'add_more'])],
+            // Ignore all validation errors because deleting invalid paragraphs
+            // is allowed.
+            '#limit_validation_errors' => [],
             '#delta' => $delta,
             '#ajax' => [
               'callback' => array(get_class($this), 'itemAjax'),
@@ -539,7 +526,7 @@ class ParagraphsWidget extends WidgetBase {
               '#name' => $id_prefix . '_collapse',
               '#weight' => 1,
               '#submit' => [[get_class($this), 'paragraphsItemSubmit']],
-              '#limit_validation_errors' => [array_merge($parents, [$field_name, 'add_more'])],
+              '#limit_validation_errors' => [array_merge($parents, [$field_name, $delta])],
               '#delta' => $delta,
               '#ajax' => [
                 'callback' => [get_class($this), 'itemAjax'],
@@ -564,7 +551,7 @@ class ParagraphsWidget extends WidgetBase {
             '#attributes' => ['class' => ['paragraphs-button']],
             '#submit' => [[get_class($this), 'paragraphsItemSubmit']],
             '#limit_validation_errors' => [
-              array_merge($parents, [$field_name, 'add_more']),
+              array_merge($parents, [$field_name, $delta]),
             ],
             '#delta' => $delta,
             '#ajax' => [
@@ -914,7 +901,7 @@ class ParagraphsWidget extends WidgetBase {
     $elements = array();
     $tabs = '';
     $this->fieldIdPrefix = implode('-', array_merge($this->fieldParents, array($field_name)));
-    $this->fieldWrapperId = Html::getUniqueId($this->fieldIdPrefix . '-add-more-wrapper');
+    $this->fieldWrapperId = Html::getId($this->fieldIdPrefix . '-add-more-wrapper');
 
     // If the parent entity is paragraph add the nested class if not then add
     // the perspective tabs.
@@ -2068,7 +2055,25 @@ class ParagraphsWidget extends WidgetBase {
           }
         }
 
-        $display->validateFormValues($paragraphs_entity, $element[$item['_original_delta']]['subform'], $form_state);
+        // We can only use the entity form display to display validation errors
+        // if it is in edit mode.
+        if ($widget_state['paragraphs'][$item['_original_delta']]['mode'] === 'edit') {
+          $display->validateFormValues($paragraphs_entity, $element[$item['_original_delta']]['subform'], $form_state);
+        }
+        // Assume that the entity is being saved/previewed, in this case,
+        // validate even the closed paragraphs. If there are validation errors,
+        // add them on the parent level. Validation errors do not rebuild the
+        // form so it's not possible to auto-uncollapse the form at this point.
+        elseif ($form_state->getLimitValidationErrors() === NULL) {
+          $violations = $paragraphs_entity->validate();
+          $violations->filterByFieldAccess();
+          if (count($violations)) {
+            foreach ($violations as $violation) {
+              /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+              $form_state->setError($element[$item['_original_delta']], $violation->getMessage());
+            }
+          }
+        }
 
         $paragraphs_entity->setNeedsSave(TRUE);
         $item['entity'] = $paragraphs_entity;
