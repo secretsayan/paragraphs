@@ -729,7 +729,7 @@ class ParagraphsWidget extends WidgetBase {
                 '#markup' => $summary,
                 '#prefix' => '<div class="paragraphs-collapsed-description">',
                 '#suffix' => '</div>',
-                '#access' => $paragraphs_entity->access('view'),
+                '#access' => $paragraphs_entity->access('update') || $paragraphs_entity->access('view'),
               ];
             }
 

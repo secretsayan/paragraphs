@@ -418,8 +418,13 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     $depth_limit = isset($options['depth_limit']) ? $options['depth_limit'] : 1;
     $this->summaryCount = 0;
     $summary = [];
-
     foreach ($this->getFieldDefinitions() as $field_name => $field_definition) {
+      // We do not add content to the summary from base fields, skip them
+      // keeps performance while building the paragraph summary.
+      if ($field_definition instanceof BaseFieldDefinition || !$this->get($field_name)->access('view')) {
+        continue;
+      }
+
       if ($field_definition->getType() == 'image' || $field_definition->getType() == 'file') {
         $file_summary = $this->getFileSummary($field_name);
         if ($file_summary != '') {
@@ -444,10 +449,8 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       }
 
       if ($field_type = $field_definition->getType() == 'entity_reference') {
-        if (!in_array($field_name, ['type', 'uid', 'revision_uid'])) {
-          if ($this->get($field_name)->entity) {
-            $summary[] = $this->get($field_name)->entity->label();
-          }
+        if ($this->get($field_name)->entity && $this->get($field_name)->entity->access('view label')) {
+          $summary[] = $this->get($field_name)->entity->label();
         }
       }
 
