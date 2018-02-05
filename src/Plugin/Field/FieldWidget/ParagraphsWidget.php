@@ -548,7 +548,6 @@ class ParagraphsWidget extends WidgetBase {
             '#value' => $this->t('Edit'),
             '#name' => $id_prefix . '_edit',
             '#weight' => 1,
-            '#attributes' => ['class' => ['paragraphs-button']],
             '#submit' => [[get_class($this), 'paragraphsItemSubmit']],
             '#limit_validation_errors' => [
               array_merge($parents, [$field_name, $delta]),
