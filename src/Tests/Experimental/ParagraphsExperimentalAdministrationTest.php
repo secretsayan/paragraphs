@@ -535,10 +535,17 @@ class ParagraphsExperimentalAdministrationTest extends ParagraphsExperimentalTes
     $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertText('choke test has been updated.');
 
+    $this->drupalGet('admin/structure/types/manage/article/fields');
+    $this->clickLink('Edit');
+    $this->drupalPostForm(NULL, ['description' => 'This is the description of the field.'], 'Save settings');
     // Verify that the text displayed is correct when no paragraph has been
     // added yet.
     $this->drupalGet('node/add/article');
-    $this->assertText('No Paragraph added yet.');
+    $this->assertText('This is the description of the field.');
+    $elements = $this->xpath('//table[@id="field-paragraphs-values"]/tbody');
+    $header = $this->xpath('//table[@id="field-paragraphs-values"]/thead');
+    $this->assertEqual($elements, []);
+    $this->assertNotEqual($header, []);
 
     $this->drupalGet('admin/content/files');
     $this->clickLink('1 place');

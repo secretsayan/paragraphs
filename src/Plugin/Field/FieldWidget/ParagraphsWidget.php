@@ -1000,45 +1000,16 @@ class ParagraphsWidget extends WidgetBase {
       '#max_delta' => $max - 1,
     ];
 
-    if ($this->realItemCount > 0) {
-      $elements += array(
-        '#theme' => 'field_multiple_value_form',
-        '#cardinality_multiple' => $is_multiple,
-        '#title' => $field_title,
-        '#description' => $description,
-      );
-
-    }
-    else {
-      $classes = $this->fieldDefinition->isRequired() ? ['form-required'] : [];
-      $elements += [
-        '#type' => 'container',
-        '#theme_wrappers' => ['container'],
-        '#cardinality_multiple' => TRUE,
-        'title' => [
-          '#type' => 'html_tag',
-          '#tag' => 'strong',
-          '#value' => $field_title,
-          '#attributes' => ['class' => $classes],
-        ],
-        'text' => [
-          '#type' => 'container',
-          'value' => [
-            '#markup' => $this->t('No @title added yet.', ['@title' => $this->getSetting('title')]),
-            '#prefix' => '<em>',
-            '#suffix' => '</em>',
-          ]
-        ],
-      ];
-
-      if ($description) {
-        $elements['description'] = [
-          '#type' => 'container',
-          'value' => ['#markup' => $description],
-          '#attributes' => ['class' => ['description']],
-        ];
-      }
-    }
+    $elements += [
+      '#theme' => 'field_multiple_value_form',
+      '#field_name' => $field_name,
+      '#cardinality' => $cardinality,
+      '#cardinality_multiple' => TRUE,
+      '#required' => $this->fieldDefinition->isRequired(),
+      '#title' => $field_title,
+      '#description' => $description,
+      '#max_delta' => $max - 1,
+    ];
 
     $host = $items->getEntity();
     $this->initIsTranslating($form_state, $host);
