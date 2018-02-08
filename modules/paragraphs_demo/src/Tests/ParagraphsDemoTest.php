@@ -39,11 +39,14 @@ class ParagraphsDemoTest extends WebTestBase {
    * Asserts demo paragraphs have been created.
    */
   protected function testConfigurationsAndCreation() {
-    $basic_html_format = FilterFormat::create(array(
-      'format' => 'basic_html',
-      'name' => 'Basic HTML',
-    ));
-    $basic_html_format->save();
+
+    // Assert that the demo page is displayed to anymous users.
+    $this->drupalGet('');
+    $this->assertText('Paragraphs is the new way of content creation!');
+    $this->assertText('Apart from the included Paragraph types');
+    $this->assertText('A search api example can be found');
+    $this->assertText('This is content from the library. We can reuse it multiple times without duplicating it.');
+
     $admin_user = $this->drupalCreateUser(array(
       'administer site configuration',
       'create paragraphed_content_demo content',
@@ -60,7 +63,8 @@ class ParagraphsDemoTest extends WebTestBase {
       'administer paragraph display',
       'administer paragraph form display',
       'administer node form display',
-      $basic_html_format->getPermissionName(),
+      'administer paragraphs library',
+      'use text format basic_html',
     ));
 
     $this->drupalLogin($admin_user);
@@ -161,6 +165,11 @@ class ParagraphsDemoTest extends WebTestBase {
     // For now, this indicates that it is using the EXPERIMENTAL widget.
     $this->drupalGet('node/1/edit');
     $this->assertFieldByName('field_paragraphs_demo_3_subform_field_paragraphs_demo_0_duplicate');
+
+    // Check the library paragraph.
+    $this->drupalGet('admin/content/paragraphs');
+    $this->assertText('Library item');
+    $this->assertText('This is content from the library.');
   }
 
 }
