@@ -25,6 +25,8 @@ drupal.paragraphs.widget:
       css/paragraphs.widget.css: {}
   js:
     js/paragraphs.admin.js: {}
+  dependencies:
+    - paragraphs/drupal.paragraphs.summary
 
 drupal.paragraphs.actions:
   css:
@@ -75,3 +77,10 @@ paragraphs-dragdrop:
     - core/jquery
     - core/drupal
     - paragraphs/sortable
+
+drupal.paragraphs.formatter:
+  css:
+    theme:
+      css/paragraphs.formatter.css: {}
+  dependencies:
+    - paragraphs/drupal.paragraphs.summary

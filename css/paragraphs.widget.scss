@@ -4,6 +4,7 @@
 //
 
 @import "variables";
+@import "summary";
 
 .paragraphs {
   // Paragraphs state information icons.
@@ -19,25 +20,6 @@
       &-#{$icon} {
         background-image: url('../icons/icon-#{$icon}.svg');
       }
-    }
-  }
-
-  &-badge {
-    display: inline-block;
-    padding: $badge-padding-y $badge-padding-x;
-    background: $badge-color;
-    border-radius: $border-radius;
-    color: #fff;
-    cursor: default;
-    font-size: 90%;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-
-    // Empty badges collapse automatically
-    &:empty {
-      display: none;
     }
   }
 }
@@ -71,13 +53,6 @@
       }
     }
   }
-}
-
-.paragraph-info {
-  display: flex;
-  // Needed not just because of centering but also to prevent span child to
-  // stretch vertically.
-  align-items: center;
 }
 
 .paragraphs-tabs-wrapper {
@@ -224,23 +199,6 @@
   }
 
   .paragraphs-collapsed-description {
-    position: relative;
-    height: 1.538em;
-    overflow: hidden;
-    color: #777;
-    word-break: break-all;
-
-    // Fade out text element.
-    &::after {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 3em;
-      background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #fff 100%);
-      content: "\00a0";
-    }
-
     @at-root .draggable:hover .paragraphs-collapsed-description {
       &::after {
         background: linear-gradient(to right, rgba(247, 252, 255, 0) 0%, #f7fcff 100%);
