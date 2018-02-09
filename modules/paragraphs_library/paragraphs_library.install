@@ -195,8 +195,7 @@ function paragraphs_library_update_8005() {
       'region' => 'hidden',
       'weight' => 0,
     ])
-    ->setDisplayConfigurable('form', TRUE)
-    ->setInitialValue(0);
+    ->setDisplayConfigurable('form', TRUE);
 
   $created = BaseFieldDefinition::create('created')
     ->setLabel(t('Revision create time'))
@@ -207,8 +206,17 @@ function paragraphs_library_update_8005() {
     ->setLabel(t('Revision user'))
     ->setDescription(t('The user ID of the author of the current revision.'))
     ->setSetting('target_type', 'user')
-    ->setRevisionable(TRUE)
-    ->setInitialValue(0);
+    ->setRevisionable(TRUE);
+
+  $has_content_translation_uid_field = \Drupal::moduleHandler()->moduleExists('content_translation') && $entity_definition_update_manager->getFieldStorageDefinition('content_translation_status', 'block_content');
+  if ($has_content_translation_uid_field) {
+    $uid->setInitialValueFromField('content_translation_uid');
+    $revision_uid->setInitialValueFromField('content_translation_uid');
+  }
+  else {
+    $uid->setInitialValue(0);
+    $revision_uid->setInitialValue(0);
+  }
 
   $entity_definition_update_manager->installFieldStorageDefinition('uid', $entity_type->id(), 'paragraphs_library', $uid);
   $entity_definition_update_manager->installFieldStorageDefinition('revision_created', $entity_type->id(), 'paragraphs_library', $created);
@@ -224,4 +232,19 @@ function paragraphs_library_update_8005() {
       ->condition('revision_id', $row->revision_id)
       ->execute();
   }
+
+  // Uninstall the 'content_translation_uid' field if needed.
+  if ($has_content_translation_uid_field) {
+    // First we have to remove the field data.
+    $database->update($entity_type->getDataTable())
+      ->fields(['content_translation_uid' => NULL])
+      ->execute();
+    $database->update($entity_type->getRevisionDataTable())
+      ->fields(['content_translation_uid' => NULL])
+      ->execute();
+
+    $content_translation_status = $entity_definition_update_manager->getFieldStorageDefinition('content_translation_uid', $entity_type->id());
+    $entity_definition_update_manager->uninstallFieldStorageDefinition($content_translation_status);
+  }
+
 }
