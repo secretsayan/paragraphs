@@ -30,4 +30,11 @@ class LibraryItemForm extends ContentEntityForm {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getNewRevisionDefault() {
+    return TRUE;
+  }
+
 }

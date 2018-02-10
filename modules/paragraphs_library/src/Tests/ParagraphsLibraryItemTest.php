@@ -500,12 +500,12 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->clickLink('Revisions');
     $this->assertTitle('Revisions for Test revisions nested original | Drupal');
 
-    // Edit library item.
+    // Edit library item, check that new revision is enabled as default.
     $this->clickLink('Edit');
+    $this->assertFieldChecked('edit-revision');
     $edit = [
       'label[0][value]' => 'Test revisions nested first change',
       'paragraphs[0][subform][field_err_field][0][subform][field_paragraphs_text][0][value]' => 'Example text for revision first change.',
-      'revision' => TRUE,
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
 
