@@ -229,6 +229,23 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
     $assert_session->elementContains('css', '.breadcrumb ol li:nth-child(1)', 'Home');
     $assert_session->elementContains('css', '.breadcrumb ol li:nth-child(2)', 'Paragraphs library');
     $assert_session->elementContains('css', '.breadcrumb ol li:nth-child(3)', 'Test usage nested paragraph');
+
+    // Unlink library item and check usage tab.
+    $node = $this->drupalGetNodeByTitle('Test content');
+    $this->drupalGet($node->toUrl('edit-form'));
+    $this->drupalPostForm(NULL, [], 'Unlink from library');
+    $this->drupalPostForm(NULL, ['revision' => TRUE], 'Save');
+
+    // Check Usage tab.
+    $this->drupalGet('admin/content/paragraphs');
+    $this->clickLink('Test usage nested paragraph');
+    $this->clickLink('Usage');
+    $assert_session->pageTextContains('Entity usage information for Test usage nested paragraph');
+
+    $assert_session->elementContains('css', 'table tbody tr td:nth-child(1)', 'Test content &gt; field_paragraphs (previous revision)');
+    $assert_session->elementContains('css', 'table tbody tr td:nth-child(2)', 'paragraph');
+    $assert_session->elementContains('css', 'table tbody tr td:nth-child(3)', 'entity_reference');
+    $assert_session->elementContains('css', 'table tbody tr td:nth-child(4)', '1');
   }
 
 }

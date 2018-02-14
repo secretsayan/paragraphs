@@ -140,6 +140,9 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       foreach ($values as $key => $value) {
         if ($value->entity->id() == $this->id()) {
           $label = $parent->label() . ' > ' . $value->getFieldDefinition()->getLabel();
+        } else {
+          // A previous or draft revision or a deleted stale Paragraph.
+          $label = $parent->label() . ' > ' . $value->getFieldDefinition()->getLabel() . ' (previous revision)';
         }
       }
     }
