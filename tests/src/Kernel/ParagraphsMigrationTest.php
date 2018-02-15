@@ -48,13 +48,8 @@ class ParagraphsMigrationTest extends MigrateDrupalTestBase {
    */
   public function testFieldCollectionTypeMigration() {
     $this->assertParagraphBundleExists('field_collection_test', 'Field collection test');
-  }
-
-  /**
-   * Test if the paragraph type was brought over as a paragraph.
-   */
-  public function testParagraphsTypeMigration() {
-    $this->assertParagraphBundleExists('paragraph_bundle_test', 'Paragraph Bundle Test');
+    $this->assertParagraphBundleExists('paragraph_bundle_one', 'Paragraph Bundle One');
+    $this->assertParagraphBundleExists('paragraph_bundle_two', 'Paragraph Bundle Two');
   }
 
 }
