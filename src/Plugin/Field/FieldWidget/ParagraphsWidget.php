@@ -806,6 +806,19 @@ class ParagraphsWidget extends WidgetBase {
       ],
     ];
 
+    // Hidden field provided by "Modal" mode. Field is provided for additional
+    // integrations, where also position of addition can be specified. It should
+    // be used by sub-modules or other paragraphs integration. CSS class is used
+    // to support easier element selecting in JavaScript.
+    $element['add_modal_form_area']['add_more_delta'] = [
+      '#type' => 'hidden',
+      '#attributes' => [
+        'class' => [
+          'paragraph-type-add-modal-delta',
+        ],
+      ],
+    ];
+
     $element['#attached']['library'][] = 'paragraphs/drupal.paragraphs.modal';
   }
 
@@ -1523,13 +1536,71 @@ class ParagraphsWidget extends WidgetBase {
   }
 
   /**
+   * Prepares the widget state to add a new paragraph at a specific position.
+   *
+   * In addition to the widget state change, also user input could be modified
+   * to handle adding of a new paragraph at a specific position between existing
+   * paragraphs.
+   *
+   * @param array $widget_state
+   *   Widget state as reference, so that it can be updated.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param array $field_path
+   *   Path to paragraph field.
+   * @param int|mixed $new_delta
+   *   Delta position in list of paragraphs, where new paragraph will be added.
+   */
+  protected static function prepareDeltaPosition(array &$widget_state, FormStateInterface $form_state, array $field_path, $new_delta) {
+    // Increase number of items to create place for new paragraph.
+    $widget_state['items_count']++;
+
+    // Default behavior is adding to end of list and in case delta is not
+    // provided or already at end, we can skip all other steps.
+    if (!is_numeric($new_delta) || intval($new_delta) >= $widget_state['real_item_count']) {
+      return;
+    }
+
+    $widget_state['real_item_count']++;
+
+    // Limit delta between 0 and "number of items" in paragraphs widget.
+    $new_delta = max(intval($new_delta), 0);
+
+    // Change user input in order to create new delta position.
+    $user_input = NestedArray::getValue($form_state->getUserInput(), $field_path);
+
+    // Rearrange all original deltas to make one place for the new element.
+    $new_original_deltas = [];
+    foreach ($widget_state['original_deltas'] as $current_delta => $original_delta) {
+      $new_current_delta = $current_delta >= $new_delta ? $current_delta + 1 : $current_delta;
+
+      $new_original_deltas[$new_current_delta] = $original_delta;
+      $user_input[$original_delta]['_weight'] = $new_current_delta;
+    }
+
+    // Add information into delta mapping for the new element.
+    $original_deltas_size = count($widget_state['original_deltas']);
+    $new_original_deltas[$new_delta] = $original_deltas_size;
+    $user_input[$original_deltas_size]['_weight'] = $new_delta;
+
+    $widget_state['original_deltas'] = $new_original_deltas;
+    NestedArray::setValue($form_state->getUserInput(), $field_path, $user_input);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public static function addMoreSubmit(array $form, FormStateInterface $form_state) {
     $submit = ParagraphsWidget::getSubmitElementInfo($form, $form_state);
 
     if ($submit['widget_state']['real_item_count'] < $submit['element']['#cardinality'] || $submit['element']['#cardinality'] == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) {
-      $submit['widget_state']['items_count']++;
+      $field_path = array_merge($submit['element']['#field_parents'], [$submit['element']['#field_name']]);
+      $add_more_delta = NestedArray::getValue(
+        $submit['element'],
+        ['add_more', 'add_modal_form_area', 'add_more_delta', '#value']
+      );
+
+      static::prepareDeltaPosition($submit['widget_state'], $form_state, $field_path, $add_more_delta);
     }
 
     if (isset($submit['button']['#bundle_machine_name'])) {
@@ -1555,33 +1626,16 @@ class ParagraphsWidget extends WidgetBase {
     $element = NestedArray::getValue($form, array_slice($button['#array_parents'], 0, -5));
     $field_name = $element['#field_name'];
     $parents = $element['#field_parents'];
+    $filed_path = array_slice($button['#parents'], 0, -5);
 
     // Inserting new element in the array.
     $widget_state = static::getWidgetState($parents, $field_name, $form_state);
 
     // Map the button delta to the actual delta.
     $original_button_delta = $button['#delta'];
-    $current_button_delta = array_search($button['#delta'], $widget_state['original_deltas']);
+    $position = array_search($button['#delta'], $widget_state['original_deltas']) + 1;
+    static::prepareDeltaPosition($widget_state, $form_state, $filed_path, $position);
 
-    $widget_state['items_count']++;
-    $widget_state['real_item_count']++;
-
-    // Initialize the new original delta map with the new entry.
-    $new_original_deltas = [
-      $current_button_delta + 1 => count($widget_state['original_deltas']),
-    ];
-
-    $user_input = NestedArray::getValue($form_state->getUserInput(), array_slice($button['#parents'], 0, -5));
-    $user_input[count($widget_state['original_deltas'])]['_weight'] = $current_button_delta + 1;
-
-    // Increase all original deltas bigger than the delta of the duplicated
-    // element by one.
-    foreach ($widget_state['original_deltas'] as $current_delta => $original_delta) {
-      $new_delta = $current_delta > $current_button_delta ? $current_delta + 1 : $current_delta;
-      $new_original_deltas[$new_delta] = $original_delta;
-      $user_input[$original_delta]['_weight'] = $new_delta;
-    }
-    $widget_state['original_deltas'] = $new_original_deltas;
     /** @var \Drupal\Core\Entity\EntityInterface $entity */
     $entity = $widget_state['paragraphs'][$original_button_delta]['entity'];
 
@@ -1601,7 +1655,6 @@ class ParagraphsWidget extends WidgetBase {
       'mode' => 'edit',
     ];
 
-    NestedArray::setValue($form_state->getUserInput(), array_slice($button['#parents'], 0, -5), $user_input);
     static::setWidgetState($parents, $field_name, $form_state, $widget_state);
     $form_state->setRebuild();
   }
