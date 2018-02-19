@@ -2,62 +2,17 @@
 
 namespace Drupal\paragraphs\Plugin\migrate\source\d7;
 
-use Drupal\migrate\Row;
-use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
+@trigger_error('\Drupal\paragraphs\Plugin\migrate\source\d7\ParagraphType is deprecated in Paragraphs 8.x-1.0 and will be removed before 9.x use
+ * \Drupal\paragraphs\Plugin\migrate\source\d7\ParagraphsType instead.  See https://www.drupal.org/project/paragraphs/issues/2911242', E_USER_DEPRECATED);
 
 /**
- * Paragraphs source.
+ * Paragraphs Type source plugin.
  *
- * @MigrateSource(
- *   id = "d7_paragraphs_type",
- *   source_module = "paragraphs"
- * )
+ * @deprecated in Paragraphs 8.x-1.0 and will be removed before 9.x use
+ *  \Drupal\paragraphs\Plugin\migrate\source\d7\ParagraphsType instead.
+ *
+ * @see https://www.drupal.org/project/paragraphs/issues/2911242
  */
-class ParagraphType extends DrupalSqlBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function query() {
-    $query = $this->select('paragraphs_bundle', 'pb')
-      ->fields('pb');
-
-    return $query;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow(Row $row) {
-
-    if ($this->configuration['addDescription']) {
-      $name = $row->getSourceProperty('name');
-      $row->setSourceProperty('description', 'Migrated from paragraph bundle ' . $name);
-    }
-    else {
-      $row->setSourceProperty('description', '');
-    }
-
-    return parent::prepareRow($row);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function fields() {
-    return [
-      'bundle' => $this->t('Paragraph type machine name'),
-      'name' => $this->t('Paragraph type label'),
-      'description' => $this->t('Paragraph type description'),
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getIds() {
-    $ids['bundle']['type'] = 'string';
-    return $ids;
-  }
+class ParagraphType extends ParagraphsType {
 
 }

@@ -4,7 +4,7 @@ migration_tags:
   - Drupal 7
 source:
   plugin: d7_paragraphs_type
-  addDescription: true
+  add_description: true
 process:
   id: bundle
   label: name

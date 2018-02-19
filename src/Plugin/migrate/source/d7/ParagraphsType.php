@@ -6,23 +6,18 @@ use Drupal\migrate\Row;
 use Drupal\paragraphs\Plugin\migrate\source\DrupalSqlBase;
 
 /**
- * Field Collection Type source plugin.
+ * Paragraphs Type source plugin.
  *
  * Available configuration keys:
  * - add_description: (bool) (optional) If enabled this will add a default
  *   description to the source data. default:FALSE.
  *
  * @MigrateSource(
- *   id = "d7_field_collection_type",
- *   source_module = "field_collection"
+ *   id = "d7_paragraphs_type",
+ *   source_module = "paragraphs"
  * )
  */
-class FieldCollectionType extends DrupalSqlBase {
-
-  /**
-   * Length of the 'field_' prefix that field collection prepends to bundles.
-   */
-  const FIELD_COLLECTION_PREFIX_LENGTH = 6;
+class ParagraphsType extends DrupalSqlBase {
 
   /**
    * {@inheritdoc}
@@ -37,10 +32,9 @@ class FieldCollectionType extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function query() {
-    $query = $this->select('field_config', 'fc')
-      ->fields('fc');
-    $query->condition('fc.type', 'field_collection');
-    $query->condition('fc.active', TRUE);
+    $query = $this->select('paragraphs_bundle', 'pb')
+      ->fields('pb');
+
     return $query;
   }
 
@@ -49,23 +43,14 @@ class FieldCollectionType extends DrupalSqlBase {
    */
   public function prepareRow(Row $row) {
 
-    $name = $row->getSourceProperty('field_name');
-
-    // Remove field_ prefix for new bundle.
-    $bundle = substr($name, static::FIELD_COLLECTION_PREFIX_LENGTH);
-    $row->setSourceProperty('bundle', $bundle);
-
-    // Field collections don't have descriptions, optionally add one.
+    // Paragraph bundles did not have descriptions in d7, optionally add one.
     if ($this->configuration['add_description']) {
-      $row->setSourceProperty('description', 'Migrated from field_collection ' . $name);
+      $name = $row->getSourceProperty('name');
+      $row->setSourceProperty('description', 'Migrated from paragraph bundle ' . $name);
     }
     else {
       $row->setSourceProperty('description', '');
     }
-
-    // Set label from bundle because we don't have a label in D7 field
-    // collections.
-    $row->setSourceProperty('name', ucfirst(preg_replace('/_/', ' ', $bundle)));
 
     return parent::prepareRow($row);
   }
@@ -75,7 +60,6 @@ class FieldCollectionType extends DrupalSqlBase {
    */
   public function fields() {
     return [
-      'field_name' => $this->t('Original field collection bundle/field_name'),
       'bundle' => $this->t('Paragraph type machine name'),
       'name' => $this->t('Paragraph type label'),
       'description' => $this->t('Paragraph type description'),
@@ -86,7 +70,7 @@ class FieldCollectionType extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function getIds() {
-    $ids['field_name']['type'] = 'string';
+    $ids['bundle']['type'] = 'string';
 
     return $ids;
   }
