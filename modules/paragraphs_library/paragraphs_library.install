@@ -248,3 +248,55 @@ function paragraphs_library_update_8005() {
   }
 
 }
+
+/**
+ * Add a publishing status field.
+ */
+function paragraphs_library_update_8006() {
+  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  // Add the published entity key.
+  $entity_type = $definition_update_manager->getEntityType('paragraphs_library_item');
+  $entity_keys = $entity_type->getKeys();
+  $entity_keys['published'] = 'status';
+  $entity_type->set('entity_keys', $entity_keys);
+  $definition_update_manager->updateEntityType($entity_type);
+
+  // Add the publishing status field.
+  $status = BaseFieldDefinition::create('boolean')
+    ->setLabel(t('Published'))
+    ->setRevisionable(TRUE)
+    ->setTranslatable(TRUE)
+    ->setDefaultValue(TRUE)
+    ->setDisplayOptions('form', [
+      'type' => 'boolean_checkbox',
+      'settings' => [
+        'display_label' => TRUE,
+      ],
+      'weight' => 3,
+    ])
+    ->setDisplayConfigurable('form', TRUE);
+
+  $has_content_translation_status_field = \Drupal::moduleHandler()->moduleExists('content_translation') && $definition_update_manager->getFieldStorageDefinition('content_translation_status', $entity_type->id());
+  if ($has_content_translation_status_field) {
+    $status->setInitialValueFromField('content_translation_status');
+  }
+  else {
+    $status->setInitialValue(TRUE);
+  }
+  $definition_update_manager->installFieldStorageDefinition('status', $entity_type->id(), 'paragraphs_library', $status);
+
+  // Uninstall the 'content_translation_status' field if needed.
+  if ($has_content_translation_status_field) {
+    $database = \Drupal::database();
+    $database->update($entity_type->getDataTable())
+      ->fields(['content_translation_status' => NULL])
+      ->execute();
+    $database->update($entity_type->getRevisionDataTable())
+      ->fields(['content_translation_status' => NULL])
+      ->execute();
+
+    $content_translation_status = $definition_update_manager->getFieldStorageDefinition('content_translation_status', $entity_type->id());
+    $definition_update_manager->uninstallFieldStorageDefinition($content_translation_status);
+  }
+}

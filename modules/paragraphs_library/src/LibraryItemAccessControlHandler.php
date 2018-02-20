@@ -26,12 +26,24 @@ class LibraryItemAccessControlHandler extends EntityAccessControlHandler {
       }
     }
 
+    // In case a library item is unpublished, only allow access if a user has
+    // administrative permission. Ensure to collect the required cacheability
+    // metadata and combine both the published and the referenced access check
+    // together, both must allow access if unpublished.
+    $access = AccessResult::allowed()->addCacheableDependency($library_item);
+    if ($operation === 'view' && !$library_item->isPublished()) {
+      $access = $access->andIf(AccessResult::allowedIfHasPermission($account, $this->entityType->getAdminPermission()));
+    }
+
     /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
     if ($referenced_paragraph = $library_item->paragraphs->entity) {
       // Forward the access check to the referenced paragraph.
-      return $referenced_paragraph->access($operation, $account, TRUE);
+      $access = $access->andIf($referenced_paragraph->access($operation, $account, TRUE));
     }
-    return AccessResult::neutral();
+    else {
+      $access = $access->andIf(AccessResult::neutral());
+    }
+    return $access;
   }
 
   /**

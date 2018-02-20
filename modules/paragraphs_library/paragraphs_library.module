@@ -106,12 +106,18 @@ function paragraphs_library_make_library_item_submit(array $form, FormStateInter
 function paragraphs_library_preprocess_paragraph(&$variables) {
   if (isset($variables['paragraph']) && $variables['paragraph']->getType() == 'from_library' && $variables['paragraph']->hasField('field_reusable_paragraph') && $variables['paragraph']->field_reusable_paragraph->entity) {
     $library_item = $variables['paragraph']->field_reusable_paragraph->entity;
+
+    // Only replace the content if access is allowed to the library. Access
+    // cacheability metadata is already returned by the original widget in case
+    // access is not allowed.
+    if ($library_item->access('view')) {
       $view_builder = \Drupal::entityTypeManager()
         ->getViewBuilder('paragraphs_library_item');
       $library_item_render_array = $view_builder->view($library_item);
 
       // This will remove all fields other then field_reusable_paragraph.
       $variables['content'] = $view_builder->build($library_item_render_array)['paragraphs'];
+    }
   }
 }
 

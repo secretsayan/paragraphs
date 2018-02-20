@@ -154,10 +154,44 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
-    // Check in both nodes that the text is updated.
+    // Check in both nodes that the text is updated. Test as anonymous user, so
+    // that the cache is populated.
+    $this->drupalLogout();
     $this->drupalGet('node/' . $node_one->id());
     $this->assertText('re_usable_text_new');
     $this->drupalGet('node/' . $node_two->id());
+    $this->assertText('re_usable_text_new');
+
+    $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content', 'administer paragraphs library']);
+
+    // Unpublish the library item, make sure it still shows up for the curent
+    // user but not for an anonymous user.
+    $this->drupalGet('admin/content/paragraphs');
+    $this->clickLink('Edit');
+    $edit = [
+      'status[value]' => FALSE,
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalGet('node/' . $node_one->id());
+    $this->assertText('re_usable_text_new');
+
+    $this->drupalLogout();
+    $this->drupalGet('node/' . $node_one->id());
+    $this->assertNoText('re_usable_text_new');
+
+    // Log in again, publish again, make sure it shows up again.
+    $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content', 'administer paragraphs library']);
+    $this->drupalGet('admin/content/paragraphs');
+    $this->clickLink('Edit');
+    $edit = [
+      'status[value]' => TRUE,
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalGet('node/' . $node_one->id());
+    $this->assertText('re_usable_text_new');
+
+    $this->drupalLogout();
+    $this->drupalGet('node/' . $node_one->id());
     $this->assertText('re_usable_text_new');
 
     $this->loginAsAdmin(['administer paragraphs library', 'access entity usage statistics']);
@@ -516,7 +550,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->clickLink('Revisions');
     $this->assertTitle('Revisions for Test revisions nested first change | Drupal');
     $revision = $storage->loadRevision(1);
-    $this->assertLink('Test revisions nested original');
+    $this->assertText('Test revisions nested original by ' . $this->admin_user->getAccountName());
     $this->assertText($date_formatter->format($revision->getChangedTime(), 'short') . ': ' . $revision->label());
     $this->clickLink($date_formatter->format($revision->getChangedTime(), 'short'), 1);
     $this->assertText('Test revisions nested original');

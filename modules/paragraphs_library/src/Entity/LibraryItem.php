@@ -3,16 +3,12 @@
 namespace Drupal\paragraphs_library\Entity;
 
 use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EditorialContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\RevisionLogEntityTrait;
-use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\paragraphs_library\LibraryItemInterface;
-use Drupal\user\EntityOwnerInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -49,7 +45,8 @@ use Drupal\user\UserInterface;
  *     "label" = "label",
  *     "revision" = "revision_id",
  *     "uuid" = "uuid",
- *     "langcode" = "langcode"
+ *     "langcode" = "langcode",
+ *     "published" = "status",
  *   },
  *   revision_metadata_keys = {
  *     "revision_created" = "revision_created",
@@ -69,10 +66,7 @@ use Drupal\user\UserInterface;
  *   field_ui_base_route = "paragraphs_library_item.settings",
  * )
  */
-class LibraryItem extends ContentEntityBase implements LibraryItemInterface {
-
-  use EntityChangedTrait;
-  use RevisionLogEntityTrait;
+class LibraryItem extends EditorialContentEntityBase implements LibraryItemInterface {
 
   /**
    * {@inheritdoc}
@@ -150,7 +144,16 @@ class LibraryItem extends ContentEntityBase implements LibraryItemInterface {
       ))
       ->setDisplayConfigurable('form', TRUE);
 
-    $fields += static::revisionLogBaseFieldDefinitions($entity_type);
+    $fields['status']
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'settings' => [
+          'display_label' => TRUE,
+        ],
+        'weight' => 3,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
+
     return $fields;
   }
 

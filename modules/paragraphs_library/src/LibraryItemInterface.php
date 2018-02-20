@@ -4,6 +4,7 @@ namespace Drupal\paragraphs_library;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\user\EntityOwnerInterface;
@@ -11,7 +12,7 @@ use Drupal\user\EntityOwnerInterface;
 /**
  * Provides an interface defining a paragraphs entity.
  */
-interface LibraryItemInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, RevisionLogInterface {
+interface LibraryItemInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, RevisionLogInterface, EntityPublishedInterface {
 
   /**
    * Creates a library entity from a paragraph entity.
