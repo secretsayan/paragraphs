@@ -513,8 +513,7 @@ class ParagraphsWidget extends WidgetBase {
               'callback' => array(get_class($this), 'itemAjax'),
               'wrapper' => $widget_state['ajax_wrapper_id'],
             ],
-            // Hide the button when translating.
-            '#access' => $paragraphs_entity->access('delete') && $this->allowReferenceChanges(),
+            '#access' => $this->removeButtonAccess($paragraphs_entity),
             '#paragraphs_mode' => 'remove',
           ];
         }
@@ -2459,6 +2458,37 @@ class ParagraphsWidget extends WidgetBase {
    */
   protected function allowReferenceChanges() {
     return !$this->isTranslating;
+  }
+
+  /**
+   * Check remove button access.
+   *
+   * @param \Drupal\paragraphs\ParagraphInterface $paragraph
+   *   Paragraphs entity to check.
+   *
+   * @return bool
+   *   TRUE if we can remove paragraph, otherwise FALSE.
+   */
+  protected function removeButtonAccess(ParagraphInterface $paragraph) {
+    if (!$paragraph->access('delete')) {
+      return FALSE;
+    }
+
+    if (!$this->allowReferenceChanges()) {
+      return FALSE;
+    }
+
+    $field_required = $this->fieldDefinition->isRequired();
+    $allowed_types = $this->getAllowedTypes();
+    $cardinality = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
+
+    // Hide the button if field is required, cardinality is one and just one
+    // paragraph type is allowed.
+    if ($field_required && $cardinality == 1 && (count($allowed_types) == 1)) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
 }
