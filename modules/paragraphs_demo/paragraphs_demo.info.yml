@@ -14,6 +14,7 @@ dependencies:
   - drupal:views
   - drupal:taxonomy
   - paragraphs:paragraphs_library
+  - drupal:entity_browser
 hidden: false
 name: Paragraphs Demo
 package: Paragraphs
