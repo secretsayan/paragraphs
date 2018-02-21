@@ -178,6 +178,11 @@ class ParagraphsWidget extends WidgetBase {
       '#options' => $this->getSettingOptions('autocollapse'),
       '#default_value' => $this->getSetting('autocollapse'),
       '#required' => TRUE,
+      '#states' => [
+        'visible' => [
+          'select[name="fields[' . $this->fieldDefinition->getName() .  '][settings_edit_form][settings][edit_mode]"]' => ['value' => 'closed'],
+        ],
+      ],
     ];
 
     $elements['add_mode'] = array(
@@ -277,12 +282,14 @@ class ParagraphsWidget extends WidgetBase {
 
     $edit_mode = $this->getSettingOptions('edit_mode')[$this->getSetting('edit_mode')];
     $closed_mode = $this->getSettingOptions('closed_mode')[$this->getSetting('closed_mode')];
-    $autocollapse = $this->getSettingOptions('autocollapse')[$this->getSetting('autocollapse')];
     $add_mode = $this->getSettingOptions('add_mode')[$this->getSetting('add_mode')];
 
     $summary[] = $this->t('Edit mode: @edit_mode', ['@edit_mode' => $edit_mode]);
     $summary[] = $this->t('Closed mode: @closed_mode', ['@closed_mode' => $closed_mode]);
-    $summary[] = $this->t('Autocollapse: @autocollapse', ['@autocollapse' => $autocollapse]);
+    if ($this->getSetting('edit_mode') == 'closed') {
+      $autocollapse = $this->getSettingOptions('autocollapse')[$this->getSetting('autocollapse')];
+      $summary[] = $this->t('Autocollapse: @autocollapse', ['@autocollapse' => $autocollapse]);
+    }
     $summary[] = $this->t('Add mode: @add_mode', ['@add_mode' => $add_mode]);
 
     $summary[] = $this->t('Form display mode: @form_display_mode', [
@@ -761,6 +768,7 @@ class ParagraphsWidget extends WidgetBase {
       $widget_state['paragraphs'][$delta]['mode'] = $item_mode;
       $widget_state['closed_mode'] = $closed_mode_setting;
       $widget_state['autocollapse'] = $autocollapse_setting;
+      $widget_state['autocollapse_default'] = $this->getSetting('autocollapse');
 
       static::setWidgetState($parents, $field_name, $form_state, $widget_state);
     }
@@ -2417,12 +2425,13 @@ class ParagraphsWidget extends WidgetBase {
       }
     }
 
-    // Disable autocollapse when editing all and enable it when closing all.
-    if ($submit['button']['#paragraphs_mode'] === 'edit') {
-      $submit['widget_state']['autocollapse'] = 'none';
-    }
-    elseif ($submit['button']['#paragraphs_mode'] === 'closed') {
-      $submit['widget_state']['autocollapse'] = 'all';
+    if ($submit['widget_state']['autocollapse_default'] == 'all') {
+      if ($submit['button']['#paragraphs_mode'] === 'edit') {
+        $submit['widget_state']['autocollapse'] = 'none';
+      }
+      elseif ($submit['button']['#paragraphs_mode'] === 'closed') {
+        $submit['widget_state']['autocollapse'] = 'all';
+      }
     }
 
     static::setWidgetState($submit['parents'], $submit['field_name'], $form_state, $submit['widget_state']);
