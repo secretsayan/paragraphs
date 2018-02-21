@@ -217,9 +217,9 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
   }
 
   /**
-   * Tests remove button visibility exception.
+   * Tests buttons visibility exception.
    */
-  public function testRemoveButtonVisibilityException() {
+  public function testButtonsVisibilityException() {
     // Hide the button if field is required, cardinality is one and just one
     // paragraph type is allowed.
     $content_type_name = 'paragraphed_test';
@@ -301,6 +301,10 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
     $this->setParagraphsWidgetMode('paragraphed_test', 'field_paragraphs', 'closed');
     $this->drupalGet('node/add/paragraphed_test');
     $this->assertNoField('field_paragraphs_0_remove');
+
+    // Checking that the "Duplicate" button is not shown when cardinality is 1.
+    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
+    $this->assertNoField('field_paragraphs_0_duplicate');
   }
 
 }

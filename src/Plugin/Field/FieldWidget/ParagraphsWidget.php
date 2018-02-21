@@ -502,7 +502,7 @@ class ParagraphsWidget extends WidgetBase {
             'callback' => [get_class($this), 'itemAjax'],
             'wrapper' => $widget_state['ajax_wrapper_id'],
           ],
-          '#access' => $paragraphs_entity->access('update') && $this->allowReferenceChanges(),
+          '#access' => $this->duplicateButtonAccess($paragraphs_entity),
         ];
 
         if ($item_mode != 'remove') {
@@ -2494,6 +2494,34 @@ class ParagraphsWidget extends WidgetBase {
     // Hide the button if field is required, cardinality is one and just one
     // paragraph type is allowed.
     if ($field_required && $cardinality == 1 && (count($allowed_types) == 1)) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Check duplicate button access.
+   *
+   * @param \Drupal\paragraphs\ParagraphInterface $paragraph
+   *   Paragraphs entity to check.
+   *
+   * @return bool
+   *   TRUE if we can duplicate the paragraph, otherwise FALSE.
+   */
+  protected function duplicateButtonAccess(ParagraphInterface $paragraph) {
+    if (!$paragraph->access('update')) {
+      return FALSE;
+    }
+
+    if (!$this->allowReferenceChanges()) {
+      return FALSE;
+    }
+
+    $cardinality = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
+
+    // Hide the button if field cardinality is one.
+    if ($cardinality == 1) {
       return FALSE;
     }
 
