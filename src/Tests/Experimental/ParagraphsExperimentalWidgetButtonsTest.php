@@ -277,9 +277,7 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
     ]);
     // Add a Paragraph type.
     $paragraph_type = 'text_paragraph';
-
     $this->addParagraphsType($paragraph_type);
-    $this->addParagraphsType('text');
 
     // Add a text field to the text_paragraph type.
     static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'text', 'Text', 'text_long', [], []);
@@ -291,19 +289,16 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
     // Checking hidden button on "Open" mode.
     $this->drupalGet('node/add/paragraphed_test');
     $this->assertNoField('field_paragraphs_0_remove');
+    $this->assertFieldByName('field_paragraphs[0][subform][field_text][0][value]', '');
 
     // Checking hidden button on "Closed" mode.
     $this->setParagraphsWidgetMode('paragraphed_test', 'field_paragraphs', 'closed');
     $this->drupalGet('node/add/paragraphed_test');
     $this->assertNoField('field_paragraphs_0_remove');
-
-    // Checking hidden button on "Preview" mode.
-    $this->setParagraphsWidgetMode('paragraphed_test', 'field_paragraphs', 'closed');
-    $this->drupalGet('node/add/paragraphed_test');
-    $this->assertNoField('field_paragraphs_0_remove');
+    $this->assertFieldByName('field_paragraphs[0][subform][field_text][0][value]', '');
 
     // Checking that the "Duplicate" button is not shown when cardinality is 1.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
     $this->assertNoField('field_paragraphs_0_duplicate');
   }
 
