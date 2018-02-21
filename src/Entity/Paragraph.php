@@ -16,6 +16,7 @@ use Drupal\Core\TypedData\TranslatableInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\entity_reference_revisions\EntityNeedsSaveInterface;
 use Drupal\entity_reference_revisions\EntityNeedsSaveTrait;
+use Drupal\field\FieldConfigInterface;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\user\UserInterface;
 
@@ -424,7 +425,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     foreach ($this->getFieldDefinitions() as $field_name => $field_definition) {
       // We do not add content to the summary from base fields, skip them
       // keeps performance while building the paragraph summary.
-      if ($field_definition instanceof BaseFieldDefinition || !$this->get($field_name)->access('view')) {
+      if (!($field_definition instanceof FieldConfigInterface) || !$this->get($field_name)->access('view')) {
         continue;
       }
 

@@ -5,7 +5,6 @@
  * Contains paragraphs.module
  */
 
-use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\field\FieldStorageConfigInterface;
