@@ -75,7 +75,6 @@ class LibraryItem extends EditorialContentEntityBase implements LibraryItemInter
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Label'))
-      ->setDescription(t('The label of this paragraph library.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE)
       ->setSettings([
@@ -96,7 +95,6 @@ class LibraryItem extends EditorialContentEntityBase implements LibraryItemInter
 
     $fields['paragraphs'] = BaseFieldDefinition::create('entity_reference_revisions')
       ->setLabel(t('Paragraphs'))
-      ->setDescription(t('The paragraph.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'paragraph')
       ->setSetting('handler', 'default')
