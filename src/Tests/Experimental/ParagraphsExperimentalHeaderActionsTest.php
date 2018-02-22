@@ -112,6 +112,9 @@ class ParagraphsExperimentalHeaderActionsTest extends ParagraphsExperimentalTest
     $this->assertText('First text');
     $this->assertText('Second text');
     $this->assertNoText('Third text');
+    $this->assertField('field_paragraphs_collapse_all');
+    $this->assertField('field_paragraphs_edit_all');
+    $this->drupalPostForm(NULL, [], t('Save'));
 
     // Check that the drag and drop button is present when there is a paragraph
     // and that it is not shown when the paragraph is deleted.
@@ -119,6 +122,28 @@ class ParagraphsExperimentalHeaderActionsTest extends ParagraphsExperimentalTest
     $this->assertRaw('name="field_paragraphs_dragdrop_mode"');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_remove');
     $this->assertNoRaw('name="field_paragraphs_dragdrop_mode"');
+
+    // Disable show multiple actions.
+    $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_settings_edit');
+    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => FALSE], t('Update'));
+    $this->drupalPostForm(NULL, [], 'Save');
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    // Check that the collapse/edit all actions are not present.
+    $this->assertNoField('field_paragraphs_collapse_all');
+    $this->assertNoField('field_paragraphs_edit_all');
+    $this->assertFieldByName('field_paragraphs[0][subform][field_text][0][value]', 'First text');
+
+    // Enable show "Collapse / Edit all" actions.
+    $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_settings_edit');
+    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => TRUE], t('Update'));
+    $this->drupalPostForm(NULL, [], 'Save');
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    // Check that the collapse/edit all actions are present.
+    $this->assertField('field_paragraphs_collapse_all');
+    $this->assertField('field_paragraphs_edit_all');
+    $this->assertFieldByName('field_paragraphs[0][subform][field_text][0][value]', 'First text');
   }
 
   /**

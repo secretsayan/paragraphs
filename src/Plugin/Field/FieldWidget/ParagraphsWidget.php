@@ -128,6 +128,7 @@ class ParagraphsWidget extends WidgetBase {
       'add_mode' => 'dropdown',
       'form_display_mode' => 'default',
       'default_paragraph_type' => '',
+      'features' => ['duplicate' => 'duplicate', 'collapse_edit_all' => 'collapse_edit_all'],
     );
   }
 
@@ -217,6 +218,15 @@ class ParagraphsWidget extends WidgetBase {
       '#description' => $this->t('When creating a new host entity, a paragraph of this type is added.'),
     ];
 
+    $elements['features'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Enable widget features'),
+      '#options' => $this->getSettingOptions('features'),
+      '#default_value' => $this->getSetting('features'),
+      '#description' => $this->t('When creating a paragraph, whether to display widget actions or not.'),
+      '#multiple' => TRUE,
+    ];
+
     return $elements;
   }
 
@@ -265,6 +275,12 @@ class ParagraphsWidget extends WidgetBase {
           'modal' => $this->t('Modal form'),
         ];
         break;
+      case 'features':
+        $options = [
+          'duplicate' => $this->t('Duplicate'),
+          'collapse_edit_all' => $this->t('Collapse / Edit all'),
+        ];
+        break;
     }
 
     return isset($options) ? $options : NULL;
@@ -299,6 +315,10 @@ class ParagraphsWidget extends WidgetBase {
       $summary[] = $this->t('Default paragraph type: @default_paragraph_type', [
         '@default_paragraph_type' => $this->getDefaultParagraphTypeLabelName()
       ]);
+    }
+    $features_labels = array_intersect_key($this->getSettingOptions('features'), array_filter($this->getSetting('features')));
+    if (!empty($features_labels)) {
+      $summary[] = $this->t('Features: @features', ['@features' => implode($features_labels, ', ')]);
     }
 
     return $summary;
@@ -2338,7 +2358,7 @@ class ParagraphsWidget extends WidgetBase {
     }
 
     // Collapse & expand all.
-    if ($this->fieldDefinition->getType() == 'entity_reference_revisions' &&  $this->realItemCount > 1 && empty($field_state['dragdrop'])) {
+    if ($this->fieldDefinition->getType() == 'entity_reference_revisions' &&  $this->realItemCount > 1 && $this->isFeatureEnabled('collapse_edit_all')) {
       $collapse_all = $this->expandButton([
         '#type' => 'submit',
         '#value' => $this->t('Collapse all'),
@@ -2510,6 +2530,10 @@ class ParagraphsWidget extends WidgetBase {
    *   TRUE if we can duplicate the paragraph, otherwise FALSE.
    */
   protected function duplicateButtonAccess(ParagraphInterface $paragraph) {
+    if (!$this->isFeatureEnabled('duplicate')) {
+      return FALSE;
+    }
+
     if (!$paragraph->access('update')) {
       return FALSE;
     }
@@ -2526,6 +2550,23 @@ class ParagraphsWidget extends WidgetBase {
     }
 
     return TRUE;
+  }
+
+  /**
+   * Checks if a widget feature is enabled or not.
+   *
+   * @param string $feature
+   *   Feature name to check.
+   *
+   * @return bool
+   *   TRUE if the feature is enabled, otherwise FALSE.
+   */
+  protected function isFeatureEnabled($feature) {
+    $features = $this->getSetting('features');
+    if (!empty($features[$feature])) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
 }
