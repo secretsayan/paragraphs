@@ -278,7 +278,18 @@ function paragraphs_library_update_8006() {
     ->setDisplayConfigurable('form', TRUE);
 
   $has_content_translation_status_field = \Drupal::moduleHandler()->moduleExists('content_translation') && $definition_update_manager->getFieldStorageDefinition('content_translation_status', $entity_type->id());
+  $database = \Drupal::database();
   if ($has_content_translation_status_field) {
+    // Make sure that there are no NULL values.
+    $database->update($entity_type->getDataTable())
+      ->fields(['content_translation_status' => 1])
+      ->isNull('content_translation_status')
+      ->execute();
+    $database->update($entity_type->getRevisionDataTable())
+      ->fields(['content_translation_status' => 1])
+      ->isNull('content_translation_status')
+      ->execute();
+
     $status->setInitialValueFromField('content_translation_status');
   }
   else {
@@ -288,7 +299,6 @@ function paragraphs_library_update_8006() {
 
   // Uninstall the 'content_translation_status' field if needed.
   if ($has_content_translation_status_field) {
-    $database = \Drupal::database();
     $database->update($entity_type->getDataTable())
       ->fields(['content_translation_status' => NULL])
       ->execute();
