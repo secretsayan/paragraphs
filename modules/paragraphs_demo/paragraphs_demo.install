@@ -104,4 +104,8 @@ function paragraphs_demo_install() {
   $node->save();
   // Set the node as the front page.
   \Drupal::configFactory()->getEditable('system.site')->set('page.front', '/node/' . $node->id())->save();
+
+  if (\Drupal::getContainer()->has('search_api.post_request_indexing')) {
+    \Drupal::service('search_api.post_request_indexing')->onKernelTerminate();
+  }
 }
