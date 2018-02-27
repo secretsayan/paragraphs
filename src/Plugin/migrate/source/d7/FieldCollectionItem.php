@@ -3,6 +3,7 @@
 namespace Drupal\paragraphs\Plugin\migrate\source\d7;
 
 use Drupal\migrate\Row;
+use Drupal\paragraphs\Plugin\migrate\field\FieldCollection;
 
 /**
  * Field Collection Item source plugin.
@@ -22,11 +23,6 @@ class FieldCollectionItem extends FieldableEntity {
    * Join string for getting current revisions.
    */
   const JOIN = 'f.revision_id = fr.revision_id';
-
-  /**
-   * Length of the 'field_' prefix that field collection prepends to bundles.
-   */
-  const FIELD_COLLECTION_PREFIX_LENGTH = 6;
 
   /**
    * {@inheritdoc}
@@ -66,7 +62,7 @@ class FieldCollectionItem extends FieldableEntity {
 
     // Remove field_ prefix for new bundle.
     $bundle = $row->getSourceProperty('field_name');
-    $bundle = substr($bundle, static::FIELD_COLLECTION_PREFIX_LENGTH);
+    $bundle = substr($bundle, FieldCollection::FIELD_COLLECTION_PREFIX_LENGTH);
     $row->setSourceProperty('bundle', $bundle);
 
     // Get Field API field values.

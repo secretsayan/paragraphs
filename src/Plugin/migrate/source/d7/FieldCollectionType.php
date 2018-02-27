@@ -3,6 +3,7 @@
 namespace Drupal\paragraphs\Plugin\migrate\source\d7;
 
 use Drupal\migrate\Row;
+use Drupal\paragraphs\Plugin\migrate\field\FieldCollection;
 use Drupal\paragraphs\Plugin\migrate\source\DrupalSqlBase;
 
 /**
@@ -18,11 +19,6 @@ use Drupal\paragraphs\Plugin\migrate\source\DrupalSqlBase;
  * )
  */
 class FieldCollectionType extends DrupalSqlBase {
-
-  /**
-   * Length of the 'field_' prefix that field collection prepends to bundles.
-   */
-  const FIELD_COLLECTION_PREFIX_LENGTH = 6;
 
   /**
    * {@inheritdoc}
@@ -52,7 +48,7 @@ class FieldCollectionType extends DrupalSqlBase {
     $name = $row->getSourceProperty('field_name');
 
     // Remove field_ prefix for new bundle.
-    $bundle = substr($name, static::FIELD_COLLECTION_PREFIX_LENGTH);
+    $bundle = substr($name, FieldCollection::FIELD_COLLECTION_PREFIX_LENGTH);
     $row->setSourceProperty('bundle', $bundle);
 
     // Field collections don't have descriptions, optionally add one.
