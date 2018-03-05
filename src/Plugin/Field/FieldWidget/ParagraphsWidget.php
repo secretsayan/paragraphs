@@ -1193,11 +1193,11 @@ class ParagraphsWidget extends WidgetBase {
       ];
 
       // Only show a field label if there is more than one paragraph field.
-      $label = count($field_definitions) > 1 || !$paragraph ? '<label><strong>' . $field_definition->getLabel() . '</strong></label>' : '';
+      $label = count($field_definitions) > 1 || !$paragraph ? '<label><strong class="paragraphs-dragdrop__label paragraphs-dragdrop__label--field">' . $field_definition->getLabel() . '</strong></label>' : '';
 
       $elements[$child_field_name]['list'] = [
         '#type' => 'markup',
-        '#prefix' => $label . '<ul class="paragraphs-dragdrop" data-paragraphs-dragdrop-cardinality="' . $cardinality . '" data-paragraphs-dragdrop-allowed-types="' . $allowed_types . '" data-paragraphs-dragdrop-path="' . $child_path . '">',
+        '#prefix' => $label . '<ul class="paragraphs-dragdrop__list" data-paragraphs-dragdrop-cardinality="' . $cardinality . '" data-paragraphs-dragdrop-allowed-types="' . $allowed_types . '" data-paragraphs-dragdrop-path="' . $child_path . '">',
         '#suffix' => '</ul>',
       ];
 
@@ -1209,7 +1209,7 @@ class ParagraphsWidget extends WidgetBase {
           '#attributes' => ['class' => ['paragraphs-summary-wrapper']],
         ];
         $element['top']['paragraph_summary']['type'] = [
-          '#markup' => '<strong>' . $child_paragraph->getParagraphType()->label() . '</strong>',
+          '#markup' => '<strong class="paragraphs-dragdrop__label paragraphs-dragdrop__label--bundle">' . $child_paragraph->getParagraphType()->label() . '</strong>',
         ];
 
         // We name the element '_weight' to avoid clashing with elements
@@ -1234,7 +1234,7 @@ class ParagraphsWidget extends WidgetBase {
 
         $summary_options = [];
 
-        $element['#prefix'] = '<li data-paragraphs-dragdrop-bundle="' . $child_paragraph->bundle() . '"><a href="#" class="tabledrag-handle"><div class="handle">&nbsp;</div></a>';
+        $element['#prefix'] = '<li class="paragraphs-dragdrop__item" data-paragraphs-dragdrop-bundle="' . $child_paragraph->bundle() . '"><a href="#" class="paragraphs-dragdrop__handle"><span class="paragraphs-dragdrop__icon"></span></a>';
         $element['#suffix'] = '</li>';
         $child_array_parents = array_merge($array_parents,  [$child_field_name, $child_delta]);
 
