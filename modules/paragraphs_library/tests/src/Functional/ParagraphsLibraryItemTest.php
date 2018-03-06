@@ -27,7 +27,7 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
     'node',
     'paragraphs_library',
     'block',
-    'field_ui'
+    'field_ui',
   ];
 
   /**
@@ -177,6 +177,7 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
       'administer node form display',
       'administer paragraph fields',
       'administer paragraph form display',
+      'access entity usage statistics',
     ]);
     $this->drupalLogin($admin);
 

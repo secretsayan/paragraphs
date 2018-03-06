@@ -29,6 +29,15 @@ function paragraphs_library_install() {
       ])
       ->save();
   }
+
+  // Make sure the "Usage" local task is enabled for library items.
+  $entity_usage_config = \Drupal::configFactory()->getEditable('entity_usage.settings');
+  $tabs_enabled = $entity_usage_config->get('local_task_enabled_entity_types');
+  if (is_array($tabs_enabled) && !in_array('paragraphs_library_item', $tabs_enabled)) {
+    $tabs_enabled[] = 'paragraphs_library_item';
+    $entity_usage_config->set('local_task_enabled_entity_types', $tabs_enabled)
+      ->save();
+  }
 }
 
 /**
@@ -308,5 +317,18 @@ function paragraphs_library_update_8006() {
 
     $content_translation_status = $definition_update_manager->getFieldStorageDefinition('content_translation_status', $entity_type->id());
     $definition_update_manager->uninstallFieldStorageDefinition($content_translation_status);
+  }
+}
+
+/**
+ * Enable "Usage" tab on library items.
+ */
+function paragraphs_library_update_8101() {
+  $entity_usage_config = \Drupal::configFactory()->getEditable('entity_usage.settings');
+  $tabs_enabled = $entity_usage_config->get('local_task_enabled_entity_types');
+  if (is_array($tabs_enabled) && !in_array('paragraphs_library_item', $tabs_enabled)) {
+    $tabs_enabled[] = 'paragraphs_library_item';
+    $entity_usage_config->set('local_task_enabled_entity_types', $tabs_enabled)
+      ->save();
   }
 }

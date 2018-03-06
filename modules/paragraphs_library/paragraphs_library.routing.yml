@@ -37,11 +37,3 @@ paragraphs_library_item.settings:
     _title: 'Paragraphs library item settings'
   requirements:
     _permission: 'administer paragraphs library'
-
-entity.paragraphs_library_item.usage:
-  path: 'admin/content/paragraphs/{paragraphs_library_item}/usage'
-  defaults:
-    _controller: '\Drupal\paragraphs_library\Controller\LibraryItemUsageController::showUsagePage'
-    _title_callback: 'Drupal\paragraphs_library\Controller\LibraryItemUsageController::showTitle'
-  requirements:
-    _permission: 'administer paragraphs library'

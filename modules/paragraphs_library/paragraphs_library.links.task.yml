@@ -24,8 +24,3 @@ paragraphs_library_item.settings:
   route_name: paragraphs_library_item.settings
   base_route: paragraphs_library_item.settings
   title: 'Paragraphs library item settings'
-entity.paragraphs_library_item.usage:
-  route_name: entity.paragraphs_library_item.usage
-  base_route: entity.paragraphs_library_item.canonical
-  title: 'Usage'
-  weight: 30
