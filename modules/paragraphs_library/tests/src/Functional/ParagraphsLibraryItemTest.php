@@ -93,7 +93,7 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
 
     // Convert the container to a library item.
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Add to library');
+    $this->drupalPostForm(NULL, [], 'Promote to library');
     $this->drupalPostForm(NULL, [], 'Save');
 
     // Check that the child text paragraph is present in the node.

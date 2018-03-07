@@ -54,12 +54,12 @@ function paragraphs_library_paragraphs_widget_actions_alter(&$widget_actions, &$
   }
   elseif ($allow_library_conversion) {
     // Convert non-library items only.
-    $widget_actions['dropdown_actions']['add_to_library'] = [
-      '#value' => t('Add to library'),
-      '#name' => $id_prefix . '_add_to_library',
+    $widget_actions['dropdown_actions']['promote_to_library'] = [
+      '#value' => t('Promote to library'),
+      '#name' => $id_prefix . '_promote_to_library',
       '#weight' => 503,
       '#submit' => ['paragraphs_library_make_library_item_submit'],
-      '#limit_validation_errors' => [array_merge($parents, [$field_name, 'add_to_library'])],
+      '#limit_validation_errors' => [array_merge($parents, [$field_name, 'promote_to_library'])],
       '#delta' => $delta,
       '#ajax' => [
         'callback' => [ParagraphsWidget::class, 'itemAjax'],

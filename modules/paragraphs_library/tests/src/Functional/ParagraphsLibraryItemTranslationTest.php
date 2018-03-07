@@ -95,8 +95,8 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, 'Add text');
 
-    $assert_session->buttonExists('field_paragraphs_0_add_to_library');
-    $assert_session->buttonExists('Add to library');
+    $assert_session->buttonExists('field_paragraphs_0_promote_to_library');
+    $assert_session->buttonExists('Promote to library');
     $edit = [
       'title[0][value]' => 'EN Title',
       'field_paragraphs[0][subform][field_text][0][value]' => 'EN Library text',
@@ -118,7 +118,7 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
     // correctly.
     $node = $this->drupalGetNodeByTitle('EN Title');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $page->pressButton('Add to library');
+    $page->pressButton('Promote to library');
     $assert_session->fieldValueEquals('Reusable paragraph (all languages)', 'text: EN Library text (1)');
     $this->drupalPostForm(NULL, NULL, 'Save');
 

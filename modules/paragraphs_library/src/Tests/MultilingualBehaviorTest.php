@@ -158,7 +158,7 @@ class MultilingualBehaviorTest extends ParagraphsExperimentalTestBase {
 
     // Convert translated paragraph to library.
     $this->drupalGet($node->toUrl('edit-form'));
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_0_add_to_library');
+    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_0_promote_to_library');
     $this->drupalPostForm(NULL, NULL, 'Save (this translation)');
 
     // Check translation.

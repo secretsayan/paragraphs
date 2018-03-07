@@ -293,7 +293,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     // Adding library item is available with the administer library permission.
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, 'Add text');
-    $this->assertField('field_paragraphs_0_add_to_library');
+    $this->assertField('field_paragraphs_0_promote_to_library');
     $this->drupalGet('admin/content/paragraphs/add/default');
     $this->assertResponse(200);
 
@@ -303,7 +303,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     user_role_revoke_permissions($user_role, ['administer paragraphs library']);
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, 'Add text');
-    $this->assertNoField('field_paragraphs_0_add_to_library');
+    $this->assertNoField('field_paragraphs_0_promote_to_library');
     $this->drupalGet('admin/content/paragraphs/add/default');
     $this->assertResponse(403);
 
@@ -318,19 +318,19 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertResponse(200);
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, 'Add text');
-    $this->assertField('field_paragraphs_0_add_to_library');
-    $this->assertRaw('Add to library');
+    $this->assertField('field_paragraphs_0_promote_to_library');
+    $this->assertRaw('Promote to library');
     $edit = [
       'field_paragraphs[0][subform][field_text][0][value]' => 'Random text for testing converting into library.',
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_add_to_library');
+    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     $this->assertText('From library');
     $this->assertText('Reusable paragraph');
     $this->assertFieldByName('field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]', 'text: Random text for testing converting into library. (1)');
     $edit = [
       'title[0][value]' => 'TextParagraphs',
     ];
-    $this->assertNoField('field_paragraphs_0_add_to_library');
+    $this->assertNoField('field_paragraphs_0_promote_to_library');
     $this->assertField('field_paragraphs_0_unlink_from_library');
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/1');
@@ -346,7 +346,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->getNodeByTitle('NodeTitle');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_add_to_library');
+    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     user_role_grant_permissions($user_role, ['administer paragraphs library']);
     $this->drupalGet('/admin/content/paragraphs');
     $this->assertText('Text');
@@ -363,7 +363,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, 'Add text');
-    $this->assertNoRaw('Add to library');
+    $this->assertNoRaw('Promote to library');
 
     // Test that the checkbox is not visible on from_library.
     $this->drupalGet('admin/structure/paragraphs_type/from_library');
