@@ -30,6 +30,8 @@ function paragraphs_library_install() {
           'field_widget_display_settings' => [
             'view_mode' => 'summary',
           ],
+          'field_widget_remove' => FALSE,
+          'field_widget_replace' => TRUE,
         ],
       ])
       ->save();
