@@ -15,6 +15,10 @@ use Drupal\paragraphs_library\Entity\LibraryItem;
  * Implements hook_install().
  */
 function paragraphs_library_install() {
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
   if (\Drupal::moduleHandler()->moduleExists('entity_browser')) {
     EntityFormDisplay::load('paragraph.from_library.default')
       ->setComponent('field_reusable_paragraph', [
@@ -24,9 +28,9 @@ function paragraphs_library_install() {
           'open' => TRUE,
           'field_widget_display' => 'rendered_entity',
           'field_widget_display_settings' => [
-            'view_mode' => 'summary'
-          ]
-        ]
+            'view_mode' => 'summary',
+          ],
+        ],
       ])
       ->save();
   }
