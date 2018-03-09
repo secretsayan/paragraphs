@@ -8,3 +8,5 @@ dependencies:
   - paragraphs:paragraphs
   - drupal:views
   - entity_usage:entity_usage
+test_dependencies:
+  - entity_browser:entity_browser

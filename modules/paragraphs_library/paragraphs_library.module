@@ -14,6 +14,29 @@ use Drupal\paragraphs_library\Entity\LibraryItem;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphsTypeInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+
+/**
+ * Implements hook_modules_installed().
+ */
+function paragraphs_library_modules_installed($modules) {
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  if (!empty(array_intersect(['content_moderation', 'paragraphs_library'], $modules))) {
+    // If Content Moderation is being installed (or was installed when this
+    // module is enabled), make sure the extra field content moderation adds is
+    // not visible inside our EB widget (i.e. in the "summary" viewmode), to
+    // prevent the core bug in 2940513/2945351/2930139.
+    // @TODO Remove this when 2948254 lands.
+    if (\Drupal::moduleHandler()->moduleExists('content_moderation')) {
+      EntityViewDisplay::load('paragraphs_library_item.paragraphs_library_item.summary')
+        ->removeComponent('content_moderation_control')
+        ->save();
+    }
+  }
+}
 
 /**
  * Implements hook_paragraphs_widget_actions_alter().
