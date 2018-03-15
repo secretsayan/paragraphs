@@ -1243,14 +1243,20 @@ class ParagraphsWidget extends WidgetBase {
 
           // Set the depth limit to 0 to avoid displaying a summary for the
           // children.
-          $summary_options['depth_limit'] = 0;
+          $summary_options['depth_limit'] = 1;
         }
 
         $element['top']['summary']['fields_info'] = [
           '#markup' => $child_paragraph->getSummary($summary_options),
           '#prefix' => '<div class="paragraphs-collapsed-description">',
           '#suffix' => '</div>',
+          '#access' => $child_paragraph->access('update') || $child_paragraph->access('view'),
         ];
+
+        $info = $child_paragraph->getIcons();
+        if (isset($info['count'])) {
+          $element['top']['icons']['count'] = $info['count'];
+        }
 
         $elements[$child_field_name]['list'][$child_delta] = $element;
       }
