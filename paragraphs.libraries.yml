@@ -28,6 +28,20 @@ drupal.paragraphs.widget:
   dependencies:
     - paragraphs/drupal.paragraphs.summary
 
+drupal.paragraphs.add_before_button:
+  css:
+    theme:
+      css/paragraphs.actions.css: {}
+  js:
+    js/paragraphs.add_before_button.js: {}
+  dependencies:
+    - core/drupalSettings
+    - core/jquery.once
+    - core/jquery
+    - core/jquery.form
+    - core/drupal.ajax
+    - core/drupal
+
 drupal.paragraphs.actions:
   css:
     theme:
