@@ -381,6 +381,34 @@ class ParagraphsExperimentalAddWidgetTest extends JavascriptTestBase {
       ],
       $nested_paragraphs_type
     );
+
+    // Check the Add above functionality does not affect the position of the new
+    // added Paragraphs when using the Add Paragraph button at the bottom.
+    $this->drupalGet('node/add/test_modal_delta');
+    // Add a new Paragraph.
+    $page->find('xpath', '//*[@name="button_add_modal"]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_1")]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    // Attempt to add a new Paragraph above and cancel.
+    $page->find('xpath', '//*[@name="button_add_modal"]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val(0)");
+    $this->assertSession()->elementExists('css', '.ui-dialog-titlebar-close')->press();
+    $delta = $this->getSession()->evaluateScript("jQuery('paragraph-type-add-modal-delta').val()");
+    $this->assertEquals($delta, '');
+    // Add a new Paragraph with the Add button at the bottom.
+    $page->find('xpath', '//*[@name="button_add_modal"]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_2")]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    // The position of it should be below the first added Paragraph.
+    $base_paragraphs = $page->findAll('xpath', '//*[contains(@class, "paragraph-type-label") and not(ancestor::div[contains(@class, "paragraphs-nested")])]');
+    $base_paragraphs_type = [];
+    foreach ($base_paragraphs as $base_paragraph) {
+      $base_paragraphs_type[] = $base_paragraph->getText();
+    }
+    $this->assertEquals(['test_1', 'test_2'], $base_paragraphs_type);
   }
 
 }
