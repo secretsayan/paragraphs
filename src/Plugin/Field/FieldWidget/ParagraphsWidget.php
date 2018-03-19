@@ -223,7 +223,7 @@ class ParagraphsWidget extends WidgetBase {
       '#title' => $this->t('Enable widget features'),
       '#options' => $this->getSettingOptions('features'),
       '#default_value' => $this->getSetting('features'),
-      '#description' => $this->t('When editing, available as action. "Add before" only works in add mode "Modal form"'),
+      '#description' => $this->t('When editing, available as action. "Add above" only works in add mode "Modal form"'),
       '#multiple' => TRUE,
     ];
 
@@ -279,10 +279,10 @@ class ParagraphsWidget extends WidgetBase {
         $options = [
           'duplicate' => $this->t('Duplicate'),
           'collapse_edit_all' => $this->t('Collapse / Edit all'),
-          // The "Add before" feature will be completely injected clientside,
+          // The "Add above" feature will be completely injected clientside,
           // whenever this option is enabled in the widget configuration.
-          // @see Drupal.behaviors.paragraphsAddBeforeButton
-          'add_before' => $this->t('Add before'),
+          // @see Drupal.behaviors.paragraphsAddAboveButton
+          'add_above' => $this->t('Add above'),
         ];
         break;
     }
@@ -461,9 +461,9 @@ class ParagraphsWidget extends WidgetBase {
         '#attributes' => [
           'class' => [
             'paragraph-top',
-            // Add a flag to indicate if the add_before feature is enabled and
+            // Add a flag to indicate if the add_above feature is enabled and
             // should be injected client-side.
-            $this->isFeatureEnabled('add_before') ? 'add-before-on' : 'add-before-off',
+            $this->isFeatureEnabled('add_above') ? 'add-above-on' : 'add-above-off',
           ],
         ],
         // Section for paragraph type information.
@@ -858,8 +858,8 @@ class ParagraphsWidget extends WidgetBase {
     ];
 
     $element['#attached']['library'][] = 'paragraphs/drupal.paragraphs.modal';
-    if ($this->isFeatureEnabled('add_before')) {
-      $element['#attached']['library'][] = 'paragraphs/drupal.paragraphs.add_before_button';
+    if ($this->isFeatureEnabled('add_above')) {
+      $element['#attached']['library'][] = 'paragraphs/drupal.paragraphs.add_above_button';
     }
 
   }

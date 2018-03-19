@@ -46,9 +46,9 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
   }
 
   /**
-   * Tests the "Add paragraph before" button.
+   * Tests the "Add above" button.
    */
-  public function testAddParagraphBeforeButton() {
+  public function testAddParagraphAboveButton() {
     $session = $this->getSession();
     $page = $session->getPage();
     $assert_session = $this->assertSession();
@@ -76,7 +76,7 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
         'features' => [
           'duplicate' => 'duplicate',
           'collapse_edit_all' => 'collapse_edit_all',
-          'add_before' => 'add_before',
+          'add_above' => 'add_above',
         ],
         'third_party_settings' => [],
         'region' => 'content',
@@ -107,9 +107,9 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $dialog->pressButton('text');
     $assert_session->assertWaitOnAjaxRequest();
     $session->wait(2000);
-    // At this point we should have 3 injected "Add before" buttons.
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(3, count($all_add_before_buttons));
+    // At this point we should have 3 injected "Add above" buttons.
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(3, count($all_add_above_buttons));
     // Save the node with some text in each paragraph so we can refer to them
     // easily later.
     $edit = [
@@ -123,15 +123,15 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
 
     // Make sure we honor the widget settings when injecting the button.
     $component = $form_display->getComponent('field_paragraphs');
-    unset($component['settings']['features']['add_before']);
+    unset($component['settings']['features']['add_above']);
     $form_display->setComponent('field_paragraphs', $component)->save();
     $this->drupalGet("/node/{$node_id}/edit");
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(0, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(0, count($all_add_above_buttons));
 
     // Enable it back and test its behavior.
     $component = $form_display->getComponent('field_paragraphs');
-    $component['settings']['features']['add_before'] = 'add_before';
+    $component['settings']['features']['add_above'] = 'add_above';
     $form_display->setComponent('field_paragraphs', $component)->save();
     $this->drupalGet("/node/{$node_id}/edit");
     $edit_all_button = $assert_session->buttonExists('field_paragraphs_edit_all');
@@ -150,11 +150,11 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $delta_paragraph3 = $assert_session->elementExists('css', 'td.delta-order select', $third_original_row)->getValue();
     $this->assertEquals(2, $delta_paragraph3);
 
-    // Insert a new paragraph before paragraph 2.
+    // Insert a new paragraph above paragraph 2.
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $second_original_row);
     $dropdown->click();
-    $add_before_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-before', $second_original_row);
-    $add_before_button->click();
+    $add_above_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-above', $second_original_row);
+    $add_above_button->click();
     $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
     $dialog->pressButton('text');
@@ -204,7 +204,7 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
           'features' => [
             'duplicate' => 'duplicate',
             'collapse_edit_all' => 'collapse_edit_all',
-            'add_before' => 'add_before',
+            'add_above' => 'add_above',
           ],
           'third_party_settings' => [],
           'region' => 'content',
@@ -219,18 +219,18 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $assert_session->assertWaitOnAjaxRequest();
 
     // Initially only 3 paragraphs and 3 buttons.
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(3, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(3, count($all_add_above_buttons));
 
     $first_original_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
     $second_original_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(2)');
     $third_original_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(3)');
 
-    // Insert a rich (host) paragraph before row 2.
+    // Insert a rich (host) paragraph above row 2.
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $second_original_row);
     $dropdown->click();
-    $add_before_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-before', $second_original_row);
-    $add_before_button->click();
+    $add_above_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-above', $second_original_row);
+    $add_above_button->click();
     $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
     $dialog->pressButton('rich_paragraph');
@@ -246,8 +246,8 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $assert_session->assertWaitOnAjaxRequest();
 
     // 5 paragraphs, we expect 5 injected buttons.
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(5, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(5, count($all_add_above_buttons));
 
     // Set some text to the normally-added paragraphs so we don't have a false
     // positive while checking for empty texts.
@@ -256,12 +256,12 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $text_input_second_nested_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(2) > td:nth-of-type(2)  > div > div > div > div:nth-of-type(2) > div:nth-of-type(2) > div > div input.form-text');
     $text_input_second_nested_row->setValue('Nested 2 - text 1');
 
-    // Insert a text paragraph before the first nested paragraph.
+    // Insert a text paragraph above the first nested paragraph.
     $first_nested_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(2)');
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_nested_row);
     $dropdown->click();
-    $add_before_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-before', $first_nested_row);
-    $add_before_button->click();
+    $add_above_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-above', $first_nested_row);
+    $add_above_button->click();
     $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
     $dialog->pressButton('text');
@@ -271,8 +271,8 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $text_input_new_element_row = $assert_session->elementExists('css', 'input.form-text', $new_element_row);
     $this->assertEquals('', $text_input_new_element_row->getValue());
     // We have one more injected add_more button.
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(6, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(6, count($all_add_above_buttons));
     $this->drupalPostForm(NULL, [], t('Save'));
 
     $this->drupalGet("/node/{$node_id}/edit");
@@ -284,14 +284,14 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
     $dropdown->click();
-    $add_before_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-before', $first_row);
-    $add_before_button->click();
+    $add_above_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-above', $first_row);
+    $add_above_button->click();
     $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
     $dialog->pressButton('text');
     $assert_session->assertWaitOnAjaxRequest();
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(7, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(7, count($all_add_above_buttons));
     // Remove the new added Paragraph.
     $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
@@ -299,19 +299,19 @@ class ParagraphsExperimentalClientsideButtonsTest extends JavascriptTestBase {
     $remove_button = $assert_session->buttonExists('field_paragraphs_5_remove');
     $remove_button->click();
     $assert_session->assertWaitOnAjaxRequest();
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(6, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(6, count($all_add_above_buttons));
     // Add a Paragraph above again.
     $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
     $dropdown->click();
-    $add_before_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-before', $first_row);
-    $add_before_button->click();
+    $add_above_button = $assert_session->elementExists('css', 'input.paragraphs-dropdown-action--add-above', $first_row);
+    $add_above_button->click();
     $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
     $dialog->pressButton('text');
     $assert_session->assertWaitOnAjaxRequest();
-    $all_add_before_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-before');
-    $this->assertEquals(7, count($all_add_before_buttons));
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(7, count($all_add_above_buttons));
   }
 
 }

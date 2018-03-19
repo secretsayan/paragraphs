@@ -8,7 +8,7 @@
   'use strict';
 
   /**
-   * Handle event when "add paragraph above" button is clicked
+   * Handle event when "Add above" button is clicked
    * @param event
    *   clickevent
    */
@@ -24,29 +24,24 @@
     var $delta = $add_more_wrapper.closest('.clearfix')
       .find('.paragraph-type-add-modal-delta');
     $delta.val(delta);
-    Drupal.paragraphsAddModal.openDialog($add_more_wrapper, Drupal.t('Add before'));
+    Drupal.paragraphsAddModal.openDialog($add_more_wrapper, Drupal.t('Add above'));
   };
 
   /**
-   * Process paragraph_AddBeforeButton elements.
-   *
-   * @type {Drupal~behavior}
-   *
-   * @prop {Drupal~behaviorAttach} attach
-   *   Attaches paragraphsAddBeforeButton behaviors.
+   * Process paragraph_AddAboveButton elements.
    */
-  Drupal.behaviors.paragraphsAddBeforeButton = {
+  Drupal.behaviors.paragraphsAddAboveButton = {
     attach: function (context, settings) {
-      var button = '<input class="paragraphs-dropdown-action paragraphs-dropdown-action--add-before button js-form-submit form-submit" type="submit" value="' + Drupal.t('Add above') + '">';
+      var button = '<input class="paragraphs-dropdown-action paragraphs-dropdown-action--add-above button js-form-submit form-submit" type="submit" value="' + Drupal.t('Add above') + '">';
       var $actions = $(context).once().find('.paragraphs-dropdown-actions');
       $actions.each(function() {
-        if ($(this).closest('.paragraph-top').hasClass('add-before-on')) {
+        if ($(this).closest('.paragraph-top').hasClass('add-above-on')) {
           $(this).once().prepend(button);
         }
       });
-      var $addButtons = $actions.find('.paragraphs-dropdown-action--add-before');
-      // "Mousedown" is used since the original actions created by paragraphs use
-      // the event "focusout" to hide the actions dropdown.
+      var $addButtons = $actions.find('.paragraphs-dropdown-action--add-above');
+      // "Mousedown" is used since the original actions created by paragraphs
+      // use the event "focusout" to hide the actions dropdown.
       $addButtons.on('mousedown', clickHandler);
     }
   };
