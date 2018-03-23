@@ -44,7 +44,7 @@ class InlineParagraphsWidget extends WidgetBase {
    *
    * @var bool
    */
-  private $isTranslating;
+  protected $isTranslating;
 
   /**
    * Id to name ajax buttons that includes field parents and field name.
