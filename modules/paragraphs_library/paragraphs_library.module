@@ -164,9 +164,9 @@ function paragraphs_library_form_paragraphs_library_item_edit_form_alter(&$form,
 
   if ($usage_data) {
     $usage_count = _paragraphs_library_count_usage($usage_data);
-    drupal_set_message(\Drupal::translation()->formatPlural($usage_count, 'Library item is used 1 time.', 'Library item is used @count times.', [
+    \Drupal::messenger()->addWarning(\Drupal::translation()->formatPlural($usage_count, 'Library item is used 1 time.', 'Library item is used @count times.', [
       '@count' => $usage_count,
-    ]), 'warning');
+    ]));
   }
 }
 
