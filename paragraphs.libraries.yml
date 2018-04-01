@@ -20,13 +20,12 @@ drupal.paragraphs.widget:
     - core/jquery.form
     - core/drupal.ajax
     - core/drupal.dropbutton
+    - paragraphs/drupal.paragraphs.summary
   css:
     theme:
       css/paragraphs.widget.css: {}
   js:
     js/paragraphs.admin.js: {}
-  dependencies:
-    - paragraphs/drupal.paragraphs.summary
 
 drupal.paragraphs.add_above_button:
   css:
