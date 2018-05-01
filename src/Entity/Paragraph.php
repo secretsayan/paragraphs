@@ -6,6 +6,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\RevisionLogEntityTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -54,7 +55,8 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid",
  *     "bundle" = "type",
  *     "langcode" = "langcode",
- *     "revision" = "revision_id"
+ *     "revision" = "revision_id",
+ *     "published" = "status"
  *   },
  *   revision_metadata_keys = {
  *     "revision_user" = "revision_uid",
@@ -88,6 +90,7 @@ use Drupal\user\UserInterface;
 class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
   use EntityNeedsSaveTrait;
+  use EntityPublishedTrait;
 
   /**
    * The behavior plugin data for the paragraph entity.

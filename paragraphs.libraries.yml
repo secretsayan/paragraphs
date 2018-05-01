@@ -97,3 +97,8 @@ drupal.paragraphs.formatter:
       css/paragraphs.formatter.css: {}
   dependencies:
     - paragraphs/drupal.paragraphs.summary
+
+drupal.paragraphs.unpublished:
+  css:
+    theme:
+      css/paragraphs.unpublished.css: {}
