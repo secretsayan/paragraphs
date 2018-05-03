@@ -231,3 +231,14 @@ function paragraphs_update_8013() {
   $config->set('show_unpublished', FALSE);
   return t('Paragraphs can now display unpublished Paragraphs to users with the "View unpublished paragraphs" permission. Enable it on Adminstration > Configuration > Content > Paragraphs and grant to permission to use it.');
 }
+
+/**
+ * Update the status field.
+ */
+function paragraphs_update_8014() {
+  // The status field was promoted to an entity key in paragraphs_update_8013(),
+  // which makes it NOT NULL in the default SQL storage, which means its storage
+  // definition needs to be updated as well.
+  $entity_definition_update_manager = \Drupal::service('entity.definition_update_manager');
+  $entity_definition_update_manager->updateFieldStorageDefinition($entity_definition_update_manager->getFieldStorageDefinition('status', 'paragraph'));
+}
