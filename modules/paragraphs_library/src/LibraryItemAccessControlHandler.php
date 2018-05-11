@@ -35,6 +35,16 @@ class LibraryItemAccessControlHandler extends EntityAccessControlHandler {
       $access = $access->andIf(AccessResult::allowedIfHasPermission($account, $this->entityType->getAdminPermission()));
     }
 
+    // Allow update access with a specific or admin permission.
+    if ($operation === 'update') {
+      $access = $access->andIf(AccessResult::allowedIfHasPermissions($account, ['edit paragraph library item', $this->entityType->getAdminPermission()], 'OR'));
+    }
+
+    // Only users with admin permission can delete library items.
+    if ($operation === 'delete') {
+      $access = $access->andIf(AccessResult::allowedIfHasPermission($account, $this->entityType->getAdminPermission()));
+    }
+
     /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
     if ($referenced_paragraph = $library_item->paragraphs->entity) {
       // Forward the access check to the referenced paragraph.
