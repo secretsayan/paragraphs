@@ -448,9 +448,6 @@ class InlineParagraphsWidget extends WidgetBase {
             );
           }
 
-          // Hide the button when translating.
-          $button_access = $paragraphs_entity->access('delete') && !$this->isTranslating;
-
           $info['edit_button_info'] = array(
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to edit this @title.', array('@title' => $this->getSetting('title'))),
