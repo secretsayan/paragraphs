@@ -2,14 +2,13 @@
 
 namespace Drupal\Tests\paragraphs\FunctionalJavascript;
 
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\NodeType;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\TestFileCreationTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Test trait for Paragraphs JS tests.
@@ -17,6 +16,14 @@ use Drupal\Tests\TestFileCreationTrait;
 trait ParagraphsTestBaseTrait {
 
   use TestFileCreationTrait;
+
+  /**
+   * The workflow entity.
+   *
+   * @var \Drupal\workflows\WorkflowInterface
+   */
+  protected $workflow;
+
 
   /**
    * Adds a content type with a Paragraphs field.
@@ -219,6 +226,85 @@ trait ParagraphsTestBaseTrait {
 
     $default_form_display->setComponent($paragraphs_field, $updated_component)
       ->save();
+  }
+
+  /**
+   * Creates a workflow entity.
+   *
+   * @param string $bundle
+   *   The node bundle.
+   */
+  protected function createEditorialWorkflow($bundle) {
+    if (!isset($this->workflow)) {
+      $this->workflow = Workflow::create([
+        'type' => 'content_moderation',
+        'id' => $this->randomMachineName(),
+        'label' => 'Editorial',
+        'type_settings' => [
+          'states' => [
+            'archived' => [
+              'label' => 'Archived',
+              'weight' => 5,
+              'published' => FALSE,
+              'default_revision' => TRUE,
+            ],
+            'draft' => [
+              'label' => 'Draft',
+              'published' => FALSE,
+              'default_revision' => FALSE,
+              'weight' => -5,
+            ],
+            'published' => [
+              'label' => 'Published',
+              'published' => TRUE,
+              'default_revision' => TRUE,
+              'weight' => 0,
+            ],
+          ],
+          'transitions' => [
+            'archive' => [
+              'label' => 'Archive',
+              'from' => ['published'],
+              'to' => 'archived',
+              'weight' => 2,
+            ],
+            'archived_draft' => [
+              'label' => 'Restore to Draft',
+              'from' => ['archived'],
+              'to' => 'draft',
+              'weight' => 3,
+            ],
+            'archived_published' => [
+              'label' => 'Restore',
+              'from' => ['archived'],
+              'to' => 'published',
+              'weight' => 4,
+            ],
+            'create_new_draft' => [
+              'label' => 'Create New Draft',
+              'to' => 'draft',
+              'weight' => 0,
+              'from' => [
+                'draft',
+                'published',
+              ],
+            ],
+            'publish' => [
+              'label' => 'Publish',
+              'to' => 'published',
+              'weight' => 1,
+              'from' => [
+                'draft',
+                'published',
+              ],
+            ],
+          ],
+        ],
+      ]);
+    }
+
+    $this->workflow->getTypePlugin()->addEntityTypeAndBundle('node', $bundle);
+    $this->workflow->save();
   }
 
 }
