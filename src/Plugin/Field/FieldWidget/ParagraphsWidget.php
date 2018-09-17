@@ -253,6 +253,7 @@ class ParagraphsWidget extends WidgetBase {
         $options = [
           'open' => $this->t('Open'),
           'closed' => $this->t('Closed'),
+          'closed_expand_nested' => $this->t('Closed, show nested'),
         ];
         break;
       case 'closed_mode':
@@ -368,6 +369,17 @@ class ParagraphsWidget extends WidgetBase {
         }
         elseif ($default_edit_mode == 'closed') {
           $item_mode = 'closed';
+        }
+        elseif ($default_edit_mode == 'closed_expand_nested') {
+          $item_mode = 'closed';
+          $field_definitions = $paragraphs_entity->getFieldDefinitions();
+
+          foreach ($field_definitions as $field_definition) {
+            if ($field_definition->getType() == 'entity_reference_revisions' && $field_definition->getSetting('target_type') == 'paragraph') {
+              $item_mode = 'edit';
+              break;
+            }
+          }
         }
       }
     }
