@@ -384,6 +384,66 @@ class ParagraphsExperimentalTranslationTest extends ParagraphsExperimentalTestBa
     $this->assertNoText('untranslatable_link_field (all languages)');
     $this->assertNoText('untranslatable_ref_field (all languages)');
     $this->assertNoText('Text (all languages)');
+
+    // Test the summary in multilingual scenarios.
+    // Case 1: Nested Paragraphs.
+    $this->setParagraphsWidgetSettings('paragraphed_content_demo', 'field_paragraphs_demo', ['edit_mode' => 'closed']);
+    // Create a node with a text and a nested paragraph.
+    $this->drupalGet('node/add/paragraphed_content_demo');
+    $this->drupalPostForm(NULL, NULL, t('Add Text'));
+    $this->drupalPostForm(NULL, NULL, t('Add Nested Paragraph'));
+    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_text_add_more');
+    $edit = [
+      'title[0][value]' => 'EN llama',
+      'langcode[0][value]' => 'en',
+      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'EN text llama',
+      'field_paragraphs_demo[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]' => 'EN nested text llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->assertText('Paragraphed article EN llama has been created.');
+    // Create a german translation.
+    $node = $this->drupalGetNodeByTitle('EN llama');
+    $this->drupalGet('node/' . $node->id() . '/translations/add/en/de');
+    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_edit_all');
+    $edit = [
+      'title[0][value]' => 'DE llama',
+      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'DE text llama',
+      'field_paragraphs_demo[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]' => 'DE nested text llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save (this translation)'));
+    // Assert that the summary is displayed in the current language.
+    $this->drupalGet('de/node/' . $node->id() . '/edit');
+    $this->assertFieldByName('title[0][value]', 'DE llama');
+    $this->assertRaw('<div class="paragraphs-collapsed-description">DE text llama');
+    $this->assertRaw('<div class="paragraphs-collapsed-description">DE nested text llama');
+
+    // Case 2: Referenced entities.
+    $this->addParagraphsType('node_reference');
+    static::fieldUIAddNewField('admin/structure/paragraphs_type/node_reference', 'entity_reference', 'Entity reference', 'entity_reference', [
+      'settings[target_type]' => 'node',
+      'cardinality' => '-1'
+    ], [
+      'settings[handler_settings][target_bundles][paragraphed_content_demo]' => TRUE,
+    ]);
+    // Add a node with a reference paragraph.
+    $this->drupalGet('node/add/paragraphed_content_demo');
+    $this->drupalPostForm(NULL, NULL, t('Add node_reference'));
+    $edit = [
+      'title[0][value]' => 'EN referencing llama',
+      'langcode[0][value]' => 'en',
+      'field_paragraphs_demo[0][subform][field_entity_reference][0][target_id]' => $node->label() . ' (' . $node->id() . ')',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $referencing_node = $this->drupalGetNodeByTitle('EN referencing llama');
+    // Translate the node.
+    $this->drupalGet('node/' . $referencing_node->id() . '/translations/add/en/de');
+    $edit = [
+      'title[0][value]' => 'DE referencing llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save (this translation)'));
+    // Edit the node again and check the paragraph summary.
+    $this->drupalGet('de/node/' . $referencing_node->id() . '/edit');
+    $this->assertRaw('<div class="paragraphs-collapsed-description">DE llama');
   }
 
   /**
