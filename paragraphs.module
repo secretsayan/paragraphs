@@ -350,7 +350,7 @@ function paragraphs_preprocess_field_multiple_value_form(&$variables) {
   // is 1 or if there are no paragraphs added. Passing through this will not
   // only remove the drag handler but also the order column that is empty when
   // no paragraphs are added and when the field is single value.
-  if ((isset($variables['element']['#allow_reference_changes']) && !$variables['element']['#allow_reference_changes']) || $variables['element']['#cardinality'] == 1 || count($variables['table']['#rows']) == 0) {
+  if ((isset($variables['element']['#allow_reference_changes']) && !$variables['element']['#allow_reference_changes']) || (isset($variables['element']['#cardinality']) && $variables['element']['#cardinality'] == 1) || (isset($variables['table']['#rows']) && count($variables['table']['#rows']) == 0)) {
     if (isset($variables['table']['#tabledrag'])) {
       // Remove the tabledrag.
       unset($variables['table']['#tabledrag']);
