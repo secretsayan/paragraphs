@@ -492,8 +492,7 @@ function paragraphs_migration_plugins_alter(array &$migrations) {
  */
 function paragraphs_entity_type_alter(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
-  // Remove the handler class for moderation so the fields are never added to
-  // Paragraphs.
+  // Remove the handler class for moderation as it is managed by the host.
   $entity_types['paragraph']->setHandlerClass('moderation', '');
 }
 
