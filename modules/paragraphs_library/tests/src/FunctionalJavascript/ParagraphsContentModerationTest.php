@@ -407,11 +407,11 @@ class ParagraphsContentModerationTest extends JavascriptTestBase {
 
     // Assert that Paragraph types cannot be selected in the UI.
     $this->drupalLogin($this->adminUser);
-    $this->drupalGet('admin/config/workflow/workflows/manage/editorial');
+    $this->drupalGet('admin/config/workflow/workflows/manage/' . $this->workflow->id());
     $assert_session->pageTextNotContains('Paragraph types');
     $assert_session->pageTextContains('Content types');
-    $assert_session->elementNotExists('css', 'a[href$="editorial/type/paragraph"]');
-    $assert_session->elementExists('css', 'a[href$="editorial/type/node"]');
+    $assert_session->elementNotExists('css', 'a[href$="' . $this->workflow->id() . '/type/paragraph"]');
+    $assert_session->elementExists('css', 'a[href$="' . $this->workflow->id() . '/type/node"]');
   }
 
   /**
