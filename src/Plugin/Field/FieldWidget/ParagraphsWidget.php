@@ -125,6 +125,7 @@ class ParagraphsWidget extends WidgetBase {
       'edit_mode' => 'open',
       'closed_mode' => 'summary',
       'autocollapse' => 'none',
+      'closed_mode_threshold' => 0,
       'add_mode' => 'dropdown',
       'form_display_mode' => 'default',
       'default_paragraph_type' => '',
@@ -182,6 +183,19 @@ class ParagraphsWidget extends WidgetBase {
       '#states' => [
         'visible' => [
           'select[name="fields[' . $this->fieldDefinition->getName() .  '][settings_edit_form][settings][edit_mode]"]' => ['value' => 'closed'],
+        ],
+      ],
+    ];
+
+    $elements['closed_mode_threshold'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Closed mode threshold'),
+      '#default_value' => $this->getSetting('closed_mode_threshold'),
+      '#description' => $this->t('Number of items considered to leave paragraphs open e.g the threshold is 3, if a paragraph has less than 3 items, leave it open.'),
+      '#min' => 0,
+      '#states' => [
+        'invisible' => [
+          'select[name="fields[' . $this->fieldDefinition->getName() .  '][settings_edit_form][settings][edit_mode]"]' => ['value' => 'open'],
         ],
       ],
     ];
@@ -311,6 +325,9 @@ class ParagraphsWidget extends WidgetBase {
       $autocollapse = $this->getSettingOptions('autocollapse')[$this->getSetting('autocollapse')];
       $summary[] = $this->t('Autocollapse: @autocollapse', ['@autocollapse' => $autocollapse]);
     }
+    if (($this->getSetting('edit_mode') == 'closed' || $this->getSetting('edit_mode') == 'closed_expand_nested') && $this->getSetting('closed_mode_threshold') > 0) {
+      $summary[] = $this->t('Closed mode threshold: @mode_limit', ['@mode_limit' => $this->getSetting('closed_mode_threshold')]);
+    }
     $summary[] = $this->t('Add mode: @add_mode', ['@add_mode' => $add_mode]);
 
     $summary[] = $this->t('Form display mode: @form_display_mode', [
@@ -364,7 +381,7 @@ class ParagraphsWidget extends WidgetBase {
       // We don't have a widget state yet, get from selector settings.
       if (!isset($widget_state['paragraphs'][$delta]['mode'])) {
 
-        if ($default_edit_mode == 'open') {
+        if ($default_edit_mode == 'open' || $widget_state['items_count'] < $this->getSetting('closed_mode_threshold')) {
           $item_mode = 'edit';
         }
         elseif ($default_edit_mode == 'closed') {
@@ -374,6 +391,7 @@ class ParagraphsWidget extends WidgetBase {
           $item_mode = 'closed';
           $field_definitions = $paragraphs_entity->getFieldDefinitions();
 
+          // If the paragraph contains other paragraphs, then open it.
           foreach ($field_definitions as $field_definition) {
             if ($field_definition->getType() == 'entity_reference_revisions' && $field_definition->getSetting('target_type') == 'paragraph') {
               $item_mode = 'edit';
