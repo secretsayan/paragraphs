@@ -464,6 +464,35 @@ class ParagraphsWidget extends WidgetBase {
         }
       }
 
+      // If untranslatable fields are hidden while translating, we are
+      // translating the parent and the Paragraph is open, then close the
+      // Paragraph if it does not have translatable fields.
+      $translating_force_close = FALSE;
+      if (\Drupal::moduleHandler()->moduleExists('content_translation')) {
+        $manager = \Drupal::service('content_translation.manager');
+        $settings = $manager->getBundleTranslationSettings('paragraph', $paragraphs_entity->getParagraphType()->id());
+        if (!empty($settings['untranslatable_fields_hide']) && $this->isTranslating) {
+          $translating_force_close = TRUE;
+          $display = EntityFormDisplay::collectRenderDisplay($paragraphs_entity, $this->getSetting('form_display_mode'));
+          // Check if the paragraph has translatable fields.
+          foreach (array_keys($display->get('content')) as $field) {
+            if ($paragraphs_entity->hasField($field)) {
+              $field_definition = $paragraphs_entity->get($field)->getFieldDefinition();
+              // Check if we are referencing paragraphs.
+              $is_paragraph = ($field_definition->getType() == 'entity_reference_revisions' && $field_definition->getSetting('target_type') == 'paragraph');
+              if ($is_paragraph || $field_definition->isTranslatable()) {
+                $translating_force_close = FALSE;
+                break;
+              }
+            }
+          }
+
+          if ($translating_force_close) {
+            $item_mode = 'closed';
+          }
+        }
+      }
+
       $element_parents = $parents;
       $element_parents[] = $field_name;
       $element_parents[] = $delta;
@@ -600,7 +629,7 @@ class ParagraphsWidget extends WidgetBase {
                 'callback' => [get_class($this), 'itemAjax'],
                 'wrapper' => $widget_state['ajax_wrapper_id'],
               ],
-              '#access' => $paragraphs_entity->access('update'),
+              '#access' => $paragraphs_entity->access('update') && !$translating_force_close,
               '#paragraphs_mode' => 'closed',
               '#paragraphs_show_warning' => TRUE,
               '#attributes' => [
@@ -625,7 +654,7 @@ class ParagraphsWidget extends WidgetBase {
               'callback' => [get_class($this), 'itemAjax'],
               'wrapper' => $widget_state['ajax_wrapper_id'],
             ],
-            '#access' => $paragraphs_entity->access('update'),
+            '#access' => $paragraphs_entity->access('update') && !$translating_force_close,
             '#paragraphs_mode' => 'edit',
             '#attributes' => [
               'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit'],
