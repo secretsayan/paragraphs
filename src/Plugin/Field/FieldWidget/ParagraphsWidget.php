@@ -15,6 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\SubformState;
 use Drupal\Core\Render\Element;
+use Drupal\Core\TypedData\TranslationStatusInterface;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -434,6 +435,12 @@ class ParagraphsWidget extends WidgetBase {
         }
       }
       else {
+        // If the node is being translated, the paragraphs should be all open
+        // when the form is not being rebuilt (E.g. when clicked on a paragraphs
+        // action) and when the the translation is being added.
+        if (!$form_state->isRebuilding() && $host->getTranslationStatus($langcode) == TranslationStatusInterface::TRANSLATION_CREATED) {
+          $item_mode = 'edit';
+        }
         // Add translation if missing for the target language.
         if (!$paragraphs_entity->hasTranslation($langcode)) {
           // Get the selected translation of the paragraph entity.
