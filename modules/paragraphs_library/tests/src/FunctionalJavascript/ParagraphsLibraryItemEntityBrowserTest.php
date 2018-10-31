@@ -128,6 +128,87 @@ JS;
     // Check that there is only one translation of the paragraph listed.
     $rows = $this->xpath('//*[@id="entity-browser-paragraphs-library-items-form"]/div[1]/div[2]/table/tbody/tr');
     $this->assertTrue(count($rows) == 1);
+
+    // Add a text paragraph in a new library item.
+    $this->drupalGet('admin/content/paragraphs/add/default');
+    $element = $this->getSession()->getPage()->find('xpath', '//*[contains(@class, "dropbutton-toggle")]');
+    $element->click();
+    $button = $this->getSession()->getPage()->findButton('Add text');
+    $button->press();
+    $this->waitForAjaxToFinish();
+    $this->getSession()->getPage()->fillField('label[0][value]', 'Inner library item');
+    $this->getSession()->getPage()->fillField('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text.');
+    $this->submitForm([], 'Save');
+    // Add a library item inside a library item.
+    $this->drupalGet('admin/content/paragraphs/add/default');
+    $this->getSession()->getPage()->fillField('label[0][value]', 'Outside library item');
+    $button = $this->getSession()->getPage()->findButton('Add From library');
+    $button->press();
+    $this->waitForAjaxToFinish();
+    $this->getSession()->getPage()->pressButton('Select reusable paragraph');
+    $this->waitForAjaxToFinish();
+    $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
+    $this->waitForAjaxToFinish();
+    $this->getSession()->getPage()->checkField('edit-entity-browser-select-paragraphs-library-item2');
+    $this->getSession()->switchToIFrame();
+    $drop = <<<JS
+    jQuery('input[type=submit][value="Select reusable paragraph"]', window.frames['entity_browser_iframe_paragraphs_library_items'].document).trigger('click')
+JS;
+    $this->getSession()->evaluateScript($drop);
+    sleep(1);
+    $this->waitForAjaxToFinish();
+    // Edit the inside library item after adding it.
+    $this->getSession()->getPage()->pressButton('Edit');
+    $this->waitForAjaxToFinish();
+    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text.');
+    $this->getSession()->getPage()->fillField('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
+    $save_button = $this->assertSession()->elementExists('css', '.ui-dialog .ui-dialog-buttonset button');
+    $save_button->press();
+    $this->waitForAjaxToFinish();
+    $this->assertRaw('class="paragraphs-collapsed-description">This is a reusable text UPDATED.');
+    $this->submitForm([], 'Save');
+    // Edit the outside library item.
+    $this->getSession()->getPage()->clickLink('Outside library item');
+    $this->getSession()->getPage()->clickLink('Edit');
+    $this->assertRaw('class="paragraphs-collapsed-description">This is a reusable text UPDATED.');
+    // Edit the inner library item and assert the fields and values.
+    $this->getSession()->getPage()->pressButton('Edit');
+    $this->waitForAjaxToFinish();
+    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
+
+    // Add a node with the outside library item.
+    $this->drupalGet('node/add');
+    $title = $this->assertSession()->fieldExists('Title');
+    $title->setValue('Overlay node');
+    $this->getSession()->getPage()->pressButton('Add From library');
+    $this->waitForAjaxToFinish();
+    $this->getSession()->getPage()->pressButton('Select reusable paragraph');
+    $this->waitForAjaxToFinish();
+    $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
+    $this->waitForAjaxToFinish();
+    $this->getSession()->getPage()->checkField('edit-entity-browser-select-paragraphs-library-item3');
+    $this->getSession()->switchToIFrame();
+    $drop = <<<JS
+    jQuery('input[type=submit][value="Select reusable paragraph"]', window.frames['entity_browser_iframe_paragraphs_library_items'].document).trigger('click')
+JS;
+    $this->getSession()->evaluateScript($drop);
+    sleep(1);
+    $this->waitForAjaxToFinish();
+    $this->assertRaw('class="paragraphs-collapsed-description">Inner library item');
+    $this->submitForm([], 'Save');
+    $this->assertText('paragraphed_test Overlay node has been created.');
+    // Edit the node.
+    $node = $this->getNodeByTitle('Overlay node');
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    // Edit the Outside library item.
+    $this->getSession()->getPage()->pressButton('Edit');
+    $this->waitForAjaxToFinish();
+    // Edit the inner library item and assert its fields.
+    $modal_form = $this->getSession()->getPage()->find('css', '.ui-dialog .paragraphs-library-item-form');
+    $save_button = $modal_form->find('css', '.edit-button');
+    $save_button->press();
+    $this->waitForAjaxToFinish();
+    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
   }
 
 }

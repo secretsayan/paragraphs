@@ -47,6 +47,19 @@ class LibraryItemForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
+  public function getFormId() {
+    // If the entity is not new, add the entity id. This will allow having more
+    // than one form open when editing a library item within another.
+    // To alter this form use hook_form_BASE_FORM_ID_alter.
+    if ($this->entity->id()) {
+      return 'paragraphs_library_item_edit_form_' . $this->entity->id();
+    }
+    return 'paragraphs_library_item_edit_form';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity.manager'),
