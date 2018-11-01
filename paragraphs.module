@@ -473,16 +473,16 @@ function paragraphs_library_info_alter(&$libraries, $extension) {
  * https://www.drupal.org/project/drupal/issues/2904765 is resolved
  */
 function paragraphs_migration_plugins_alter(array &$migrations) {
+  /** @var \Drupal\migrate\Plugin\MigrationPluginManager $migration_plugin_manager */
+  $migration_plugin_manager = \Drupal::service('plugin.manager.migration');
+  /** @var \Drupal\migrate\Plugin\MigrateSourcePluginManager $source_plugin_manager */
+  $source_plugin_manager = \Drupal::service('plugin.manager.migrate.source');
+
   foreach ($migrations as $key => &$migration) {
-    /** @var \Drupal\migrate\Plugin\MigrationPluginManager $migration_plugin_manager */
-    $migration_plugin_manager = \Drupal::service('plugin.manager.migration');
-    $migration_stub = $migration_plugin_manager->createStubMigration($migration);
-    /** @var \Drupal\migrate\Plugin\MigrateSourcePluginManager $source_plugin_manager */
-    $source_plugin_manager = \Drupal::service('plugin.manager.migrate.source');
-    $source = NULL;
-    $configuration = $migration['source'];
-    $source = $source_plugin_manager->createInstance($migration['source']['plugin'], $configuration, $migration_stub);
-    if ($source) {
+    if (!empty($migration['source'])) {
+      $configuration = $migration['source'];
+      $migration_stub = $migration_plugin_manager->createStubMigration($migration);
+      $source = $source_plugin_manager->createInstance($migration['source']['plugin'], $configuration, $migration_stub);
       if (is_a($migration['class'], FieldMigration::class, TRUE)) {
 
         // Field storage.
