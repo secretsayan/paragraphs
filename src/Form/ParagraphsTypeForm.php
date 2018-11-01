@@ -5,7 +5,7 @@ namespace Drupal\paragraphs\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
-use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\field_ui\FieldUI;
 use Drupal\paragraphs\ParagraphsBehaviorManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,10 +41,10 @@ class ParagraphsTypeForm extends EntityForm {
    *
    * @param \Drupal\paragraphs\ParagraphsBehaviorManager $paragraphs_behavior_manager
    *   The paragraphs type feature manager service.
-   * @param \Drupal\Core\Messenger\Messenger $messenger
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    */
-  public function __construct(ParagraphsBehaviorManager $paragraphs_behavior_manager, Messenger $messenger) {
+  public function __construct(ParagraphsBehaviorManager $paragraphs_behavior_manager, MessengerInterface $messenger) {
     $this->paragraphsBehaviorManager = $paragraphs_behavior_manager;
     $this->messenger = $messenger;
   }
