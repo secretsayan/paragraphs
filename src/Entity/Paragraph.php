@@ -712,14 +712,10 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       }
 
       $text = $this->get($field_name)->value;
-      if (strlen($text) > 150) {
-        $text = Unicode::truncate($text, 150);
-      }
-
-      $summary = trim(strip_tags($text));
+      $summary = Unicode::truncate(trim(strip_tags($text)), 150);
       if (empty($summary)) {
         // Tease raw HTML to have at least some summary.
-        $summary = htmlspecialchars(trim($text));
+        $summary = Unicode::truncate(htmlspecialchars(trim($text)), 150);
       }
     }
 
