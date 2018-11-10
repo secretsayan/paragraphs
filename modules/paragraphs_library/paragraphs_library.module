@@ -156,24 +156,6 @@ function paragraphs_library_views_pre_render(ViewExecutable $view) {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function paragraphs_library_form_paragraphs_library_item_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  $library_item = $form_state->getFormObject()->getEntity();
-  // Just show the usage when the library item is not new.
-  if (!$library_item->isNew()) {
-    $usage_data = \Drupal::service('entity_usage.usage')->listSources($library_item);
-
-    if ($usage_data) {
-      $usage_count = _paragraphs_library_count_usage($usage_data);
-      \Drupal::messenger()->addWarning(\Drupal::translation()->formatPlural($usage_count, 'Library item is used 1 time.', 'Library item is used @count times.', [
-        '@count' => $usage_count,
-      ]));
-    }
-  }
-}
-
-/**
  * Counts the usage across all entities.
  *
  * @param array $usage_data

@@ -97,7 +97,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     $library_items = \Drupal::entityTypeManager()->getStorage('paragraphs_library_item')->loadByProperties(['label' => 're usable paragraph label']);
     $this->drupalGet('admin/content/paragraphs/' . current($library_items)->id() . '/edit');
-    $this->assertText('Library item is used 1 time.');
+    $this->assertText('Modifications on this form will affect all existing usages of this entity.');
     $this->assertText('Delete');
 
     $this->drupalGet('admin/content/paragraphs');
@@ -148,7 +148,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertNoLink('4', 'Link to usage statistics is not available for user without permission.');
 
     $this->clickLink('Edit');
-    $this->assertText('Library item is used 3 times.');
+    $this->assertText('Modifications on this form will affect all existing usages of this entity.');
     $edit = [
       'paragraphs[0][subform][field_text][0][value]' => 're_usable_text_new',
     ];
