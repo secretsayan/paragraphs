@@ -89,4 +89,37 @@ class ParagraphsBehaviorPluginsTest extends KernelTestBase {
 
   }
 
+  /**
+   * Tests uninstalling a behavior plugin providing module.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function testBehaviorUninstall() {
+    // Create a paragraph type.
+    $paragraph_type = ParagraphsType::create([
+      'label' => 'test_text',
+      'id' => 'test_text',
+      'behavior_plugins' => [
+        'test_text_color' => [
+          'enabled' => TRUE,
+        ],
+      ],
+    ]);
+    $paragraph_type->save();
+    $dependencies = $paragraph_type->getDependencies();
+    $plugins = $paragraph_type->getBehaviorPlugins()->getInstanceIds();
+    $this->assertSame(['module' => ['paragraphs_test']], $dependencies);
+    $this->assertSame(['test_text_color' => 'test_text_color'], $plugins);
+
+    // Uninstall plugin providing module.
+    $this->container->get('config.manager')->uninstall('module', 'paragraphs_test');
+
+    $paragraph_type = ParagraphsType::load('test_text');
+    $this->assertNotNull($paragraph_type);
+    $dependencies = $paragraph_type->getDependencies();
+    $plugins = $paragraph_type->getBehaviorPlugins()->getInstanceIds();
+    $this->assertSame([], $dependencies);
+    $this->assertSame([], $plugins);
+  }
+
 }

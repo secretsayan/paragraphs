@@ -144,6 +144,29 @@ class ParagraphsType extends ConfigEntityBundleBase implements ParagraphsTypeInt
   /**
    * {@inheritdoc}
    */
+  public function onDependencyRemoval(array $dependencies) {
+    $changed = parent::onDependencyRemoval($dependencies);
+    $behavior_plugins = $this->getBehaviorPlugins();
+    foreach ($dependencies['module'] as $module) {
+      /** @var \Drupal\Component\Plugin\PluginInspectionInterface $plugin */
+      foreach ($behavior_plugins as $instance_id => $plugin) {
+        $definition = (array) $plugin->getPluginDefinition();
+        // If a module providing a behavior plugin is being uninstalled,
+        // remove the plugin and dependency so this paragraph bundle is not
+        // deleted too.
+        if (isset($definition['provider']) && $definition['provider'] === $module) {
+          unset($this->behavior_plugins[$instance_id]);
+          $this->getBehaviorPlugins()->removeInstanceId($instance_id);
+          $changed = TRUE;
+        }
+      }
+    }
+    return $changed;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getEnabledBehaviorPlugins() {
     return $this->getBehaviorPlugins()->getEnabled();
   }
