@@ -437,7 +437,7 @@ class ParagraphsWidget extends WidgetBase {
       else {
         // If the node is being translated, the paragraphs should be all open
         // when the form is not being rebuilt (E.g. when clicked on a paragraphs
-        // action) and when the the translation is being added.
+        // action) and when the translation is being added.
         if (!$form_state->isRebuilding() && $host->getTranslationStatus($langcode) == TranslationStatusInterface::TRANSLATION_CREATED) {
           $item_mode = 'edit';
         }
