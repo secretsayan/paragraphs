@@ -2,6 +2,7 @@
 
 namespace Drupal\paragraphs\Tests\Experimental;
 
+use Drupal\block_content\Entity\BlockContent;
 use Drupal\field_ui\Tests\FieldUiTestTrait;
 
 /**
@@ -21,6 +22,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
   public static $modules = [
     'image',
     'block_field',
+    'block_content',
     'link',
     'field_ui'
   ];
@@ -130,13 +132,29 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->addFieldtoParagraphType('block_paragraph', 'field_block', 'block_field');
 
     // Test the summary of a Block field.
+    $after_block2 = BlockContent::create([
+      'info' => 'Llama custom block',
+      'type' => 'basic_block',
+    ]);
+    $after_block2->save();
+
+    $this->placeBlock($after_block2->id());
+
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
     $edit = [
-      'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'system_breadcrumb_block',
+      'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'block_content:' . $after_block2->uuid(),
     ];
     $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">Breadcrumbs');
+    $this->assertRaw('<div class="paragraphs-collapsed-description">Llama custom block');
+    $edit = ['title[0][value]' => 'Test llama block'];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    // Delete the block.
+    $after_block2->delete();
+    // Attempt to edit the node when the node is deleted.
+    $node = $this->getNodeByTitle('Test llama block');
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    $this->assertResponse(200);
 
     // Test the summary of a Block field.
     $paragraph_type = 'link_paragraph';
