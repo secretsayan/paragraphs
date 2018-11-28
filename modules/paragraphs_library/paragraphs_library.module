@@ -241,7 +241,7 @@ function paragraphs_library_library_item_unlink_submit(array $form, FormStateInt
   // Make a copy of the paragraph. Use the Replicate module, if it is enabled.
   /** @var \Drupal\Core\Entity\EntityInterface $original_paragraph */
   if (\Drupal::hasService('replicate.replicator')) {
-    $duplicate_paragraph = \Drupal::getContainer()->get('replicate.replicator')->replicateEntity($original_paragraph);
+    $duplicate_paragraph = \Drupal::getContainer()->get('replicate.replicator')->cloneEntity($original_paragraph);
   }
   else {
     $duplicate_paragraph = $original_paragraph->createDuplicate();

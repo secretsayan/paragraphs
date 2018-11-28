@@ -1771,7 +1771,7 @@ class ParagraphsWidget extends WidgetBase {
 
     // Check if the replicate module is enabled.
     if (\Drupal::hasService('replicate.replicator')) {
-      $duplicate_entity = \Drupal::getContainer()->get('replicate.replicator')->replicateEntity($entity);
+      $duplicate_entity = \Drupal::getContainer()->get('replicate.replicator')->cloneEntity($entity);
     }
     else {
       $duplicate_entity = $entity->createDuplicate();
