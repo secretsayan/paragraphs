@@ -233,14 +233,11 @@ class ParagraphsType extends ConfigEntityBundleBase implements ParagraphsTypeInt
    *   The file entity's UUID.
    *
    * @return \Drupal\file\FileInterface|null
-   *  The file entity. NULL if the UUID is invalid.
+   *   The file entity. NULL if the UUID is invalid.
    */
   protected function getFileByUuid($uuid) {
-    $files = $this->entityTypeManager()
-      ->getStorage('file')
-      ->loadByProperties(['uuid' => $uuid]);
-    if ($files) {
-      return current($files);
+    if ($id = \Drupal::service('paragraphs_type.uuid_lookup')->get($uuid)) {
+      return $this->entityTypeManager()->getStorage('file')->load($id);
     }
 
     return NULL;
