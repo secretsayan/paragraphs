@@ -341,3 +341,7 @@ tr:hover .paragraphs-collapsed-description::after {
 .is-horizontal .paragraphs-tabs .tabs__tab {
   border-bottom: 0;
 }
+
+.paragraphs-behavior {
+  display: none;
+}

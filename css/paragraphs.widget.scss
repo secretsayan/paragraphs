@@ -270,3 +270,8 @@
 .is-horizontal .paragraphs-tabs .tabs__tab {
   border-bottom: 0;
 }
+
+// Requires JavaScript to avoid flickering on pageload.
+.paragraphs-behavior {
+  display: none;
+}
