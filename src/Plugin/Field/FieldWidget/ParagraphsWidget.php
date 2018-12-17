@@ -975,7 +975,6 @@ class ParagraphsWidget extends WidgetBase {
       }
     }
 
-
     return $return_bundles;
   }
 

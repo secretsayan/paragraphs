@@ -91,7 +91,6 @@ function paragraphs_update_8004() {
     }
   }
 
-
   // Delete the storage definition if it was defined before.
   $storage_definition = $entity_definition_update_manager->getFieldStorageDefinition($field_name, 'paragraph');
   if ($storage_definition) {

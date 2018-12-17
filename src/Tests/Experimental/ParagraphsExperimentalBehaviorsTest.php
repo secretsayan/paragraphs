@@ -3,7 +3,6 @@
 namespace Drupal\paragraphs\Tests\Experimental;
 
 use Drupal\field_ui\Tests\FieldUiTestTrait;
-use Drupal\paragraphs\Entity\Paragraph;
 
 /**
  * Tests paragraphs behavior plugins.

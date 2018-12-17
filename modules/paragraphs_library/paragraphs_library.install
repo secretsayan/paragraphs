@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\paragraphs_library\Entity\LibraryItem;
@@ -100,7 +99,6 @@ function paragraphs_library_update_8001() {
     ])
     ->setRevisionable(TRUE)
     ->setTranslatable(TRUE);
-
 
   $default_langcode_field = BaseFieldDefinition::create('boolean')
     ->setLabel(t('Default translation'))

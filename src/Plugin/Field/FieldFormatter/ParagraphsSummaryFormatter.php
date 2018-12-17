@@ -5,7 +5,6 @@ namespace Drupal\paragraphs\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphInterface;
 
 /**
