@@ -17,6 +17,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\entity_reference_revisions\EntityNeedsSaveTrait;
 use Drupal\field\FieldConfigInterface;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\user\EntityOwnerInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -232,12 +233,12 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
    */
   public function getOwner() {
     $parent = $this->getParentEntity();
-
-    if ($parent) {
-      return $parent->get('uid')->entity;
+    if ($parent instanceof EntityOwnerInterface) {
+      return $parent->getOwner();
     }
-
-    return NULL;
+    else {
+      return NULL;
+    }
   }
 
   /**
@@ -248,12 +249,12 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
    */
   public function getOwnerId() {
     $parent = $this->getParentEntity();
-
-    if ($parent) {
-      return $parent->get('uid')->target_id;
+    if ($parent instanceof EntityOwnerInterface) {
+      return $parent->getOwnerId();
     }
-
-    return NULL;
+    else {
+      return NULL;
+    }
   }
 
   /**
