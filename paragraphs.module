@@ -15,6 +15,7 @@ use Drupal\migrate_drupal\Plugin\migrate\FieldMigration;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\paragraphs\Plugin\migrate\field\FieldCollection;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
  * Implements hook_help().
@@ -514,6 +515,17 @@ function paragraphs_entity_type_alter(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   // Remove the handler class for moderation as it is managed by the host.
   $entity_types['paragraph']->setHandlerClass('moderation', '');
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function paragraphs_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  // Since the paragraph entity doesn't have uid fields anymore, remove the
+  // content_translation_uid from the field definitions.
+  if ($entity_type->id() == 'paragraph' && isset($fields['content_translation_uid'])) {
+    unset($fields['content_translation_uid']);
+  }
 }
 
 /**

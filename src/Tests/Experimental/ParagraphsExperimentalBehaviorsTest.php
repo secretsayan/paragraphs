@@ -190,17 +190,6 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
 
     $this->assertResponse(200);
 
-    $field_definition = \Drupal::service('entity_field.manager')->getFieldDefinitions('paragraph', $paragraph_type)['uid'];
-    $field_definition->getConfig($paragraph_type)->save();
-
-    // Enable the test field selection plugin.
-    $edit = [
-      'behavior_plugins[test_field_selection][enabled]' => TRUE,
-    ];
-    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type, $edit, t('Save'));
-    // Assert that the uid field is not shown as an option for the select.
-    $this->drupalGet('admin/structure/paragraphs_type/' . $paragraph_type);
-    $this->assertNoOption('edit-behavior-plugins-test-field-selection-settings-field-selection', 'uid');
     // Add a paragraphed content.
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_test_add_more');
     $edit = [

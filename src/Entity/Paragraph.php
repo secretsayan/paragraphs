@@ -55,9 +55,6 @@ use Drupal\user\UserInterface;
  *     "revision" = "revision_id",
  *     "published" = "status"
  *   },
- *   revision_metadata_keys = {
- *     "revision_user" = "revision_uid",
- *   },
  *   bundle_entity_type = "paragraphs_type",
  *   field_ui_base_route = "entity.paragraphs_type.edit_form",
  *   common_reference_revisions_target = TRUE,
@@ -157,16 +154,6 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
-    // If no owner has been set explicitly, make the current user the owner.
-    if (!$this->getOwner()) {
-      $this->setOwnerId(\Drupal::currentUser()->id());
-    }
-    // If no revision author has been set explicitly, make the node owner the
-    // revision author.
-    if (!$this->getRevisionAuthor()) {
-      $this->setRevisionAuthorId($this->getOwnerId());
-    }
-
     // If behavior settings are not set then get them from the entity.
     if ($this->unserializedBehaviorSettings !== NULL) {
       $this->set('behavior_settings', serialize($this->unserializedBehaviorSettings));
@@ -239,31 +226,53 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function getOwner() {
-    return $this->get('uid')->entity;
+    $parent = $this->getParentEntity();
+
+    if ($parent) {
+      return $parent->get('uid')->entity;
+    }
+
+    return NULL;
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function getOwnerId() {
-    return $this->get('uid')->target_id;
+    $parent = $this->getParentEntity();
+
+    if ($parent) {
+      return $parent->get('uid')->target_id;
+    }
+
+    return NULL;
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function setOwnerId($uid) {
-    $this->set('uid', $uid);
     return $this;
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function setOwner(UserInterface $account) {
-    $this->set('uid', $account->id());
     return $this;
   }
 
@@ -283,16 +292,27 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function getRevisionAuthor() {
-    return $this->get('revision_uid')->entity;
+    $parent = $this->getParentEntity();
+
+    if ($parent) {
+      return $parent->get('revision_uid')->entity;
+    }
+
+    return NULL;
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @deprecated Paragraphs no longer have their own author,
+   *  check the parent entity instead.
    */
   public function setRevisionAuthorId($uid) {
-    $this->set('revision_uid', $uid);
     return $this;
   }
 
@@ -321,20 +341,6 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       ->setDescription(t('The paragraphs entity language code.'))
       ->setRevisionable(TRUE);
 
-    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Authored by'))
-      ->setDescription(t('The user ID of the paragraphs author.'))
-      ->setRevisionable(TRUE)
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\paragraphs\Entity\Paragraph::getCurrentUserId')
-      ->setTranslatable(TRUE)
-      ->setDisplayOptions('form', array(
-        'region' => 'hidden',
-        'weight' => 0,
-      ))
-      ->setDisplayConfigurable('form', TRUE);
-
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Published'))
       ->setRevisionable(TRUE)
@@ -352,12 +358,6 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
         'weight' => 0,
       ))
       ->setDisplayConfigurable('form', TRUE);
-
-    $fields['revision_uid'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Revision user ID'))
-      ->setDescription(t('The user ID of the author of the current revision.'))
-      ->setSetting('target_type', 'user')
-      ->setRevisionable(TRUE);
 
     $fields['parent_id'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Parent ID'))
@@ -383,18 +383,6 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       ->setDefaultValue(serialize([]));
 
     return $fields;
-  }
-
-  /**
-   * Default value callback for 'uid' base field definition.
-   *
-   * @see ::baseFieldDefinitions()
-   *
-   * @return array
-   *   An array of default values.
-   */
-  public static function getCurrentUserId() {
-    return array(\Drupal::currentUser()->id());
   }
 
   /**
@@ -545,8 +533,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
   protected function getFieldsToSkipFromChangedCheck() {
     // A list of revision fields which should be skipped from the comparision.
     $fields = [
-      $this->getEntityType()->getKey('revision'),
-      'revision_uid'
+      $this->getEntityType()->getKey('revision')
     ];
 
     return $fields;

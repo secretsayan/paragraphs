@@ -255,3 +255,48 @@ function paragraphs_update_8015() {
     }
   }
 }
+
+/**
+ * Remove the uid and revision_uid fields.
+ */
+function paragraphs_update_8016() {
+  $tables_fields = [
+    'paragraphs_item_revision' => 'revision_uid',
+    'paragraphs_item_field_data' => 'uid',
+    'paragraphs_item_revision_field_data' => 'uid',
+  ];
+
+  $database = \Drupal::database();
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  foreach ($tables_fields as $table => $field) {
+    if ($database->schema()->fieldExists($table, $field)) {
+      $database->update($table)
+        ->fields([$field => NULL])
+        ->execute();
+    }
+  }
+
+  foreach (array_unique($tables_fields) as $table => $field) {
+    $storage_definition = $entity_definition_update_manager->getFieldStorageDefinition($field, 'paragraph');
+    if ($storage_definition) {
+      $entity_definition_update_manager->uninstallFieldStorageDefinition($storage_definition);
+    }
+  }
+}
+
+/**
+ * Update the revision metadata keys to remove revision uid.
+ */
+function paragraphs_update_8017() {
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $entity_definition_update_manager->getEntityType('paragraph');
+  if ($metadata_keys = $entity_type->get('revision_metadata_keys')) {
+    if (is_array($metadata_keys) && isset($metadata_keys['revision_uid'])) {
+      unset($metadata_keys['revision_uid']);
+      $metadata_keys['revision_default'] = 'revision_default';
+      $entity_type->set('revision_metadata_keys', $metadata_keys);
+      $entity_definition_update_manager->updateEntityType($entity_type);
+    }
+  }
+}
