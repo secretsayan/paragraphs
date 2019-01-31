@@ -87,7 +87,8 @@ class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserJavascriptTest
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $this->getSession()->getPage()->checkField('edit-entity-browser-select-paragraphs-library-item1');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:1"].form-checkbox');
+    $style_selector->click();
     $this->getSession()->switchToIFrame();
 
     $drop = <<<JS
@@ -149,7 +150,8 @@ JS;
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $this->getSession()->getPage()->checkField('edit-entity-browser-select-paragraphs-library-item2');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:2"].form-checkbox');
+    $style_selector->click();
     $this->getSession()->switchToIFrame();
     $drop = <<<JS
     jQuery('input[type=submit][value="Select reusable paragraph"]', window.frames['entity_browser_iframe_paragraphs_library_items'].document).trigger('click')
@@ -186,7 +188,9 @@ JS;
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $this->getSession()->getPage()->checkField('edit-entity-browser-select-paragraphs-library-item3');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:3"].form-checkbox');
+    $this->assertTrue($style_selector->isVisible());
+    $style_selector->click();
     $this->getSession()->switchToIFrame();
     $drop = <<<JS
     jQuery('input[type=submit][value="Select reusable paragraph"]', window.frames['entity_browser_iframe_paragraphs_library_items'].document).trigger('click')
