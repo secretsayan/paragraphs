@@ -78,9 +78,9 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
 
     // Assert the summary is correctly generated.
     $this->clickLink(t('Edit'));
-    $this->assertRaw('<div class="paragraphs-collapsed-description">' . $files[0]->filename . ', text_summary');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">' . $this->admin_user->label());
-    $this->assertRaw('<div class="paragraphs-collapsed-description">Title example');
+    $this->assertRaw('<span class="summary-content">' . $files[0]->filename . '</span>, <span class="summary-content">text_summary</span>');
+    $this->assertRaw('<span class="summary-content">' . $this->admin_user->label());
+    $this->assertRaw('<span class="summary-content">Title example');
 
     // Edit and remove alternative text.
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
@@ -91,7 +91,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     ];
     $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
     // Assert the summary is correctly generated.
-    $this->assertRaw('<div class="paragraphs-collapsed-description">alternative_text_summary, text_summary');
+    $this->assertRaw('<span class="summary-content">alternative_text_summary</span>, <span class="summary-content">text_summary</span>');
 
     // Remove image.
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
@@ -100,7 +100,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
 
     // Assert the summary is correctly generated.
     $this->clickLink(t('Edit'));
-    $this->assertRaw('<div class="paragraphs-collapsed-description">text_summary');
+    $this->assertRaw('<span class="summary-content">text_summary');
 
     $this->addParagraphsType('nested_paragraph');
     static::fieldUIAddNewField('admin/structure/paragraphs_type/nested_paragraph', 'nested_content', 'Nested Content', 'entity_reference_revisions', ['settings[target_type]' => 'paragraph'], []);
@@ -146,7 +146,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
       'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'block_content:' . $after_block2->uuid(),
     ];
     $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">Llama custom block');
+    $this->assertRaw('<span class="summary-content">Llama custom block');
     $edit = ['title[0][value]' => 'Test llama block'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Delete the block.
@@ -169,7 +169,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Check the summary when no link title is provided.
     $this->clickLink(t('Edit'));
-    $this->assertRaw('<div class="paragraphs-collapsed-description">http://www.google.com');
+    $this->assertRaw('<span class="summary-content">http://www.google.com');
     // Set a link title.
     $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_0_edit');
     $edit = [
@@ -178,7 +178,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Check the summary when the link title is set.
     $this->clickLink(t('Edit'));
-    $this->assertRaw('<div class="paragraphs-collapsed-description">Link title');
+    $this->assertRaw('<span class="summary-content">Link title');
 
     // Allow the user to select if the paragraphs is published or not.
     $edit = [
@@ -204,7 +204,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->assertNoText('memorable_summary_title');
     $node = $this->getNodeByTitle('Access summary test');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">memorable_summary_title');
+    $this->assertRaw('<span class="summary-content">memorable_summary_title');
 
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_title_add_more');
@@ -221,10 +221,10 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->assertNoText('memorable_nested_summary_title');
     $node = $this->getNodeByTitle('Access nested summary test');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">memorable_nested_summary_title');
+    $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
-    $this->assertRaw('<div class="paragraphs-collapsed-description">memorable_nested_summary_title');
+    $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
   }
 
 }

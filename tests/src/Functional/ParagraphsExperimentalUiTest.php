@@ -74,7 +74,7 @@ class ParagraphsExperimentalUiTest extends BrowserTestBase {
     $node = $this->getNodeByTitle('Llama test');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->pageTextContains('<iframe src="https://www.llamatest.neck');
-    $this->assertSession()->responseContains('<div class="paragraphs-collapsed-description">&lt;iframe src=');
+    $this->assertSession()->responseContains('class="paragraphs-description paragraphs-collapsed-description"><div class="paragraphs-content-wrapper"><span class="summary-content">&lt;iframe src=');
     // Assert that the summary keeps showing html even with longer html.
     $this->getSession()->getPage()->pressButton('paragraphs_0_edit');
     $edit = [
@@ -84,7 +84,7 @@ class ParagraphsExperimentalUiTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('paragraphed_test Llama test has been updated.');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->pageTextContains('<iframe src="https://www.llamatest.neck" class="this-is-a-pretty-long-class-that-needs-to-be-really-long-for-testing-purposes-so-we-');
-    $this->assertSession()->responseContains('<div class="paragraphs-collapsed-description">&lt;iframe src=');
+    $this->assertSession()->responseContains('class="paragraphs-description paragraphs-collapsed-description"><div class="paragraphs-content-wrapper"><span class="summary-content">&lt;iframe src=');
     // Asset that the summary does not display markup even when we have long
     // html.
     $this->getSession()->getPage()->pressButton('paragraphs_0_edit');
@@ -93,7 +93,7 @@ class ParagraphsExperimentalUiTest extends BrowserTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertSession()->responseContains('<div class="paragraphs-collapsed-description">This is a title');
+    $this->assertSession()->responseContains('class="paragraphs-description paragraphs-collapsed-description"><div class="paragraphs-content-wrapper"><span class="summary-content">This is a title');
   }
 
 }

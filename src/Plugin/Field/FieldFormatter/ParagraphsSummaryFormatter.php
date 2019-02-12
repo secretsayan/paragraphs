@@ -27,7 +27,6 @@ class ParagraphsSummaryFormatter extends EntityReferenceFormatterBase {
     $elements = [];
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $entity) {
       if ($entity->id()) {
-        $summary = $entity->getSummary();
         $elements[$delta] = [
           '#type' => 'container',
           '#attributes' => [
@@ -48,9 +47,8 @@ class ParagraphsSummaryFormatter extends EntityReferenceFormatterBase {
           ]
         ];
         $elements[$delta]['summary']['description'] = [
-          '#markup' => $summary,
-          '#prefix' => '<div class="paragraphs-collapsed-description">',
-          '#suffix' => '</div>',
+          '#theme' => 'paragraphs_summary',
+          '#summary' => $entity->getSummaryItems(),
         ];
       }
     }

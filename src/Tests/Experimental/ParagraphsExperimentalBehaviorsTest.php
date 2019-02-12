@@ -200,7 +200,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     // Check that the summary does not have the user displayed.
     $node = $this->getNodeByTitle('field_override_test');
     $this->drupalPostAjaxForm('node/' . $node->id() . '/edit', [], 'field_paragraphs_0_collapse');
-    $this->assertRaw('paragraphs-collapsed-description">This is a test');
+    $this->assertRaw('class="paragraphs-description paragraphs-collapsed-description"><div class="paragraphs-content-wrapper"><span class="summary-content">This is a test');
   }
 
   /**
@@ -260,8 +260,8 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
     $this->assertFieldByXPath('//*[@id="edit-field-paragraphs-1-top-icons"]/span[@class="paragraphs-icon paragraphs-icon-bold"]');
 
     // Assert that the summary includes the text of the behavior plugins.
-    $this->assertRaw('class="paragraphs-collapsed-description">first_paragraph, Bold: Yes, Text color: blue');
-    $this->assertRaw('class="paragraphs-collapsed-description">nested_paragraph, Bold: No, Text color: blue, Bold: Yes');
+    $this->assertRaw('first_paragraph</span></div><div class="paragraphs-plugin-wrapper"><span class="summary-plugin"><span class="summary-plugin-label">Bold</span>Yes</span><span class="summary-plugin"><span class="summary-plugin-label">Text color</span>blue</span>');
+    $this->assertRaw('nested_paragraph</span></div><div class="paragraphs-plugin-wrapper"><span class="summary-plugin"><span class="summary-plugin-label">Bold</span>Yes</span></div></div>');
 
     // Add an empty nested paragraph.
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
@@ -272,7 +272,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
 
     // Check an empty nested paragraph summary.
     $this->clickLink('Edit');
-    $this->assertRaw('class="paragraphs-collapsed-description">');
+    $this->assertRaw('class="paragraphs-description paragraphs-collapsed-description">');
 
   }
 

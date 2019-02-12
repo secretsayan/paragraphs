@@ -78,6 +78,10 @@ function paragraphs_theme() {
       'render element' => 'element',
       'template' => 'paragraphs-actions',
     ],
+    'paragraphs_summary' => [
+      'render element' => 'element',
+      'template' => 'paragraphs-summary',
+    ],
   );
 }
 
@@ -589,4 +593,19 @@ function _paragraphs_migration_entity_type_adjust(array &$migration, $destinatio
     'bypass' => TRUE,
   ];
   $migration['process'][$destination] = $entity_type_process;
+}
+
+/**
+ * Prepares variables for.
+ *
+ * Default template: paragraphs-summary.html.twig
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - buttons: An array of buttons to display in the modal form.
+ */
+function template_preprocess_paragraphs_summary(&$variables) {
+  $variables['content'] = $variables['element']['#summary']['content'];
+  $variables['behaviors'] = $variables['element']['#summary']['behaviors'];
+  $variables['expanded'] = !empty($variables['element']['#expanded']);
 }

@@ -73,7 +73,7 @@ class ParagraphsBehaviorPluginsTest extends KernelTestBase {
 
     // Check the text color plugin settings summary.
     $plugin = $paragraph->getParagraphType()->getBehaviorPlugins()->getEnabled();
-    $this->assertEquals($plugin['test_text_color']->settingsSummary($paragraph)[0], 'Text color: red');
+    $this->assertEquals($plugin['test_text_color']->settingsSummary($paragraph)[0], ['label' => 'Text color', 'value' => 'red']);
 
     // Update the value of an specific plugin.
     $paragraph->setBehaviorSettings('test_text_color', ['text_color' => 'blue']);
@@ -85,7 +85,7 @@ class ParagraphsBehaviorPluginsTest extends KernelTestBase {
 
     // Check the text color plugin settings summary.
     $plugin = $paragraph->getParagraphType()->getBehaviorPlugins()->getEnabled();
-    $this->assertEquals($plugin['test_text_color']->settingsSummary($paragraph)[0], 'Text color: blue');
+    $this->assertEquals($plugin['test_text_color']->settingsSummary($paragraph)[0], ['label' => 'Text color', 'value' => 'blue']);
 
   }
 

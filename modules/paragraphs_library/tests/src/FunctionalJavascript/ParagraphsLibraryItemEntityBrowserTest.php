@@ -167,12 +167,12 @@ JS;
     $save_button = $this->assertSession()->elementExists('css', '.ui-dialog .ui-dialog-buttonset button');
     $save_button->press();
     $this->waitForAjaxToFinish();
-    $this->assertRaw('class="paragraphs-collapsed-description">This is a reusable text UPDATED.');
+    $this->assertSession()->elementContains('css', '.paragraphs-collapsed-description .paragraphs-content-wrapper', 'This is a reusable text UPDATED.');
     $this->submitForm([], 'Save');
     // Edit the outside library item.
     $this->getSession()->getPage()->clickLink('Outside library item');
     $this->getSession()->getPage()->clickLink('Edit');
-    $this->assertRaw('class="paragraphs-collapsed-description">This is a reusable text UPDATED.');
+    $this->assertSession()->elementContains('css', '.paragraphs-collapsed-description .paragraphs-content-wrapper', 'This is a reusable text UPDATED.');
     // Edit the inner library item and assert the fields and values.
     $this->getSession()->getPage()->pressButton('Edit');
     $this->waitForAjaxToFinish();
@@ -198,7 +198,7 @@ JS;
     $this->getSession()->evaluateScript($drop);
     sleep(1);
     $this->waitForAjaxToFinish();
-    $this->assertRaw('class="paragraphs-collapsed-description">Inner library item');
+    $this->assertSession()->elementContains('css', '.paragraphs-collapsed-description .paragraphs-content-wrapper', 'Inner library item');
     $this->submitForm([], 'Save');
     $this->assertText('paragraphed_test Overlay node has been created.');
     // Edit the node.

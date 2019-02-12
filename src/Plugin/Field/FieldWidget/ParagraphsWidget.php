@@ -760,6 +760,17 @@ class ParagraphsWidget extends WidgetBase {
         $display->buildForm($paragraphs_entity, $element['subform'], $form_state);
         $hide_untranslatable_fields = $paragraphs_entity->isDefaultTranslationAffectedOnly();
 
+        $summary = $paragraphs_entity->getSummaryItems();
+        if (!empty($summary)) {
+          $element['top']['summary']['fields_info'] = [
+            '#theme' => 'paragraphs_summary',
+            '#summary' => $summary,
+            '#expanded' => TRUE,
+            '#access' => $paragraphs_entity->access('update') || $paragraphs_entity->access('view'),
+          ];
+        }
+        $info = array_merge($info, $paragraphs_entity->getIcons());
+
         foreach (Element::children($element['subform']) as $field) {
           if ($paragraphs_entity->hasField($field)) {
             $field_definition = $paragraphs_entity->get($field)->getFieldDefinition();
@@ -780,6 +791,12 @@ class ParagraphsWidget extends WidgetBase {
 
             if (!$is_paragraph_field) {
               $element['subform'][$field]['#attributes']['class'][] = 'paragraphs-content';
+              $element['top']['summary']['fields_info'] = [
+                '#theme' => 'paragraphs_summary',
+                '#summary' => $summary,
+                '#expanded' => TRUE,
+                '#access' => $paragraphs_entity->access('update') || $paragraphs_entity->access('view'),
+              ];
             }
             $translatable = $field_definition->isTranslatable();
             // Hide untranslatable fields when configured to do so except
@@ -831,12 +848,12 @@ class ParagraphsWidget extends WidgetBase {
         else {
           // The closed paragraph is displayed as a summary.
           if ($paragraphs_entity) {
-            $summary = $paragraphs_entity->getSummary();
+            $summary = $paragraphs_entity->getSummaryItems();
             if (!empty($summary)) {
               $element['top']['summary']['fields_info'] = [
-                '#markup' => $summary,
-                '#prefix' => '<div class="paragraphs-collapsed-description">',
-                '#suffix' => '</div>',
+                '#theme' => 'paragraphs_summary',
+                '#summary' => $summary,
+                '#expanded' => FALSE,
                 '#access' => $paragraphs_entity->access('update') || $paragraphs_entity->access('view'),
               ];
             }
@@ -1339,9 +1356,9 @@ class ParagraphsWidget extends WidgetBase {
         }
 
         $element['top']['summary']['fields_info'] = [
-          '#markup' => $child_paragraph->getSummary($summary_options),
-          '#prefix' => '<div class="paragraphs-collapsed-description">',
-          '#suffix' => '</div>',
+          '#theme' => 'paragraphs_summary',
+          '#summary' => $child_paragraph->getSummaryItems($summary_options),
+          '#expanded' => FALSE,
           '#access' => $child_paragraph->access('update') || $child_paragraph->access('view'),
         ];
 

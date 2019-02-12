@@ -694,11 +694,9 @@ class InlineParagraphsWidget extends WidgetBase {
         $element['subform'] = array();
         $element['behavior_plugins'] = [];
         if ($paragraphs_entity) {
-          $summary = $paragraphs_entity->getSummary();
           $element['top']['paragraph_summary']['fields_info'] = [
-            '#markup' => $summary,
-            '#prefix' => '<div class="paragraphs-collapsed-description">',
-            '#suffix' => '</div>',
+            '#theme' => 'paragraphs_summary',
+            '#summary' => $paragraphs_entity->getSummaryItems(),
           ];
         }
       }

@@ -201,7 +201,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $element = $this->cssSelect('th.views-field-paragraphs__target-id');
     $this->assertEqual($element[0]->__toString(), 'Paragraphs', 'Paragraphs column is available.');
 
-    $element = $this->cssSelect('.paragraphs-collapsed-description');
+    $element = $this->cssSelect('.paragraphs-description .paragraphs-content-wrapper .summary-content');
     $this->assertEqual(trim($element[0]->__toString()), 're_usable_text_new', 'Paragraphs summary available.');
 
     // Check that the deletion of library items does not cause errors.
