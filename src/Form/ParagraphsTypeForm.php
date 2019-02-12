@@ -218,7 +218,7 @@ class ParagraphsTypeForm extends EntityForm {
     $this->messenger->addMessage($this->t('Saved the %label Paragraphs type.', array(
       '%label' => $paragraphs_type->label(),
     )));
-    if (($status == SAVED_NEW && \Drupal::moduleHandler()->moduleExists('field_ui'))
+    if (($status == SAVED_NEW && $this->moduleHandler->moduleExists('field_ui'))
       && $route_info = FieldUI::getOverviewRouteInfo('paragraph', $paragraphs_type->id())) {
       $form_state->setRedirectUrl($route_info);
     }
@@ -234,7 +234,7 @@ class ParagraphsTypeForm extends EntityForm {
     $form = parent::actions($form, $form_state);
 
     // We want to display the button only on add page.
-    if ($this->entity->isNew() && \Drupal::moduleHandler()->moduleExists('field_ui')) {
+    if ($this->entity->isNew() && $this->moduleHandler->moduleExists('field_ui')) {
       $form['submit']['#value'] = $this->t('Save and manage fields');
     }
 
