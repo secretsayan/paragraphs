@@ -996,6 +996,7 @@ class InlineParagraphsWidget extends WidgetBase {
     $access_control_handler = $entity_type_manager->getAccessControlHandler($target_type);
     $dragdrop_settings = $this->getSelectionHandlerSetting('target_bundles_drag_drop');
 
+    $this->accessOptions = [];
     foreach ($bundles as $machine_name => $bundle) {
       if ($dragdrop_settings || (empty($this->getSelectionHandlerSetting('target_bundles'))
           || in_array($machine_name, $this->getSelectionHandlerSetting('target_bundles')))) {
