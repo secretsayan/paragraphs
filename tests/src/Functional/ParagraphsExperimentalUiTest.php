@@ -46,6 +46,8 @@ class ParagraphsExperimentalUiTest extends BrowserTestBase {
     $this->assertSession()->responseContains('paragraph-type--test-paragraph');
     $this->getSession()->getPage()->findButton('paragraphs_text_add_more')->press();
     $this->assertSession()->responseContains('paragraph-type--text');
+    $this->getSession()->getPage()->findButton('paragraphs_0_remove')->press();
+    $this->assertSession()->responseContains('paragraph-type--text');
   }
 
   /**
