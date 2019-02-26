@@ -405,6 +405,17 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertText('test text paragraph');
+
+    // Assert that the user with the access content permission can see the
+    // paragraph type label.
+    $user = $this->drupalCreateUser([
+      'access content',
+      'administer paragraphs library'
+    ]);
+    $this->drupalLogin($user);
+    $this->drupalGet('admin/content/paragraphs');
+    $paragraph_type = $this->xpath('//*[contains(@class, "view-paragraphs-library")]/div[contains(@class, "view-content")]/table/tbody/tr/td[2]');
+    $this->assertEqual(trim(strip_tags($paragraph_type[0]->asXML())), 'nested_test');
   }
 
   /**

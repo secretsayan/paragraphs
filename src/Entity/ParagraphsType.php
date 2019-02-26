@@ -15,6 +15,7 @@ use Drupal\paragraphs\ParagraphsTypeInterface;
  *   id = "paragraphs_type",
  *   label = @Translation("Paragraphs type"),
  *   handlers = {
+ *     "access" = "Drupal\paragraphs\ParagraphsTypeAccessControlHandler",
  *     "list_builder" = "Drupal\paragraphs\Controller\ParagraphsTypeListBuilder",
  *     "form" = {
  *       "add" = "Drupal\paragraphs\Form\ParagraphsTypeForm",
