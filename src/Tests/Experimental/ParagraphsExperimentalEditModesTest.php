@@ -205,6 +205,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $node = $this->getNodeByTitle('Access summary test');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw('<span class="summary-content">memorable_summary_title');
+    $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
 
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_title_add_more');
@@ -222,9 +223,24 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $node = $this->getNodeByTitle('Access nested summary test');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
+    $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
+    $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
+
+    // Assert the unpublished icon.
+    $permissions = [
+      'edit any paragraphed_test content',
+    ];
+    $this->loginAsAdmin($permissions);
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
+    $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
+    $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
+    $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
   }
 
 }

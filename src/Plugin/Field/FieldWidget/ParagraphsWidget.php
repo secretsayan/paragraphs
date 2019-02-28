@@ -677,10 +677,10 @@ class ParagraphsWidget extends WidgetBase {
             ];
           }
 
-          if (!$paragraphs_entity->access('view')) {
+          if (!$paragraphs_entity->isPublished()) {
             $info['preview'] = [
               '#theme' => 'paragraphs_info_icon',
-              '#message' => $this->t('You are not allowed to view this @title.', array('@title' => $this->getSetting('title'))),
+              '#message' => $this->t('Unpublished'),
               '#icon' => 'view',
             ];
           }
