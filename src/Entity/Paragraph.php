@@ -369,19 +369,22 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     $fields['parent_id'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Parent ID'))
       ->setDescription(t('The ID of the parent entity of which this entity is referenced.'))
-      ->setSetting('is_ascii', TRUE);
+      ->setSetting('is_ascii', TRUE)
+      ->setRevisionable(TRUE);
 
     $fields['parent_type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Parent type'))
       ->setDescription(t('The entity parent type to which this entity is referenced.'))
       ->setSetting('is_ascii', TRUE)
-      ->setSetting('max_length', EntityTypeInterface::ID_MAX_LENGTH);
+      ->setSetting('max_length', EntityTypeInterface::ID_MAX_LENGTH)
+      ->setRevisionable(TRUE);
 
     $fields['parent_field_name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Parent field name'))
       ->setDescription(t('The entity parent field name to which this entity is referenced.'))
       ->setSetting('is_ascii', TRUE)
-      ->setSetting('max_length', FieldStorageConfig::NAME_MAX_LENGTH);
+      ->setSetting('max_length', FieldStorageConfig::NAME_MAX_LENGTH)
+      ->setRevisionable(TRUE);
 
     $fields['behavior_settings'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Behavior settings'))
