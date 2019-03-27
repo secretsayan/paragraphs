@@ -603,6 +603,11 @@ class ParagraphsWidget extends WidgetBase {
           '#access' => $this->duplicateButtonAccess($paragraphs_entity),
         ];
 
+        // Force the closed mode when the user cannot edit the Paragraph.
+        if (!$paragraphs_entity->access('update')) {
+          $item_mode = 'closed';
+        }
+
         if ($item_mode != 'remove') {
           $widget_actions['dropdown_actions']['remove_button'] = [
             '#type' => 'submit',
