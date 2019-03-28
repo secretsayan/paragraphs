@@ -342,7 +342,7 @@ function paragraphs_update_8018(&$sandbox) {
 
   $query = $database->select('paragraphs_item_field_data', 'p');
   $query->fields('p', ['id', 'parent_id', 'parent_type', 'parent_field_name']);
-  $query->range($sandbox['current'], $sandbox['current'] + $paragraphs_per_batch);
+  $query->range($sandbox['current'], $paragraphs_per_batch);
   $result = $query->execute();
 
   foreach ($result as $row) {
