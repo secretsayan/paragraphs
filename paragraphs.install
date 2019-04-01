@@ -387,3 +387,17 @@ function paragraphs_update_8019() {
     \Drupal::keyValue('entity.storage_schema.sql')->set($key, $field_schema);
   }
 }
+
+/**
+ * Remove the base field overrides for uid & revision_uid.
+ */
+function paragraphs_update_8020() {
+  $config_factory = \Drupal::configFactory();
+  $names = $config_factory->listAll('core.base_field_override.paragraph.');
+  foreach ($names as $name) {
+    $config = $config_factory->getEditable($name);
+    if (in_array($config->get('field_name'), ['uid', 'revision_uid'])) {
+      $config->delete();
+    }
+  }
+}
