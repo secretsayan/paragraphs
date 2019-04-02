@@ -492,7 +492,7 @@ class ParagraphsExperimentalAdministrationTest extends ParagraphsExperimentalTes
     $this->assertNoText('The referenced entity (node: ' . $node->id() . ') does not exist.');
     $this->assertNoFieldByName('field_paragraphs[1][subform][field_entity_reference][0][target_id]');
     $this->drupalPostForm(NULL, [], t('Save'));
-    $this->assertText('The referenced entity (node: ' . $node->id() . ') does not exist.');
+    $this->assertText('Validation error on collapsed paragraph field_entity_reference.0.target_id: The referenced entity (node: ' . $node->id() . ') does not exist.');
 
     // Attempt to edit the Paragraph.
     $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');

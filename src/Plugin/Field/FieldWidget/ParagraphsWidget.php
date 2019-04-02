@@ -2243,9 +2243,16 @@ class ParagraphsWidget extends WidgetBase {
           $violations = $paragraphs_entity->validate();
           $violations->filterByFieldAccess();
           if (count($violations)) {
+            /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
             foreach ($violations as $violation) {
-              /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
-              $form_state->setError($element[$item['_original_delta']], $violation->getMessage());
+
+              // Ignore text format related validation errors by ignoring
+              // the .format property.
+              if (substr($violation->getPropertyPath(), -7) === '.format') {
+                continue;
+              }
+
+              $form_state->setError($element[$item['_original_delta']], $this->t('Validation error on collapsed paragraph @path: @message', ['@path' => $violation->getPropertyPath(), '@message' => $violation->getMessage()]));
             }
           }
         }
