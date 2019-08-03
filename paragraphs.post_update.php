@@ -8,6 +8,7 @@
 use Drupal\Core\Database\Query\Condition;
 use Drupal\Core\Entity\Sql\SqlEntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -128,6 +129,7 @@ function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
   $entity_type_manager = \Drupal::entityTypeManager();
   /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager */
   $entity_field_manager = \Drupal::service('entity_field.manager');
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
   $paragraph_revisions_data_table = $entity_type_manager->getDefinition('paragraph')->getRevisionDataTable();
   $paragraph_storage = $entity_type_manager->getStorage('paragraph');
 
@@ -135,13 +137,9 @@ function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
     $entity_reference_revisions_fields = $entity_field_manager->getFieldMapByFieldType('entity_reference_revisions');
     $paragraph_field_ids = [];
     foreach ($entity_reference_revisions_fields as $entity_type_id => $fields) {
-      if (!$entity_type_manager->hasDefinition($entity_type_id)) {
-        continue;
-      }
-
       // Skip non-revisionable entity types.
-      $entity_type_definition = $entity_type_manager->getDefinition($entity_type_id);
-      if (!$entity_type_definition->isRevisionable()) {
+      $entity_type_definition = $entity_definition_update_manager->getEntityType($entity_type_id);
+      if (!$entity_type_definition || !$entity_type_definition->isRevisionable()) {
         continue;
       }
 
@@ -155,7 +153,7 @@ function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
       $storage_definitions = array_intersect_key($storage_definitions, $fields);
 
       // Process the fields that reference paragraphs.
-      $storage_definitions = array_filter($storage_definitions, function ($field_storage) {
+      $storage_definitions = array_filter($storage_definitions, function (FieldStorageDefinitionInterface $field_storage) {
         return $field_storage->getSetting('target_type') === 'paragraph';
       });
 
