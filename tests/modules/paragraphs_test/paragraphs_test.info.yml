@@ -6,4 +6,4 @@ hidden: true
 package: Paragraphs
 
 dependencies:
-  - paragraphs
+  - paragraphs:paragraphs
