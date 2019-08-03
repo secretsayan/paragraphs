@@ -219,6 +219,17 @@ function paragraphs_update_8012() {
 function paragraphs_update_8013() {
   $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
   $entity_type = $definition_update_manager->getEntityType('paragraph');
+
+  // Update the revision metadata keys to remove revision uid which is removed
+  // in 8017 and 8021.
+  if ($metadata_keys = $entity_type->get('revision_metadata_keys')) {
+    if (is_array($metadata_keys) && isset($metadata_keys['revision_user'])) {
+      unset($metadata_keys['revision_user']);
+      $metadata_keys['revision_default'] = 'revision_default';
+      $entity_type->set('revision_metadata_keys', $metadata_keys);
+    }
+  }
+
   $keys = $entity_type->getKeys();
   $keys['published'] = 'status';
   $entity_type->set('entity_keys', $keys);
