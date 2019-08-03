@@ -29,6 +29,13 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "paragraph",
  *   label = @Translation("Paragraph"),
+ *   label_collection = @Translation("Paragraphs"),
+ *   label_singular = @Translation("Paragraph"),
+ *   label_plural = @Translation("Paragraphs"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count Paragraph",
+ *     plural = "@count Paragraphs",
+ *   ),
  *   bundle_label = @Translation("Paragraph type"),
  *   handlers = {
  *     "view_builder" = "Drupal\paragraphs\ParagraphViewBuilder",

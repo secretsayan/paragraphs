@@ -17,6 +17,13 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "paragraphs_library_item",
  *   label = @Translation("Paragraphs library item"),
+ *   label_collection = @Translation("Paragraphs library items"),
+ *   label_singular = @Translation("Paragraphs library item"),
+ *   label_plural = @Translation("Paragraphs library items"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count Paragraphs library item",
+ *     plural = "@count Paragraphs library items",
+ *   ),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\Core\Entity\EntityListBuilder",
