@@ -255,19 +255,18 @@ class LibraryItem extends EditorialContentEntityBase implements LibraryItemInter
     }
     $duplicate_paragraph->save();
 
-    $label = static::buildLabel($paragraph);
     $library_item = static::create([
-      'label' => $label,
       'paragraphs' => $duplicate_paragraph,
+      'langcode' => $paragraph->language()->getId(),
     ]);
 
-    // Add a translation for each translation the paragraph has, the only
-    // translatable element is the label. The referenced paragraph keeps the
-    // existing translations.
-    foreach ($duplicate_paragraph->getTranslationLanguages(FALSE) as $langcode => $language) {
-      $library_item->addTranslation($langcode, [
-        'label' => static::buildLabel($duplicate_paragraph->getTranslation($langcode))
-      ] + $library_item->toArray());
+    // Build the label in each available translation and ensure the translations
+    // exist.
+    foreach ($duplicate_paragraph->getTranslationLanguages() as $langcode => $language) {
+      if (!$library_item->hasTranslation($langcode)) {
+        $library_item->addTranslation($langcode, $library_item->toArray());
+      }
+      $library_item->getTranslation($langcode)->set('label', static::buildLabel($duplicate_paragraph->getTranslation($langcode)));
     }
 
     return $library_item;
