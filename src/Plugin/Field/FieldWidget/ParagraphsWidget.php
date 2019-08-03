@@ -1667,6 +1667,13 @@ class ParagraphsWidget extends WidgetBase {
     $element[$delta]['#prefix'] = '<div class="ajax-new-content">' . (isset($element[$delta]['#prefix']) ? $element[$delta]['#prefix'] : '');
     $element[$delta]['#suffix'] = (isset($element[$delta]['#suffix']) ? $element[$delta]['#suffix'] : '') . '</div>';
 
+    // Clear the Add more delta.
+    NestedArray::setValue(
+      $element,
+      ['add_more', 'add_modal_form_area', 'add_more_delta', '#value'],
+      ''
+    );
+
     return $element;
   }
 
