@@ -486,12 +486,15 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
         $summary['content'] = array_merge($summary['content'], $nested_summary);
       }
 
-      if ($field_type = $field_definition->getType() == 'entity_reference') {
-        if ($this->get($field_name)->entity && $this->get($field_name)->entity->access('view label')) {
-          $entity = $this->get($field_name)->entity;
-          // Switch to the entity translation in the current context if exists.
-          $entity = \Drupal::service('entity.repository')->getTranslationFromContext($entity, $this->activeLangcode);
-          $summary['content'][] = $entity->label();
+      if ($field_definition->getType() === 'entity_reference') {
+        $referenced_entities = $this->get($field_name)->referencedEntities();
+        /** @var \Drupal\Core\Entity\EntityInterface[] $referenced_entities */
+        foreach ($referenced_entities as $referenced_entity) {
+          if ($referenced_entity->access('view label')) {
+            // Switch to the entity translation in the current context.
+            $entity = \Drupal::service('entity.repository')->getTranslationFromContext($referenced_entity, $this->activeLangcode);
+            $summary['content'][] = $entity->label();
+          }
         }
       }
 
