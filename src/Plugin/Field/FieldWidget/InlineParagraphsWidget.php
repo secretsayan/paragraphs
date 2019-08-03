@@ -1321,7 +1321,8 @@ class InlineParagraphsWidget extends WidgetBase {
       }
       // If our mode is remove don't save or reference this entity.
       // @todo: Maybe we should actually delete it here?
-      elseif($widget_state['paragraphs'][$item['_original_delta']]['mode'] == 'remove' || $widget_state['paragraphs'][$item['_original_delta']]['mode'] == 'removed') {
+      elseif(isset($widget_state['paragraphs'][$item['_original_delta']]['mode'])
+        && in_array($widget_state['paragraphs'][$item['_original_delta']]['mode'], ['remove', 'removed'])) {
         $item['target_id'] = NULL;
         $item['target_revision_id'] = NULL;
       }
