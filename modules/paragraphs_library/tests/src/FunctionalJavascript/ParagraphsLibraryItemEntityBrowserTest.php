@@ -3,7 +3,7 @@
 namespace Drupal\Tests\paragraphs_library\FunctionalJavascript;
 
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\Tests\entity_browser\FunctionalJavascript\EntityBrowserJavascriptTestBase;
+use Drupal\Tests\entity_browser\FunctionalJavascript\EntityBrowserWebDriverTestBase;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
 
 /**
@@ -11,7 +11,7 @@ use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
  *
  * @group paragraphs_library
  */
-class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserJavascriptTestBase {
+class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserWebDriverTestBase {
 
   use ParagraphsTestBaseTrait;
 
@@ -162,7 +162,7 @@ JS;
     // Edit the inside library item after adding it.
     $this->getSession()->getPage()->pressButton('Edit');
     $this->waitForAjaxToFinish();
-    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text.');
+    $this->assertSession()->fieldExists('paragraphs[0][subform][field_text][0][value]');
     $this->getSession()->getPage()->fillField('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
     $save_button = $this->assertSession()->elementExists('css', '.ui-dialog .ui-dialog-buttonset button');
     $save_button->press();
@@ -176,7 +176,7 @@ JS;
     // Edit the inner library item and assert the fields and values.
     $this->getSession()->getPage()->pressButton('Edit');
     $this->waitForAjaxToFinish();
-    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
+    $this->assertSession()->fieldExists('paragraphs[0][subform][field_text][0][value]');
 
     // Add a node with the outside library item.
     $this->drupalGet('node/add');
@@ -200,7 +200,7 @@ JS;
     $this->waitForAjaxToFinish();
     $this->assertSession()->elementContains('css', '.paragraphs-collapsed-description .paragraphs-content-wrapper', 'Inner library item');
     $this->submitForm([], 'Save');
-    $this->assertText('paragraphed_test Overlay node has been created.');
+    $this->assertSession()->pageTextContains('paragraphed_test Overlay node has been created.');
     // Edit the node.
     $node = $this->getNodeByTitle('Overlay node');
     $this->drupalGet('node/' . $node->id() . '/edit');
@@ -212,7 +212,7 @@ JS;
     $save_button = $modal_form->find('css', '.edit-button');
     $save_button->press();
     $this->waitForAjaxToFinish();
-    $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
+    $this->assertSession()->fieldExists('paragraphs[0][subform][field_text][0][value]');
   }
 
 }
