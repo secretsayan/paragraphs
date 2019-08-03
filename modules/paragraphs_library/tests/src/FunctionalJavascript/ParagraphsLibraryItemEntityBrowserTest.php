@@ -87,7 +87,7 @@ class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserWebDriverTestB
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:1"].form-checkbox');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:1"].form-radio');
     $style_selector->click();
     $this->getSession()->switchToIFrame();
 
@@ -150,7 +150,7 @@ JS;
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:2"].form-checkbox');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:2"].form-radio');
     $style_selector->click();
     $this->getSession()->switchToIFrame();
     $drop = <<<JS
@@ -188,7 +188,7 @@ JS;
     $this->waitForAjaxToFinish();
     $this->getSession()->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
     $this->waitForAjaxToFinish();
-    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:3"].form-checkbox');
+    $style_selector = $this->getSession()->getPage()->find('css', 'input[value="paragraphs_library_item:3"].form-radio');
     $this->assertTrue($style_selector->isVisible());
     $style_selector->click();
     $this->getSession()->switchToIFrame();

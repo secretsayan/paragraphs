@@ -489,7 +489,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $assert_session->pageTextContains('Rich library item');
     $table = $assert_session->elementExists('css', 'table.views-table');
     $rich_item_row = $this->getTableRowWithText($table, 'Rich library item');
-    $rich_item_checkbox = $assert_session->elementExists('css', 'input[type="checkbox"]', $rich_item_row);
+    $rich_item_checkbox = $assert_session->elementExists('css', 'input[type="radio"]', $rich_item_row);
     $rich_item_checkbox->click();
     $page->pressButton('Select reusable paragraph');
     $session->wait(1000);
