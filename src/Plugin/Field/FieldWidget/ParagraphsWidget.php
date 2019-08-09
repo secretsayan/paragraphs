@@ -1629,12 +1629,19 @@ class ParagraphsWidget extends WidgetBase {
     $field_name = $this->fieldDefinition->getName();
     $field_title = $this->fieldDefinition->getLabel();
     $setting_title = $this->getSetting('title');
+    $select_options = $this->getAccessibleOptions();
     $add_more_elements['add_more_select'] = [
       '#type' => 'select',
-      '#options' => $this->getAccessibleOptions(),
+      '#options' => $select_options,
       '#title' => $this->t('@title type', ['@title' => $setting_title]),
       '#label_display' => 'hidden',
     ];
+
+    // Do not present the select element if only one option is available.
+    if (count($select_options) === 1) {
+      $add_more_elements['add_more_select']['#type'] = 'value';
+      $add_more_elements['add_more_select']['#value'] = key($select_options);
+    }
 
     $text = $this->t('Add @title', ['@title' => $setting_title]);
 
