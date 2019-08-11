@@ -120,9 +120,6 @@ function paragraphs_post_update_set_paragraphs_parent_fields(&$sandbox) {
 
 /**
  * Update the parent fields with revisionable data.
- *
- * @param array &$sandbox
- *   The sandbox array.
  */
 function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
   $database = \Drupal::database();
@@ -225,7 +222,9 @@ function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
   $query->condition($or_group);
 
   // Match the langcode so we can deal with revisions translations.
-  $query->where('p.langcode = f.' . $current_field['langcode_column']);
+  if (!empty($current_field['langcode_column'])) {
+    $query->where('p.langcode = f.' . $current_field['langcode_column']);
+  }
 
   // Order the query by revision ID and limit the number of results.
   $query->orderBy('p.revision_id');
