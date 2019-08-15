@@ -2251,14 +2251,14 @@ class ParagraphsWidget extends WidgetBase {
 
         // We can only use the entity form display to display validation errors
         // if it is in edit mode.
-        if ($widget_state['paragraphs'][$item['_original_delta']]['mode'] === 'edit') {
+        if (!$form_state->isValidationComplete() && $widget_state['paragraphs'][$item['_original_delta']]['mode'] === 'edit') {
           $display->validateFormValues($paragraphs_entity, $element[$item['_original_delta']]['subform'], $form_state);
         }
         // Assume that the entity is being saved/previewed, in this case,
         // validate even the closed paragraphs. If there are validation errors,
         // add them on the parent level. Validation errors do not rebuild the
         // form so it's not possible to auto-uncollapse the form at this point.
-        elseif ($form_state->getLimitValidationErrors() === NULL) {
+        elseif (!$form_state->isValidationComplete() && $form_state->getLimitValidationErrors() === NULL) {
           $violations = $paragraphs_entity->validate();
           $violations->filterByFieldAccess();
           if (count($violations)) {
