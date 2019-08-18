@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs_demo\Tests;
+namespace Drupal\Tests\paragraphs_demo\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
