@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Experimental;
+namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
 /**
  * Tests paragraphs types.
@@ -28,7 +28,7 @@ class ParagraphsExperimentalTypesTest extends ParagraphsExperimentalTestBase {
 
     // Add a test node with a Paragraph.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
     $edit = ['title[0][value]' => 'test_node'];
     $table_rows = $this->xpath('//table[contains(@class, :class)]/tbody/tr', [':class' => 'field-multiple-table']);
     $this->assertEqual(1, count($table_rows));
@@ -53,8 +53,8 @@ class ParagraphsExperimentalTypesTest extends ParagraphsExperimentalTestBase {
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Add two different Paragraphs to the node.
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $table_rows = $this->xpath('//table[contains(@class, :class)]/tbody/tr', [':class' => 'field-multiple-table']);
     $this->assertEqual(2, count($table_rows));
     $this->drupalPostForm(NULL, [], t('Save'));
@@ -89,7 +89,6 @@ class ParagraphsExperimentalTypesTest extends ParagraphsExperimentalTestBase {
       'id' => 'test_name_with_more_than_32_characters'
     ];
     $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
-    $this->assertNoErrorsLogged();
     $this->assertText('Machine-readable name cannot be longer than 32 characters but is currently 38 characters long.');
     $edit['id'] = 'new_test_id';
     $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
