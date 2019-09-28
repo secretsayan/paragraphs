@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Classic;
+namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
@@ -15,7 +15,7 @@ use Drupal\user\Entity\Role;
  *
  * @group paragraphs
  */
-class ParagraphsTranslationTest extends ParagraphsTestBase {
+class ParagraphsExperimentalTranslationTest extends ParagraphsExperimentalTestBase {
 
   /**
    * Modules to enable.
@@ -32,13 +32,6 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     'language',
     'node'
   );
-
-  /**
-   * A user with admin permissions.
-   *
-   * @var array
-   */
-  protected $admin_user;
 
   /**
    * {@inheritdoc}
@@ -85,13 +78,6 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
       'settings[node][paragraphed_content_demo][settings][language][language_alterable]' => TRUE
     ];
     $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
-    // Set the form display to classic.
-    EntityFormDisplay::load('node.paragraphed_content_demo.default')
-      ->setComponent('field_paragraphs_demo', ['type' => 'entity_reference_paragraphs'])
-      ->save();
-    EntityFormDisplay::load('paragraph.nested_paragraph.default')
-      ->setComponent('field_paragraphs_demo', ['type' => 'entity_reference_paragraphs'])
-      ->save();
 
     if (version_compare(\Drupal::VERSION, '8.4', '>=')) {
       // @todo Workaround for file usage/unable to save the node with no usages.
@@ -124,7 +110,18 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
       'fields[status][type]' => 'boolean_checkbox',
       'fields[status][region]' => 'content',
     );
-
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('paragraph.nested_paragraph.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->drupalPostForm(NULL, NULL, t('Add text_image'));
@@ -137,13 +134,13 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertText(t('Example published and unpublished'));
     $this->clickLink(t('Edit'));
 
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_nested_paragraph_add_more');
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_text_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_nested_paragraph_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_text_add_more');
     $edit = [
       'field_paragraphs_demo[0][subform][status][value]' => FALSE,
       'field_paragraphs_demo[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]' => 'Dummy text'
     ];
-    $this->drupalPostForm(NULL, $edit + ['status[value]' => FALSE], t('Save'));
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertNoText(t('Example published and unpublished'));
 
     // Check the parent fields are set properly. Get the node.
@@ -263,7 +260,7 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->drupalPostForm(NULL, $edit, t('Save settings'));
 
     // Create a node with an image paragraph, its alt and title text.
-    $files = $this->drupalGetTestFiles('image');
+    $files = $this->getTestFiles('image');
     $file_system = \Drupal::service('file_system');
     $file_path = $file_system->realpath($file_system->realpath($files[0]->uri));
     $this->drupalGet('node/add/paragraphed_content_demo');
@@ -417,6 +414,66 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertNoText('untranslatable_link_field (all languages)');
     $this->assertNoText('untranslatable_ref_field (all languages)');
     $this->assertNoText('Text (all languages)');
+
+    // Test the summary in multilingual scenarios.
+    // Case 1: Nested Paragraphs.
+    $this->setParagraphsWidgetSettings('paragraphed_content_demo', 'field_paragraphs_demo', ['edit_mode' => 'closed']);
+    // Create a node with a text and a nested paragraph.
+    $this->drupalGet('node/add/paragraphed_content_demo');
+    $this->drupalPostForm(NULL, NULL, t('Add text'));
+    $this->drupalPostForm(NULL, NULL, t('Add nested_paragraph'));
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_text_add_more');
+    $edit = [
+      'title[0][value]' => 'EN llama',
+      'langcode[0][value]' => 'en',
+      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'EN text llama',
+      'field_paragraphs_demo[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]' => 'EN nested text llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->assertText('paragraphed_content_demo EN llama has been created.');
+    // Create a german translation.
+    $node = $this->drupalGetNodeByTitle('EN llama');
+    $this->drupalGet('node/' . $node->id() . '/translations/add/en/de');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_edit_all');
+    $edit = [
+      'title[0][value]' => 'DE llama',
+      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'DE text llama',
+      'field_paragraphs_demo[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]' => 'DE nested text llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save (this translation)'));
+    // Assert that the summary is displayed in the current language.
+    $this->drupalGet('de/node/' . $node->id() . '/edit');
+    $this->assertFieldByName('title[0][value]', 'DE llama');
+    $this->assertRaw('<span class="summary-content">DE text llama</span></div></div>');
+    $this->assertRaw('<span class="summary-content">DE nested text llama</span></div></div>');
+
+    // Case 2: Referenced entities.
+    $this->addParagraphsType('node_reference');
+    static::fieldUIAddNewField('admin/structure/paragraphs_type/node_reference', 'entity_reference', 'Entity reference', 'entity_reference', [
+      'settings[target_type]' => 'node',
+      'cardinality' => '-1'
+    ], [
+      'settings[handler_settings][target_bundles][paragraphed_content_demo]' => TRUE,
+    ]);
+    // Add a node with a reference paragraph.
+    $this->drupalGet('node/add/paragraphed_content_demo');
+    $this->drupalPostForm(NULL, NULL, t('Add node_reference'));
+    $edit = [
+      'title[0][value]' => 'EN referencing llama',
+      'langcode[0][value]' => 'en',
+      'field_paragraphs_demo[0][subform][field_entity_reference][0][target_id]' => $node->label() . ' (' . $node->id() . ')',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $referencing_node = $this->drupalGetNodeByTitle('EN referencing llama');
+    // Translate the node.
+    $this->drupalGet('node/' . $referencing_node->id() . '/translations/add/en/de');
+    $edit = [
+      'title[0][value]' => 'DE referencing llama',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save (this translation)'));
+    // Edit the node again and check the paragraph summary.
+    $this->drupalGet('de/node/' . $referencing_node->id() . '/edit');
+    $this->assertRaw('<span class="summary-content">DE llama</span></div></div>');
   }
 
   /**
@@ -431,11 +488,23 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     // Case 1: original node langcode in EN, translate in FR, change to DE.
 
     // Add 'Images' paragraph and check the paragraphs buttons are displayed.
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('paragraph.nested_paragraph.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->drupalPostForm(NULL, NULL, t('Add images'));
     $this->assertParagraphsButtons(1);
     // Upload an image and check the paragraphs buttons are still displayed.
-    $images = $this->drupalGetTestFiles('image')[0];
+    $images = $this->getTestFiles('image')[0];
     $edit = [
       'title[0][value]' => 'Title in english',
       'files[field_paragraphs_demo_0_subform_field_images_demo_0][]' => $images->uri,
@@ -467,7 +536,7 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
 
     // Edit the french translation and upload a new image.
     $this->clickLink('Edit');
-    $images = $this->drupalGetTestFiles('image')[1];
+    $images = $this->getTestFiles('image')[1];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_0_subform_field_images_demo_1][]' => $images->uri,
     ], t('Upload'));
@@ -499,12 +568,12 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertParagraphsButtons(2);
     // Add an 'Images' paragraph inside the nested one, check the paragraphs
     // langcode are still 'en' and the paragraphs buttons are still displayed.
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_images_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_1_subform_field_paragraphs_demo_images_add_more');
     $this->assertParagraphsLangcode($node->id());
     $this->assertParagraphsButtons(2);
     // Upload a new image, check the paragraphs langcode are still 'en' and the
     // paragraphs buttons are displayed.
-    $images = $this->drupalGetTestFiles('image')[2];
+    $images = $this->getTestFiles('image')[2];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_1_subform_field_paragraphs_demo_0_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
@@ -548,7 +617,7 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertParagraphsLangcode($node->id(), 'de', 'fr');
     $this->assertNoParagraphsButtons(2);
     // Upload another image.
-    $images = $this->drupalGetTestFiles('image')[3];
+    $images = $this->getTestFiles('image')[3];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_1_subform_field_paragraphs_demo_0_subform_field_images_demo_1][]' => $images->uri,
     ], t('Upload'));
@@ -577,19 +646,18 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
       'title[0][value]' => 'Title in english',
       'langcode[0][value]' => 'en',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Add images'));
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_demo_images_add_more');
     $this->assertParagraphsLangcode($node->id(), 'de');
-    $this->assertParagraphsButtons(3);
+      $this->assertParagraphsButtons(3);
     // Upload a new image, check the paragraphs langcode are still 'de' and the
     // paragraphs buttons are displayed.
-    $images = $this->drupalGetTestFiles('image')[4];
+    $images = $this->getTestFiles('image')[4];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_2_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
     $this->assertParagraphsLangcode($node->id(), 'de');
     $this->assertParagraphsButtons(3);
     $this->drupalPostForm(NULL, NULL, t('Save (this translation)'));
-    $this->assertText('paragraphed_content_demo Title in english has been updated.');
     // Check the original node and the paragraphs langcode are now 'en'.
     $this->assertParagraphsLangcode($node->id());
   }
@@ -606,7 +674,18 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
   public function testParagraphsMultilingualWorkflow() {
     // Case 1: Check the paragraphs buttons after changing the NODE language
     // (original node langcode in GERMAN, default site langcode in english).
-
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
+    // Use the experimental widget.
+    $form_display = EntityFormDisplay::load('paragraph.nested_paragraph.default')
+      ->setComponent('field_paragraphs_demo', [
+        'type' => 'paragraphs',
+      ]);
+    $form_display->save();
     // Create a node and check that the node langcode is 'english'.
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->assertOptionSelected('edit-langcode-0-value', 'en');
@@ -619,9 +698,9 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     // Check that the paragraphs buttons are displayed and add an 'Images'
     // paragraph inside the nested paragraph.
     $this->assertParagraphsButtons(1);
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_0_subform_field_paragraphs_demo_images_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_0_subform_field_paragraphs_demo_images_add_more');
     // Upload an image and check the paragraphs buttons are still displayed.
-    $images = $this->drupalGetTestFiles('image')[0];
+    $images = $this->getTestFiles('image')[0];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_0_subform_field_paragraphs_demo_0_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
@@ -637,7 +716,7 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertParagraphsLangcode($node1->id(), 'de');
     $this->assertParagraphsButtons(1);
     // Change the node langcode to 'english' and upload another image.
-    $images = $this->drupalGetTestFiles('image')[1];
+    $images = $this->getTestFiles('image')[1];
     $edit = [
       'title[0][value]' => 'Title in german (en)',
       'langcode[0][value]' => 'en',
@@ -667,9 +746,9 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     // Check that the paragraphs buttons are displayed and add an 'Images'
     // paragraph inside the nested paragraph.
     $this->assertParagraphsButtons(1);
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_demo_0_subform_field_paragraphs_demo_images_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_0_subform_field_paragraphs_demo_images_add_more');
     // Upload an image and check the paragraphs buttons are still displayed.
-    $images = $this->drupalGetTestFiles('image')[0];
+    $images = $this->getTestFiles('image')[0];
     $edit = [
       'title[0][value]' => 'Title in english',
       'files[field_paragraphs_demo_0_subform_field_paragraphs_demo_0_subform_field_images_demo_0][]' => $images->uri,
@@ -691,13 +770,13 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
       'title[0][value]' => 'Title in english (de)',
       'langcode[0][value]' => 'de',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Add images'));
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_demo_images_add_more');
     // Check the paragraphs langcode are still 'en' and their buttons are shown.
     $this->assertParagraphsLangcode($node2->id());
     $this->assertParagraphsButtons(2);
     // Upload an image, check the paragraphs langcode are still 'en' and their
     // buttons are displayed.
-    $images = $this->drupalGetTestFiles('image')[1];
+    $images = $this->getTestFiles('image')[1];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_1_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
@@ -731,13 +810,13 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
     $this->assertParagraphsLangcode($node2->id());
     $this->assertParagraphsButtons(2);
     // Add another 'Images' paragraph with node langcode as 'english'.
-    $this->drupalPostForm(NULL, NULL, t('Add images'));
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_demo_images_add_more');
     // Check the paragraph langcode are still 'en' and their buttons are shown.
     $this->assertParagraphsLangcode($node2->id());
     $this->assertParagraphsButtons(3);
     // Upload an image, check the paragraphs langcode are still 'en' and their
     // buttons are displayed.
-    $images = $this->drupalGetTestFiles('image')[2];
+    $images = $this->getTestFiles('image')[2];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_2_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
@@ -756,13 +835,13 @@ class ParagraphsTranslationTest extends ParagraphsTestBase {
       'title[0][value]' => 'Title in english (de)',
       'langcode[0][value]' => 'de',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Add images'));
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_demo_images_add_more');
     // Check the paragraphs langcode are still 'en' and their buttons are shown.
     $this->assertParagraphsLangcode($node2->id());
     $this->assertParagraphsButtons(4);
     // Upload an image, check the paragraphs langcode are still 'en' and their
     // buttons are displayed.
-    $images = $this->drupalGetTestFiles('image')[3];
+    $images = $this->getTestFiles('image')[3];
     $this->drupalPostForm(NULL, [
       'files[field_paragraphs_demo_3_subform_field_images_demo_0][]' => $images->uri,
     ], t('Upload'));
