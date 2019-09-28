@@ -1,21 +1,19 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Experimental;
+namespace Drupal\Tests\paragraphs\Functional\Classic;
 
-use Drupal\field_ui\Tests\FieldUiTestTrait;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\filter\Entity\FilterFormat;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\user\RoleInterface;
-use Drupal\user\Entity\Role;
 
 /**
  * Tests the access check of paragraphs.
  *
  * @group paragraphs
  */
-class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
+class ParagraphsAccessTest extends ParagraphsTestBase {
 
   use FieldUiTestTrait;
 
@@ -80,21 +78,21 @@ class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
   }
 
   /**
-   * Tests the Paragraph access and permissions.
+   * Tests the paragraph translation.
    */
   public function testParagraphAccessCheck() {
-    $permissions = [
+    $admin_user = [
       'administer site configuration',
       'administer node display',
       'administer paragraph display',
       'create paragraphed_content_demo content',
       'edit any paragraphed_content_demo content',
     ];
-    $this->loginAsAdmin($permissions);
+    $this->loginAsAdmin($admin_user);
 
     // Remove the "access content" for anonymous users. That results in
     // anonymous users not being able to "view" the host entity.
-    /* @var Role $role */
+    /* @var \Drupal\user\Entity\Role $role */
     $role = \Drupal::entityTypeManager()
       ->getStorage('user_role')
       ->load(RoleInterface::ANONYMOUS_ID);
@@ -107,17 +105,18 @@ class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
     );
     $this->drupalPostForm('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo/storage', $edit, t('Save field settings'));
 
-    // Use the experimental widget.
+    // Set the form display to classic.
     $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
-      ->setComponent('field_paragraphs_demo', ['type' => 'paragraphs']);
+      ->setComponent('field_paragraphs_demo', ['type' => 'entity_reference_paragraphs']);
     $form_display->save();
+
     // Create a new demo node.
     $this->drupalGet('node/add/paragraphed_content_demo');
 
-    // Add a new Paragraphs images item.
+    // Add a new paragraphs images item.
     $this->drupalPostForm(NULL, NULL, t('Add images'));
 
-    $images = $this->drupalGetTestFiles('image');
+    $images = $this->getTestFiles('image');
 
     // Create a file, upload it.
     file_unmanaged_copy($images[0]->uri, 'temporary://privateImage.jpg');
@@ -131,11 +130,16 @@ class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
 
     $edit = array(
       'title[0][value]' => 'Security test node',
-      'files[field_paragraphs_demo_0_subform_field_images_demo_0][]' => [$file_path, $file_path_2],
+      'files[field_paragraphs_demo_0_subform_field_images_demo_0][]' => $file_path,
     );
 
     $this->drupalPostForm(NULL, $edit, t('Upload'));
-    $this->drupalPostForm(NULL,  [], t('Preview'));
+
+    $edit = array(
+      'files[field_paragraphs_demo_0_subform_field_images_demo_1][]' => $file_path_2,
+    );
+
+    $this->drupalPostForm(NULL,  $edit, t('Preview'));
     $image_style = ImageStyle::load('medium');
     $img1_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage.jpg');
     $image_url = file_url_transform_relative($img1_url);
@@ -167,7 +171,7 @@ class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
     $this->assertResponse(403, 'Image could not be downloaded');
 
     // Login as admin with no delete permissions.
-    $this->loginAsAdmin($permissions);
+    $this->loginAsAdmin($admin_user);
     // Create a new demo node.
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->drupalPostForm(NULL, NULL, t('Add text'));
@@ -182,115 +186,10 @@ class ParagraphsExperimentalAccessTest extends ParagraphsExperimentalTestBase {
     // Check the remove button is present.
     $this->assertNotNull($this->xpath('//*[@name="field_paragraphs_demo_0_remove"]'));
     // Delete the Paragraph and save.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_demo_0_remove');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_demo_0_remove');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_demo_0_confirm_remove');
     $this->drupalPostForm(NULL, [], t('Save'));
     $node = $this->getNodeByTitle('delete_permissions');
     $this->assertUrl('node/' . $node->id());
-
-    // Create an unpublished Paragraph and assert if it is displayed for the
-    // user.
-    $permissions = [
-      'create paragraphed_content_demo content',
-      'edit any paragraphed_content_demo content',
-      'view unpublished paragraphs',
-      'administer paragraph form display',
-    ];
-    $this->loginAsAdmin($permissions);
-    $edit = [
-      'fields[status][region]' => 'content',
-      'fields[status][type]' => 'boolean_checkbox'
-    ];
-    $this->drupalPostForm('admin/structure/paragraphs_type/text/form-display', $edit, 'Save');
-    $this->drupalGet('node/add/paragraphed_content_demo');
-    $this->drupalPostForm(NULL, NULL, t('Add text'));
-    $this->assertText('Text');
-    $edit = [
-      'title[0][value]' => 'unpublished_permissions',
-      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'recognizable_test',
-      'field_paragraphs_demo[0][subform][status][value]' => FALSE
-    ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertText('recognizable_test');
-    $this->assertRaw('paragraph--unpublished');
-    $this->drupalLogout();
-    $node = $this->drupalGetNodeByTitle('unpublished_permissions');
-
-    // Login as an user without the view unpublished Paragraph permission.
-    $user = $this->drupalCreateUser([
-      'administer nodes',
-      'edit any paragraphed_content_demo content',
-    ]);
-    $this->drupalLogin($user);
-    // Assert that the Paragraph is not displayed.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertNoText('recognizable_test');
-    $this->assertNoRaw('paragraph--unpublished');
-    // Grant to the user the view unpublished Paragraph permission.
-    $this->grantPermissions(Role::load(Role::AUTHENTICATED_ID), ['view unpublished paragraphs']);
-    // Assert that the Paragraph is displayed.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertText('recognizable_test');
-    $this->assertRaw('paragraph--unpublished');
-
-    // Grant to the user the administer Paragraphs settings permission.
-    $this->grantPermissions(Role::load(Role::AUTHENTICATED_ID), ['administer paragraphs settings']);
-    // Disable the show unpublished Paragraphs setting.
-    $this->drupalPostForm('admin/config/content/paragraphs', ['show_unpublished' => FALSE], 'Save configuration');
-    // Assert that the Paragraph is not displayed even if the user has the
-    // permission to do so.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertNoText('recognizable_test');
-    $this->assertNoRaw('paragraph--unpublished');
-    // Enable the show unpublished Paragraphs setting.
-    $this->drupalPostForm('admin/config/content/paragraphs', ['show_unpublished' => TRUE], 'Save configuration');
-    // Assert that the Paragraph is displayed when the user has the permission
-    // to do so.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertText('recognizable_test');
-    $this->assertRaw('paragraph--unpublished');
   }
-
-  /**
-   * Tests the Paragraph validation with filter access.
-   */
-  public function testParagraphsTextFormatValidation() {
-    $filtered_html_format = FilterFormat::create([
-      'format' => 'filtered_html',
-      'name' => 'Filtered HTML',
-    ]);
-    $filtered_html_format->save();
-    $permissions = [
-      'create paragraphed_content_demo content',
-      'edit any paragraphed_content_demo content',
-      $filtered_html_format->getPermissionName()
-    ];
-    $this->loginAsAdmin($permissions);
-    // Create a node with a Text Paragraph using the filtered html format.
-    $this->drupalGet('node/add/paragraphed_content_demo');
-    $this->drupalPostForm(NULL, NULL, t('Add text'));
-    $this->assertText('Text');
-    $edit = [
-      'title[0][value]' => 'access_validation_test',
-      'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'Test',
-    ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertText('paragraphed_content_demo access_validation_test has been created.');
-    $this->drupalLogout();
-    // Login as an user without the Text Format permission.
-    $user = $this->drupalCreateUser([
-      'administer nodes',
-      'edit any paragraphed_content_demo content',
-    ]);
-    $this->drupalLogin($user);
-    $node = $this->getNodeByTitle('access_validation_test');
-    $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], t('Save'));
-    $this->assertText('paragraphed_content_demo access_validation_test has been updated.');
-    $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_demo_0_collapse');
-    $this->drupalPostForm(NULL, [], t('Save'));
-    $this->assertText('paragraphed_content_demo access_validation_test has been updated.');
-    $this->assertNoText('The value you selected is not a valid choice.');
-  }
-
 }
