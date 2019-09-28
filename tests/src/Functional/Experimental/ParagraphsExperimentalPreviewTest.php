@@ -1,8 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Experimental;
-
-use Drupal\field_ui\Tests\FieldUiTestTrait;
+namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
 /**
  * Tests the configuration of paragraphs.
@@ -10,8 +8,6 @@ use Drupal\field_ui\Tests\FieldUiTestTrait;
  * @group paragraphs
  */
 class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * Modules to enable.
@@ -48,7 +44,7 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
     $test_text_2 = 'dummy_preview_text_2';
     // Create node with two paragraphs.
     $this->drupalGet('node/add/article');
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_add_more');
     // Set the value of the paragraphs.
     $edit = [
       'title[0][value]' => 'Page_title',
@@ -67,12 +63,12 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
     $this->clickLink('Back to content editing');
 
     $paragraph_1 = $this->xpath('//*[@id="edit-field-paragraphs-0-subform-field-text-0-value"]')[0];
-    $this->assertEqual($paragraph_1['value'], $test_text_1);
+    $this->assertEqual($paragraph_1->getValue(), $test_text_1);
 
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     $this->clickLink('Edit');
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_add_more');
     $edit = [
       'field_paragraphs[1][subform][field_text][0][value]' => $test_text_2,
     ];
@@ -101,8 +97,8 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
     $this->clickLink('Back to content editing');
     $paragraph_1 = $this->xpath('//*[@id="edit-field-paragraphs-0-subform-field-text-0-value"]')[0];
     $paragraph_2 = $this->xpath('//*[@id="edit-field-paragraphs-1-subform-field-text-0-value"]')[0];
-    $this->assertEqual($paragraph_1['value'], $test_text_1);
-    $this->assertEqual($paragraph_2['value'], $new_test_text_2);
+    $this->assertEqual($paragraph_1->getValue(), $test_text_1);
+    $this->assertEqual($paragraph_2->getValue(), $new_test_text_2);
     $this->drupalPostForm(NULL, [], t('Save'));
 
     $this->assertRaw($test_text_1);
