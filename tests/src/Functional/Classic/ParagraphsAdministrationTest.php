@@ -1,8 +1,7 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Classic;
+namespace Drupal\Tests\paragraphs\Functional\Classic;
 
-use Drupal\field_ui\Tests\FieldUiTestTrait;
 use Drupal\paragraphs\Entity\Paragraph;
 
 /**
@@ -11,8 +10,6 @@ use Drupal\paragraphs\Entity\Paragraph;
  * @group paragraphs
  */
 class ParagraphsAdministrationTest extends ParagraphsTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * Modules to enable.
@@ -65,8 +62,8 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Create node with our paragraphs.
     $this->drupalGet('node/add/paragraphs');
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_add_more');
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_add_more');
     $edit = [
       'title[0][value]' => 'TEST TITEL',
       'field_paragraphs[0][subform][field_text][0][value]' => 'Test text 1',
@@ -180,7 +177,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Change the add more button to select mode.
     $this->clickLink(t('Manage form display'));
-    $this->drupalPostAjaxForm(NULL, ['fields[field_paragraphs][type]' => 'entity_reference_paragraphs'], 'field_paragraphs_settings_edit');
+    $this->drupalPostForm(NULL, ['fields[field_paragraphs][type]' => 'entity_reference_paragraphs'], 'field_paragraphs_settings_edit');
     $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][add_mode]' => 'select'], t('Update'));
     $this->drupalPostForm(NULL, [], t('Save'));
 
@@ -209,7 +206,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $field_name = 'field_paragraphs';
 
     // Click on the widget settings button to open the widget settings form.
-    $this->drupalPostAjaxForm(NULL, array(), $field_name . "_settings_edit");
+    $this->drupalPostForm(NULL, array(), $field_name . "_settings_edit");
 
     // Enable setting.
     $edit = array('fields[' . $field_name . '][settings_edit_form][settings][add_mode]' => 'button');
@@ -219,7 +216,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->drupalGet('admin/structure/types/manage/article/form-display');
     $this->assertText('Add mode: Buttons', 'Checking the settings value.');
 
-    $this->drupalPostAjaxForm(NULL, array(), $field_name . "_settings_edit");
+    $this->drupalPostForm(NULL, array(), $field_name . "_settings_edit");
     // Assert the 'Buttons' option is selected.
     $this->assertOptionSelected('edit-fields-field-paragraphs-settings-edit-form-settings-add-mode', 'button', 'Updated value is correct!.');
 
@@ -229,11 +226,11 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Checking changes on article.
     $this->assertRaw('<div class="paragraphs-dropbutton-wrapper"><input', 'Updated value in article.');
 
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_image_add_more');
-    $this->drupalPostAjaxForm(NULL, array(), 'field_paragraphs_text_image_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_image_add_more');
+    $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_image_add_more');
 
     // Upload some images.
-    $files = $this->drupalGetTestFiles('image');
+    $files = $this->getTestFiles('image');
     $file_system = \Drupal::service('file_system');
 
     $edit = array(
@@ -264,13 +261,13 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Test for closed setting.
     $this->drupalGet('admin/structure/types/manage/article/form-display');
     // Click on the widget settings button to open the widget settings form.
-    $this->drupalPostAjaxForm(NULL, array(), "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, array(), "field_paragraphs_settings_edit");
     // Enable setting.
     $edit = array('fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed');
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Check if the setting is stored.
     $this->assertText('Edit mode: Closed', 'Checking the settings value.');
-    $this->drupalPostAjaxForm(NULL, array(), "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, array(), "field_paragraphs_settings_edit");
     // Assert the 'Closed' option is selected.
     $this->assertOptionSelected('edit-fields-field-paragraphs-settings-edit-form-settings-edit-mode', 'closed', 'Updated value correctly.');
     $this->drupalGet('node/1/edit');
@@ -282,7 +279,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Test for preview option.
     $this->drupalGet('admin/structure/types/manage/article/form-display');
-    $this->drupalPostAjaxForm(NULL, array(), "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, array(), "field_paragraphs_settings_edit");
     $edit = array('fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'preview');
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertText('Edit mode: Preview', 'Checking the settings value.');
@@ -295,7 +292,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Test for open option.
     $this->drupalGet('admin/structure/types/manage/article/form-display');
-    $this->drupalPostAjaxForm(NULL, array(), "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, array(), "field_paragraphs_settings_edit");
     // Assert the 'Preview' option is selected.
     $this->assertOptionSelected('edit-fields-field-paragraphs-settings-edit-form-settings-edit-mode', 'preview', 'Updated value correctly.');
     // Restore the value to Open for next test.
@@ -317,19 +314,21 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->assertFieldByName('field_paragraphs[1][subform][field_text][0][value]', 'Test text 2');
     $this->assertRaw('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
     // Remove 2nd paragraph.
-    $this->drupalPostForm(NULL, NULL, t('Remove'));
+    $this->getSession()->getPage()->find('css', '[name="field_paragraphs_1_remove"]')->press();
+    // Confirm the removal.
+    $this->drupalPostForm(NULL, [], t('Confirm removal'));
     $this->assertNoField('field_paragraphs[1][subform][field_text][0][value]');
     $this->assertNoRaw('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
     // Assert the paragraph is not deleted unless the user saves the node.
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
     // Remove the second paragraph.
-    $this->drupalPostForm(NULL, [], t('Remove'));
+    $this->getSession()->getPage()->find('css', '[name="field_paragraphs_1_remove"]')->press();
+    // Confirm the removal.
+    $this->drupalPostForm(NULL, [], t('Confirm removal'));
     $this->assertNoRaw('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
     $edit = [
       'field_paragraphs[0][subform][field_image][0][alt]' => 'test_alt',
-      'field_paragraphs[0][subform][field_image][0][width]' => 300,
-      'field_paragraphs[0][subform][field_image][0][height]' => 300,
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Assert the paragraph is deleted after the user saves the node.
@@ -375,11 +374,11 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Add a new article.
     $this->drupalGet('node/add/article');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_nested_test_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_nested_test_add_more');
     $edit = [
       'field_paragraphs[0][subform][field_paragraphs][add_more][add_more_select]' => 'image',
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_subform_field_paragraphs_add_more');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_subform_field_paragraphs_add_more');
     // Test the new field is displayed.
     $this->assertFieldByName('files[field_paragraphs_0_subform_field_paragraphs_0_subform_field_image_only_0]');
 
@@ -399,7 +398,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Test that unsupported widgets are not displayed.
     $this->drupalGet('admin/structure/types/manage/article/form-display');
     $select = $this->xpath('//*[@id="edit-fields-field-paragraphs-type"]')[0];
-    $this->assertEqual(count($select->option), 2);
+    $this->assertCount(2, $select->findAll('css', 'option'));
     $this->assertRaw('value="entity_reference_paragraphs" selected="selected"');
 
     // Check that Paragraphs is not displayed as an entity_reference field
@@ -425,12 +424,12 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     ), array());
     $this->clickLink(t('Manage form display'));
     $this->drupalPostForm(NULL, [], 'Save');
-    $this->drupalPostAjaxForm('node/add/article', [], 'field_paragraphs_nested_test_add_more');
+    $this->drupalPostForm('node/add/article', [], 'field_paragraphs_nested_test_add_more');
     $edit = [
       'field_paragraphs[0][subform][field_paragraphs][add_more][add_more_select]' => 'nested_double_test',
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_subform_field_paragraphs_add_more');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_paragraphs_0_subform_field_paragraphs_image_add_more');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_subform_field_paragraphs_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_paragraphs_0_subform_field_paragraphs_image_add_more');
     $edit = array(
       'title[0][value]' => 'Nested twins',
     );
@@ -444,7 +443,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->drupalPostForm(NULL, ['required' => FALSE], t('Save settings'));
 
     // Set the Paragraph field edit mode to 'Closed'.
-    $this->drupalPostAjaxForm('admin/structure/types/manage/article/form-display', [], 'field_paragraphs_settings_edit');
+    $this->drupalPostForm('admin/structure/types/manage/article/form-display', [], 'field_paragraphs_settings_edit');
     $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'], t('Update'));
     $this->drupalPostForm(NULL, [], t('Save'));
 
@@ -461,7 +460,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $node = $this->drupalGetNodeByTitle('Nested twins');
 
     // Create a node with a reference in a Paragraph.
-    $this->drupalPostAjaxForm('node/add/article', [], 'field_paragraphs_node_test_add_more');
+    $this->drupalPostForm('node/add/article', [], 'field_paragraphs_node_test_add_more');
     \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
     $edit = [
       'field_paragraphs[0][subform][field_entity_reference][0][target_id]' => $node->label() . ' (' . $node->id() . ')',
@@ -483,7 +482,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->assertText('The referenced entity (node: 4) does not exist');
     $this->assertText('Entity reference (value 1) field is required.');
     // Try to collapse with an invalid reference.
-    $this->drupalPostAjaxForm(NULL, ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'], 'field_paragraphs_0_collapse');
+    $this->drupalPostForm(NULL, ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'], 'field_paragraphs_0_collapse');
     // Paragraph should be still in edit mode.
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][0][target_id]');
     $this->assertFieldByName('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
@@ -491,11 +490,11 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Assert the validation message.
     $this->assertText('There are no entities matching "foo".');
     // Attempt to remove the Paragraph.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_remove');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
     $this->assertTrue(!empty($elements), "'Confirm removal' button appears.");
     // Restore the Paragraph and fix the broken reference.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_restore');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_restore');
     $node = $this->drupalGetNodeByTitle('Example publish/unpublish');
     $edit = ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => $node->label() . ' (' . $node->id() . ')'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
@@ -505,22 +504,22 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $node->delete();
 
     // Set the Paragraph field edit mode to 'Preview'.
-    $this->drupalPostAjaxForm('admin/structure/types/manage/article/form-display', [], 'field_paragraphs_settings_edit');
+    $this->drupalPostForm('admin/structure/types/manage/article/form-display', [], 'field_paragraphs_settings_edit');
     $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'preview'], t('Update'));
     $this->drupalPostForm(NULL, [], t('Save'));
 
     $node = $this->drupalGetNodeByTitle('choke test');
     // Attempt to edit the Paragraph.
-    $this->drupalPostAjaxForm('node/' . $node->id() . '/edit', [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm('node/' . $node->id() . '/edit', [], 'field_paragraphs_0_edit');
     // Try to save with an invalid reference.
     $edit = ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertText('There are no entities matching "foo".');
     // Remove the Paragraph and save the node.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_remove');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
     $this->assertTrue(!empty($elements), "'Confirm removal' button appears.");
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_confirm_remove');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_confirm_remove');
     $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertText('choke test has been updated.');
 
@@ -532,34 +531,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->drupalGet('admin/content/files');
     $this->clickLink('1 place');
     $label = $this->xpath('//tbody/tr/td[1]');
-    $this->assertEqual(trim(htmlspecialchars_decode(strip_tags($label[0]->asXML()))), 'test required > field_paragraphs > Paragraphs');
-  }
-
-  /**
-   * Asserts that a select option in the current page is checked.
-   *
-   * @param string $id
-   *   ID of select field to assert.
-   * @param string $option
-   *   Option to assert.
-   * @param string $message
-   *   (optional) A message to display with the assertion. Do not translate
-   *   messages: use format_string() to embed variables in the message text, not
-   *   t(). If left blank, a default message will be displayed.
-   * @param string $group
-   *   (optional) The group this message is in, which is displayed in a column
-   *   in test output. Use 'Debug' to indicate this is debugging output. Do not
-   *   translate this string. Defaults to 'Browser'; most tests do not override
-   *   this default.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
-   *
-   * @todo Remove function once core issue is resolved: https://www.drupal.org/node/2530092
-   */
-  protected function assertOptionSelected($id, $option, $message = '', $group = 'Browser') {
-    $elements = $this->xpath('//select[contains(@id, :id)]//option[@value=:option]', array(':id' => $id, ':option' => $option));
-    return $this->assertTrue(isset($elements[0]) && !empty($elements[0]['selected']), $message ? $message : SafeMarkup::format('Option @option for field @id is selected.', array('@option' => $option, '@id' => $id)), $group);
+    $this->assertEqual(trim(htmlspecialchars_decode(strip_tags($label[0]->getText()))), 'test required > field_paragraphs > Paragraphs');
   }
 
   /**
