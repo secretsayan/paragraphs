@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Experimental;
+namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
 use Drupal\block_content\Entity\BlockContent;
-use Drupal\field_ui\Tests\FieldUiTestTrait;
 
 /**
  * Tests paragraphs edit modes.
@@ -11,8 +10,6 @@ use Drupal\field_ui\Tests\FieldUiTestTrait;
  * @group paragraphs
  */
 class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * Modules to enable.
@@ -51,14 +48,14 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
 
     // Set edit mode to closed.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
-    $this->drupalPostAjaxForm(NULL, [], "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, [], "field_paragraphs_settings_edit");
     $edit = ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     // Add a paragraph.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_title_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_title_add_more');
 
-    $files = $this->drupalGetTestFiles('image');
+    $files = $this->getTestFiles('image');
     $file_system = \Drupal::service('file_system');
 
     // Create a node with an image and text.
@@ -83,19 +80,17 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->assertRaw('<span class="summary-content">Title example');
 
     // Edit and remove alternative text.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
     $edit = [
       'field_paragraphs[0][subform][field_image][0][alt]' => 'alternative_text_summary',
-      'field_paragraphs[0][subform][field_image][0][width]' => 300,
-      'field_paragraphs[0][subform][field_image][0][height]' => 300,
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
     // Assert the summary is correctly generated.
     $this->assertRaw('<span class="summary-content">alternative_text_summary</span>, <span class="summary-content">text_summary</span>');
 
     // Remove image.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
     $this->drupalPostForm(NULL, [], t('Save'));
 
     // Assert the summary is correctly generated.
@@ -111,7 +106,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
 
     $this->drupalGet('node/add/paragraphed_test');
     $this->drupalPostForm(NULL, NULL, t('Add nested_paragraph'));
-    $this->drupalPostAjaxForm(NULL, NULL, t('field_paragraphs_0_subform_field_nested_content_user_paragraph_add_more'));
+    $this->drupalPostForm(NULL, NULL, t('field_paragraphs_0_subform_field_nested_content_user_paragraph_add_more'));
     $edit = [
       'title[0][value]' => 'Node title',
       'field_paragraphs[0][subform][field_nested_content][0][subform][field_user][0][target_id]' => $test_user->label() . ' (' . $test_user->id() . ')',
@@ -123,8 +118,8 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
 
     $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['title' => 'Node title']);
     $this->drupalGet('node/' . current($nodes)->id() . '/edit');
-    $this->drupalPostAjaxForm(NULL, [], t('field_paragraphs_0_edit'));
-    $this->drupalPostAjaxForm(NULL, [], t('field_paragraphs_0_collapse'));
+    $this->drupalPostForm(NULL, [], t('field_paragraphs_0_edit'));
+    $this->drupalPostForm(NULL, [], t('field_paragraphs_0_collapse'));
     $this->assertResponse(200);
 
     // Add a Block Paragraphs type.
@@ -141,11 +136,11 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->placeBlock($after_block2->id());
 
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
     $edit = [
       'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'block_content:' . $after_block2->uuid(),
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
     $this->assertRaw('<span class="summary-content">Llama custom block');
     $edit = ['title[0][value]' => 'Test llama block'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
@@ -161,7 +156,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->addParagraphsType($paragraph_type);
     static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'link', 'Link', 'link', [], []);
     // Create a node with a link paragraph.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_link_paragraph_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_link_paragraph_add_more');
     $edit = [
       'title[0][value]' => 'Test link',
       'field_paragraphs[0][subform][field_link][0][uri]' => 'http://www.google.com',
@@ -171,7 +166,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->clickLink(t('Edit'));
     $this->assertRaw('<span class="summary-content">http://www.google.com');
     // Set a link title.
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_0_edit');
     $edit = [
       'field_paragraphs[0][subform][field_link][0][title]' => 'Link title',
     ];
@@ -194,7 +189,7 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->drupalPostForm('admin/structure/paragraphs_type/nested_paragraph/form-display', $edit, 'Save');
 
     // Add a unpublished text paragraph and check its summary when unpublished.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_title_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_title_add_more');
     $edit = [
       'title[0][value]' => 'Access summary test',
       'field_paragraphs[0][subform][field_title][0][value]' => 'memorable_summary_title',
@@ -207,8 +202,8 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->assertRaw('<span class="summary-content">memorable_summary_title');
     $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
 
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_title_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_title_add_more');
 
     // Add a nested paragraph and with the parent unpublished, check the
     // summary.
@@ -224,8 +219,8 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
     $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
     $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
 
@@ -237,8 +232,8 @@ class ParagraphsExperimentalEditModesTest extends ParagraphsExperimentalTestBase
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
     $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_nested_content_0_collapse');
     $this->assertRaw('<span class="summary-content">memorable_nested_summary_title');
     $this->assertEqual(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-view')]")));
   }

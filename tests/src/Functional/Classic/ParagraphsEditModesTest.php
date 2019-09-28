@@ -1,8 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Classic;
-
-use Drupal\field_ui\Tests\FieldUiTestTrait;
+namespace Drupal\Tests\paragraphs\Functional\Classic;
 
 /**
  * Tests paragraphs edit modes.
@@ -10,8 +8,6 @@ use Drupal\field_ui\Tests\FieldUiTestTrait;
  * @group paragraphs
  */
 class ParagraphsEditModesTest extends ParagraphsTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * Modules to enable.
@@ -42,15 +38,15 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
 
     // Set edit mode to closed.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
-    $this->drupalPostAjaxForm(NULL, [], "field_paragraphs_settings_edit");
+    $this->drupalPostForm(NULL, [], "field_paragraphs_settings_edit");
     $edit = ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Add a paragraph.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
-    $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_title_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_title_add_more');
 
-    $files = $this->drupalGetTestFiles('image');
+    $files = $this->getTestFiles('image');
     $file_system = \Drupal::service('file_system');
 
     // Create a node with an image and text.
@@ -68,19 +64,17 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     $this->assertRaw('<span class="summary-content">Title example');
 
     // Edit and remove alternative text.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
     $edit = [
       'field_paragraphs[0][subform][field_image][0][alt]' => 'alternative_text_summary',
-      'field_paragraphs[0][subform][field_image][0][width]' => 300,
-      'field_paragraphs[0][subform][field_image][0][height]' => 300,
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_collapse');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
     // Assert the summary is correctly generated.
     $this->assertRaw('<span class="summary-content">alternative_text_summary</span>, <span class="summary-content">text_summary</span>');
 
     // Remove image.
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
     $this->drupalPostForm(NULL, [], t('Save'));
 
     // Assert the summary is correctly generated.
@@ -93,7 +87,7 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
 
     // Test the summary of a Block field.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
     $edit = [
       'title[0][value]' => 'Node with a Block Paragraph',
       'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'system_breadcrumb_block',
