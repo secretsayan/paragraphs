@@ -1,8 +1,7 @@
 <?php
 
-namespace Drupal\paragraphs\Tests\Experimental;
+namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
-use Drupal\field_ui\Tests\FieldUiTestTrait;
 use Drupal\paragraphs\Entity\ParagraphsType;
 
 /**
@@ -11,8 +10,6 @@ use Drupal\paragraphs\Entity\ParagraphsType;
  * @group paragraphs
  */
 class ParagraphsExperimentalAddModesTest extends ParagraphsExperimentalTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * Tests that paragraphs field does not allow default values.
@@ -124,7 +121,7 @@ class ParagraphsExperimentalAddModesTest extends ParagraphsExperimentalTestBase 
     $buttons = $this->xpath('//input[@class="field-add-more-submit button js-form-submit form-submit"]');
     // Check if the buttons are in the same order as the given array.
     foreach ($buttons as $key => $button) {
-      $this->assertEqual($button['value'], $options[$key]);
+      $this->assertEqual($button->getValue(), $options[$key]);
     }
     $this->assertTrue(count($buttons) == count($options), 'The amount of drop down options matches with the given array');
   }
@@ -142,7 +139,7 @@ class ParagraphsExperimentalAddModesTest extends ParagraphsExperimentalTestBase 
     $buttons = $this->xpath('//*[@name="' . $paragraphs_field . '[add_more][add_more_select]"]/option');
     // Check if the options are in the same order as the given array.
     foreach ($buttons as $key => $button) {
-      $this->assertEqual($button['value'], $options[$key]);
+      $this->assertEqual($button->getValue(), $options[$key]);
     }
     $this->assertTrue(count($buttons) == count($options), 'The amount of select options matches with the given array');
     $this->assertNotEqual($this->xpath('//*[@name="' . $paragraphs_field .'_add_more"]'), [], 'The add button is displayed');
