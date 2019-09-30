@@ -1,19 +1,16 @@
 <?php
 
-namespace Drupal\paragraphs_library\Tests;
+namespace Drupal\Tests\paragraphs_library\Functional;
 
 use Drupal\Core\Url;
-use Drupal\field_ui\Tests\FieldUiTestTrait;
-use Drupal\paragraphs\Tests\Experimental\ParagraphsExperimentalTestBase;
+use Drupal\Tests\paragraphs\Functional\Experimental\ParagraphsExperimentalTestBase;
 
 /**
  * Tests paragraphs library functionality.
  *
  * @group paragraphs_library
  */
-class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
-
-  use FieldUiTestTrait;
+class ParagraphsLibraryTest extends ParagraphsExperimentalTestBase {
 
   /**
    * Modules to enable.
@@ -50,7 +47,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     // Add a new library item.
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_paragraph_add_more');
     $edit = [
       'label[0][value]' => 're usable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 're_usable_text',
@@ -78,17 +75,17 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertText('Used', 'Usage column is available.');
     $this->assertText('Changed', 'Changed column is available.');
     $result = $this->cssSelect('.views-field-count');
-    $this->assertEqual(trim($result[1]->__toString()), '0', 'Usage info is correctly displayed.');
+    $this->assertEqual(trim($result[1]->getText()), '0', 'Usage info is correctly displayed.');
     $this->assertText('Delete');
     // Check the changed field.
     $result = $this->cssSelect('.views-field-changed');
-    $this->assertNotNull(trim($result[1]->__toString()));
+    $this->assertNotNull(trim($result[1]->getText()));
     $this->clickLink('Edit');
     $this->assertFieldByName('label[0][value]', 're usable paragraph label');
     $this->assertFieldByName('paragraphs[0][subform][field_text][0][value]', 're_usable_text');
 
     // Create a node with the library paragraph.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)'
@@ -102,7 +99,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     $this->drupalGet('admin/content/paragraphs');
     $result = $this->cssSelect('.views-field-count');
-    $this->assertEqual(trim($result[1]->__toString()), '1', 'Usage info is correctly displayed.');
+    $this->assertEqual(trim($result[1]->getText()), '1', 'Usage info is correctly displayed.');
 
     // Assert that the paragraph is shown correctly.
     $node_one = $this->getNodeByTitle('library_test');
@@ -110,7 +107,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertText('re_usable_text');
 
     // Create a new node with the library paragraph.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test_new',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)'
@@ -125,7 +122,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertNoText('Paragraphs', 'Label from library item field paragraphs is hidden.');
 
     $this->drupalGet('node/' . $node_two->id() . '/edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test_new',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 're usable paragraph label (1)',
@@ -134,17 +131,17 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save');
 
     $reusable_paragraphs_text = $this->xpath('//div[contains(@class, "field--name-field-paragraphs")]/div[@class="field__items"]/div[1]//div[@class="field__item"]/p');
-    $this->assertEqual($reusable_paragraphs_text[0], 're_usable_text');
+    $this->assertEqual($reusable_paragraphs_text[0]->getText(), 're_usable_text');
 
     $second_reusable_paragraphs_text = $this->xpath('//div[contains(@class, "field--name-field-paragraphs")]/div[@class="field__items"]/div[2]//div[@class="field__item"]/p');
-    $this->assertEqual($second_reusable_paragraphs_text[0], 're_usable_text');
+    $this->assertEqual($second_reusable_paragraphs_text[0]->getText(), 're_usable_text');
 
     // Edit the paragraph and change the text.
     $this->drupalGet('admin/content/paragraphs');
 
     $this->assertText('Used', 'Usage column is available.');
     $result = $this->cssSelect('.views-field-count');
-    $this->assertEqual(trim($result[1]->__toString()), '4', 'Usage info is correctly displayed.');
+    $this->assertEqual(trim($result[1]->getText()), '4', 'Usage info is correctly displayed.');
     $this->assertNoLink('4', 'Link to usage statistics is not available for user without permission.');
 
     $this->clickLink('Edit');
@@ -199,15 +196,14 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertLink('4', 0, 'Link to usage statistics is available for user with permission.');
 
     $element = $this->cssSelect('th.views-field-paragraphs__target-id');
-    $this->assertEqual($element[0]->__toString(), 'Paragraphs', 'Paragraphs column is available.');
+    $this->assertEqual($element[0]->getText(), 'Paragraphs', 'Paragraphs column is available.');
 
     $element = $this->cssSelect('.paragraphs-description .paragraphs-content-wrapper .summary-content');
-    $this->assertEqual(trim($element[0]->__toString()), 're_usable_text_new', 'Paragraphs summary available.');
+    $this->assertEqual(trim($element[0]->getText()), 're_usable_text_new', 'Paragraphs summary available.');
 
     // Check that the deletion of library items does not cause errors.
     current($library_items)->delete();
     $this->drupalGet('node/' . $node_one->id());
-    $this->assertNoErrorsLogged();
 
     // Test paragraphs library item field UI.
     $this->loginAsAdmin([
@@ -225,7 +221,6 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->clickLink('Manage fields');
     $this->clickLink(t('Add field'));
     $this->assertResponse(200);
-    $this->assertNoErrorsLogged();
     $this->assertNoText('plugin does not exist');
     $this->drupalGet('admin/config/content');
     $this->clickLink('Paragraphs library item settings');
@@ -249,7 +244,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     // Add a new library item.
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'reusable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 'reusable_text',
@@ -258,7 +253,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->assertText('Paragraph reusable paragraph label has been created.');
 
     // Add created library item to a node.
-    $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'Node with converted library item',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 'reusable paragraph label',
@@ -269,7 +264,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     // Convert library item to paragraph.
     $this->clickLink('Edit');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_0_unlink_from_library');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_unlink_from_library');
     $this->assertFieldByName('field_paragraphs[0][subform][field_text][0][value]');
     $this->assertNoFieldByName('field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]');
     $this->assertText('reusable_text');
@@ -329,7 +324,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $edit = [
       'field_paragraphs[0][subform][field_text][0][value]' => 'Random text for testing converting into library.',
     ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     $this->assertText('From library');
     $this->assertText('Reusable paragraph');
     $this->assertFieldByName('field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]', 'text: Random text for testing converting into library. (1)');
@@ -352,7 +347,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->getNodeByTitle('NodeTitle');
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->drupalPostAjaxForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
+    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_promote_to_library');
     user_role_grant_permissions($user_role, ['administer paragraphs library']);
     $this->drupalGet('/admin/content/paragraphs');
     $this->assertText('Text');
@@ -397,8 +392,8 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
       'fields[field_paragraphs][type]' => 'paragraphs',
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->drupalPostAjaxForm('admin/content/paragraphs/add/default', [], 'paragraphs_nested_test_add_more');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_0_subform_field_paragraphs_text_add_more');
+    $this->drupalPostForm('admin/content/paragraphs/add/default', [], 'paragraphs_nested_test_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_0_subform_field_paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'Test nested',
       'paragraphs[0][subform][field_paragraphs][0][subform][field_text][0][value]' => 'test text paragraph',
@@ -415,7 +410,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     $this->drupalLogin($user);
     $this->drupalGet('admin/content/paragraphs');
     $paragraph_type = $this->xpath('//*[contains(@class, "view-paragraphs-library")]/div[contains(@class, "view-content")]/table/tbody/tr/td[2]');
-    $this->assertEqual(trim(strip_tags($paragraph_type[0]->asXML())), 'nested_test');
+    $this->assertEqual(trim(strip_tags($paragraph_type[0]->getText())), 'nested_test');
   }
 
   /**
@@ -447,7 +442,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     // Check the paragraph validation.
     $this->assertText('Paragraphs field is required.');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_text_paragraph_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_paragraph_add_more');
     $edit['paragraphs[0][subform][field_text][0][value]'] = 're_usable_text';
 
     // Check that the library item is created.
@@ -477,7 +472,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     // Add a library item with paragraphs type "Text".
     $this->drupalGet('admin/content/paragraphs');
     $this->clickLink('Add library item');
-    $this->drupalPostAjaxForm(NULL, [], 'paragraphs_text_add_more');
+    $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $edit = [
       'label[0][value]' => 'reusable paragraph label',
       'paragraphs[0][subform][field_text][0][value]' => 'reusable_text',
@@ -488,7 +483,7 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
     // Create a node with a "From library" paragraph referencing the library
     // item.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostAjaxForm(NULL, [], 'field_paragraphs_from_library_add_more');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_from_library_add_more');
     $edit = [
       'title[0][value]' => 'library_test',
       'field_paragraphs[0][subform][field_reusable_paragraph][0][target_id]' => 'reusable paragraph label',
@@ -537,8 +532,8 @@ class ParagraphsLibraryItemTest extends ParagraphsExperimentalTestBase {
 
     // Add nested paragraph directly in library.
     $this->drupalGet('admin/content/paragraphs/add/default');
-    $this->drupalPostAjaxForm(NULL, NULL, 'paragraphs_nested_paragraph_add_more');
-    $this->drupalPostAjaxForm(NULL, NULL, 'paragraphs_0_subform_field_err_field_test_content_add_more');
+    $this->drupalPostForm(NULL, NULL, 'paragraphs_nested_paragraph_add_more');
+    $this->drupalPostForm(NULL, NULL, 'paragraphs_0_subform_field_err_field_test_content_add_more');
     $edit = [
       'label[0][value]' => 'Test revisions nested original',
       'paragraphs[0][subform][field_err_field][0][subform][field_paragraphs_text][0][value]' => 'Example text for revision original.',
