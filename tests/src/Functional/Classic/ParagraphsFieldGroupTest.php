@@ -48,6 +48,7 @@ class ParagraphsFieldGroupTest extends ParagraphsTestBase {
 
     // Put the text field into the field group.
     $edit = [
+      'fields[group_field][region]' => 'content',
       'fields[field_text][parent]' => 'group_field'
     ];
     $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type . '/form-display', $edit, t('Save'));
