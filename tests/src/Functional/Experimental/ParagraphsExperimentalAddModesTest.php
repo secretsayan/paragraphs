@@ -118,7 +118,7 @@ class ParagraphsExperimentalAddModesTest extends ParagraphsExperimentalTestBase 
    */
   protected function assertAddButtons($options) {
     $this->drupalGet('node/add/paragraphed_test');
-    $buttons = $this->xpath('//input[@class="field-add-more-submit button js-form-submit form-submit"]');
+    $buttons = $this->xpath('//input[@class="field-add-more-submit paragraphs-add-wrapper button js-form-submit form-submit"]');
     // Check if the buttons are in the same order as the given array.
     foreach ($buttons as $key => $button) {
       $this->assertEqual($button->getValue(), $options[$key]);

@@ -60,7 +60,10 @@ class ParagraphsExperimentalEditPerspectivesUiTest extends WebDriverTestBase {
     $this->addFieldtoParagraphType('testplugin', 'body', 'string_long');
 
     $this->drupalGet('node/add/testcontent');
+    $add_wrapper = $page->find('css', '.paragraphs-add-wrapper');
+    $this->assertTrue($add_wrapper->isVisible());
     $this->clickLink('Behavior');
+    $this->assertFalse($add_wrapper->isVisible());
     $style_selector = $page->find('css', '.form-item-field-testparagraphfield-0-behavior-plugins-test-text-color-text-color');
     $this->assertTrue($style_selector->isVisible());
     $this->clickLink('Content');

@@ -65,12 +65,14 @@
         $parWidget.addClass('content-active');
         $parWidget.find('.paragraphs-content').show();
         $parWidget.find('.paragraphs-behavior').hide();
+        $parWidget.find('.paragraphs-add-wrapper').parent().show();
       }
 
       if ($parWidget.find('#behavior').hasClass('is-active')) {
         $parWidget.addClass('behavior-active');
         $parWidget.find('.paragraphs-content').hide();
         $parWidget.find('.paragraphs-behavior').show();
+        $parWidget.find('.paragraphs-add-wrapper').parent().hide();
       }
   };
 
