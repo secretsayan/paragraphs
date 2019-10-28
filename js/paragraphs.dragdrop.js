@@ -80,18 +80,16 @@
        *   The Sortable event.
        */
       function handleReorder(evt) {
-        var $item = $(evt.item);
-        var $parent = $item.closest('.paragraphs-dragdrop__list');
-        var $children = $parent.children('li');
-        var $srcParent = $(evt.to);
-        var $srcChildren = $srcParent.children('li');
-
         // Update both the source and target children.
-        updateWeightsAndPath($srcChildren);
-        updateWeightsAndPath($children);
+        if (evt.from === evt.to) {
+          updateWeightsAndPath($(evt.to).children('li'));
+        }
+        else {
+          updateWeightsAndPath($(evt.from).children('li'));
+          updateWeightsAndPath($(evt.to).children('li'));
+        }
         endDragClasses();
       }
-
 
       /**
        * Update weight and recursively update path of the provided paragraphs.
