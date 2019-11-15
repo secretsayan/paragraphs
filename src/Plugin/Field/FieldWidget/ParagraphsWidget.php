@@ -341,7 +341,7 @@ class ParagraphsWidget extends WidgetBase {
     }
     $features_labels = array_intersect_key($this->getSettingOptions('features'), array_filter($this->getSetting('features')));
     if (!empty($features_labels)) {
-      $summary[] = $this->t('Features: @features', ['@features' => implode($features_labels, ', ')]);
+      $summary[] = $this->t('Features: @features', ['@features' => implode(', ', $features_labels)]);
     }
 
     return $summary;
@@ -1307,7 +1307,7 @@ class ParagraphsWidget extends WidgetBase {
     foreach ($field_definitions as $child_field_name => $field_definition) {
       $child_path = implode('][', array_merge($array_parents, [$child_field_name]));
       $cardinality = $field_definition->getFieldStorageDefinition()->getCardinality();
-      $allowed_types = implode(array_keys($this->getAllowedTypes($field_definition)), ',');
+      $allowed_types = implode(',', array_keys($this->getAllowedTypes($field_definition)));
       $elements[$child_field_name] = [
         '#type' => 'container',
         '#attributes' => ['class' => ['paragraphs-dragdrop-wrapper']],
