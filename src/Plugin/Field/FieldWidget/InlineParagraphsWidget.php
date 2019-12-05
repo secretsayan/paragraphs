@@ -396,8 +396,10 @@ class InlineParagraphsWidget extends WidgetBase {
         $actions = array();
         $links = array();
 
+        // Avoid checking delete access for new entities.
+        $delete_access = $paragraphs_entity->isNew() || $paragraphs_entity->access('delete');
         // Hide the button when translating.
-        $button_access = $paragraphs_entity->access('delete') && !$this->isTranslating;
+        $button_access = $delete_access && !$this->isTranslating;
         if ($item_mode != 'remove') {
           $links['remove_button'] = [
             '#type' => 'submit',
@@ -448,21 +450,21 @@ class InlineParagraphsWidget extends WidgetBase {
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to edit this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('update') && $paragraphs_entity->access('delete'),
+            '#access' => !$paragraphs_entity->access('update') && $delete_access,
           );
 
           $info['remove_button_info'] = array(
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to remove this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('delete') && $paragraphs_entity->access('update'),
+            '#access' => !$delete_access && $paragraphs_entity->access('update'),
           );
 
           $info['edit_remove_button_info'] = array(
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to edit or remove this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('update') && !$paragraphs_entity->access('delete'),
+            '#access' => !$paragraphs_entity->access('update') && !$delete_access,
           );
         }
         elseif ($item_mode == 'preview' || $item_mode == 'closed') {
@@ -504,21 +506,21 @@ class InlineParagraphsWidget extends WidgetBase {
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to edit this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('update') && $paragraphs_entity->access('delete'),
+            '#access' => !$paragraphs_entity->access('update') && $delete_access,
           );
 
           $info['remove_button_info'] = array(
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to remove this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('delete') && $paragraphs_entity->access('update'),
+            '#access' => !$delete_access && $paragraphs_entity->access('update'),
           );
 
           $info['edit_remove_button_info'] = array(
             '#type' => 'container',
             '#markup' => $this->t('You are not allowed to edit or remove this @title.', array('@title' => $this->getSetting('title'))),
             '#attributes' => ['class' => ['messages', 'messages--warning']],
-            '#access' => !$paragraphs_entity->access('update') && !$paragraphs_entity->access('delete'),
+            '#access' => !$paragraphs_entity->access('update') && !$delete_access,
           );
         }
         elseif ($item_mode == 'remove') {

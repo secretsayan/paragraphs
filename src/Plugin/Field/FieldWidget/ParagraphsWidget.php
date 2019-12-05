@@ -701,14 +701,16 @@ class ParagraphsWidget extends WidgetBase {
           ];
         }
 
-        if (!$paragraphs_entity->access('update') && $paragraphs_entity->access('delete')) {
+        // Avoid checking delete access for new entities.
+        $delete_access = $paragraphs_entity->isNew() || $paragraphs_entity->access('delete');
+        if (!$paragraphs_entity->access('update') && $delete_access) {
           $info['edit'] = [
             '#theme' => 'paragraphs_info_icon',
             '#message' => $this->t('You are not allowed to edit this @title.', ['@title' => $this->getSetting('title')]),
             '#icon' => 'edit-disabled',
           ];
         }
-        elseif (!$paragraphs_entity->access('delete') && $paragraphs_entity->access('update')) {
+        elseif (!$delete_access && $paragraphs_entity->access('update')) {
           $info['remove'] = [
             '#theme' => 'paragraphs_info_icon',
             '#message' => $this->t('You are not allowed to remove this @title.', ['@title' => $this->getSetting('title')]),
@@ -2665,7 +2667,8 @@ class ParagraphsWidget extends WidgetBase {
    *   TRUE if we can remove paragraph, otherwise FALSE.
    */
   protected function removeButtonAccess(ParagraphInterface $paragraph) {
-    if (!$paragraph->access('delete')) {
+    // Avoid checking delete access for new entities.
+    if (!$paragraph->isNew() && !$paragraph->access('delete')) {
       return FALSE;
     }
 
