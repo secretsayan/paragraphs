@@ -176,7 +176,7 @@ class ParagraphSelection extends DefaultSelection {
       $weight++;
     }
 
-    if (!count($bundle_options)) {
+    if (empty($bundle_options)) {
       $form['allowed_bundles_explain'] = [
         '#type' => 'markup',
         '#markup' => $this->t('You did not add any Paragraph types yet, click <a href=":here">here</a> to add one.', [':here' => Url::fromRoute('paragraphs.type_add')->toString()]),

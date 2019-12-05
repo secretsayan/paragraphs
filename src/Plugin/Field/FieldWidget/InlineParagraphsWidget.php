@@ -564,7 +564,7 @@ class InlineParagraphsWidget extends WidgetBase {
           ];
         }
 
-        if (count($links)) {
+        if (!empty($links)) {
           $show_links = 0;
           foreach($links as $link_item) {
             if (!isset($link_item['#access']) || $link_item['#access']) {
@@ -597,7 +597,7 @@ class InlineParagraphsWidget extends WidgetBase {
           }
         }
 
-        if (count($info)) {
+        if (!empty($info)) {
           $show_info = FALSE;
           foreach($info as $info_item) {
             if (!isset($info_item['#access']) || $info_item['#access']) {
@@ -612,7 +612,7 @@ class InlineParagraphsWidget extends WidgetBase {
           }
         }
 
-        if (count($actions)) {
+        if (!empty($actions)) {
           $show_actions = FALSE;
           foreach($actions as $action_item) {
             if (!isset($action_item['#access']) || $action_item['#access']) {

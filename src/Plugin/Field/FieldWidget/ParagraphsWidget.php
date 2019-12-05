@@ -731,13 +731,13 @@ class ParagraphsWidget extends WidgetBase {
         // Allow modules to alter widget actions.
         \Drupal::moduleHandler()->alter('paragraphs_widget_actions', $widget_actions, $context);
 
-        if (count($widget_actions['actions'])) {
+        if (!empty($widget_actions['actions'])) {
           // Expand all actions to proper submit elements and add it to top
           // actions sub component.
           $element['top']['actions']['actions'] = array_map([$this, 'expandButton'], $widget_actions['actions']);
         }
 
-        if (count($widget_actions['dropdown_actions'])) {
+        if (!empty($widget_actions['dropdown_actions'])) {
           // Expand all dropdown actions to proper submit elements and add
           // them to top dropdown actions sub component.
           $element['top']['actions']['dropdown_actions'] = array_map([$this, 'expandButton'], $widget_actions['dropdown_actions']);
@@ -877,7 +877,7 @@ class ParagraphsWidget extends WidgetBase {
       }
 
       // If we have any info items lets add them to the top section.
-      if (count($info)) {
+      if (!empty($info)) {
         foreach ($info as $info_item) {
           if (!isset($info_item['#access']) || $info_item['#access']) {
             $element['top']['icons']['items'] = $info;
@@ -990,7 +990,7 @@ class ParagraphsWidget extends WidgetBase {
       $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($field_definition ? $field_definition->getSetting('target_type') : $this->fieldDefinition->getSetting('target_type'));
       $weight = 0;
       foreach ($bundles as $machine_name => $bundle) {
-        if (!count($this->getSelectionHandlerSetting('target_bundles'))
+        if (empty($this->getSelectionHandlerSetting('target_bundles'))
           || in_array($machine_name, $this->getSelectionHandlerSetting('target_bundles'))) {
 
           $return_bundles[$machine_name] = array(
@@ -2268,7 +2268,7 @@ class ParagraphsWidget extends WidgetBase {
         elseif (!$form_state->isValidationComplete() && $form_state->getLimitValidationErrors() === NULL) {
           $violations = $paragraphs_entity->validate();
           $violations->filterByFieldAccess();
-          if (count($violations)) {
+          if (!empty($violations)) {
             /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
             foreach ($violations as $violation) {
 
