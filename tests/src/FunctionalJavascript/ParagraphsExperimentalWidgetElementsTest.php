@@ -32,6 +32,11 @@ class ParagraphsExperimentalWidgetElementsTest extends WebDriverTestBase {
   ];
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Test paragraphs drag handler during translation.
    */
   public function testDragHandler() {
