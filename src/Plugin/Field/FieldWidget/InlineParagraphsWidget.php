@@ -230,7 +230,7 @@ class InlineParagraphsWidget extends WidgetBase {
     $host = $items->getEntity();
     $widget_state = static::getWidgetState($parents, $field_name, $form_state);
 
-    $entity_manager = \Drupal::entityTypeManager();
+    $entity_type_manager = \Drupal::entityTypeManager();
     $target_type = $this->getFieldSetting('target_type');
 
     $item_mode = isset($widget_state['paragraphs'][$delta]['mode']) ? $widget_state['paragraphs'][$delta]['mode'] : 'edit';
@@ -260,10 +260,10 @@ class InlineParagraphsWidget extends WidgetBase {
     }
     elseif (isset($widget_state['selected_bundle'])) {
 
-      $entity_type = $entity_manager->getDefinition($target_type);
+      $entity_type = $entity_type_manager->getDefinition($target_type);
       $bundle_key = $entity_type->getKey('bundle');
 
-      $paragraphs_entity = $entity_manager->getStorage($target_type)->create(array(
+      $paragraphs_entity = $entity_type_manager->getStorage($target_type)->create(array(
         $bundle_key => $widget_state['selected_bundle'],
       ));
       $paragraphs_entity->setParentEntity($items->getEntity(), $field_name);

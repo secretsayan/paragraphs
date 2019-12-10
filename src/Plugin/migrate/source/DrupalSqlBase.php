@@ -20,8 +20,8 @@ abstract class DrupalSqlBase extends MigrateDrupalSqlBase implements Configurabl
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, StateInterface $state, EntityTypeManagerInterface $entity_manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration, $state, $entity_manager);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, StateInterface $state, EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration, $state, $entity_type_manager);
     $this->setConfiguration($configuration);
   }
 
