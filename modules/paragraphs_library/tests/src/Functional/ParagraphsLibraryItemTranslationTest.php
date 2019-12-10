@@ -39,6 +39,11 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp() {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_test');

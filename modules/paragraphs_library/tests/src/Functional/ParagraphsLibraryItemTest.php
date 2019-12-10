@@ -33,6 +33,11 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'classy';
+
+  /**
+   * {@inheritdoc}
+   */
   public function setUp() {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_test', 'field_paragraphs');
