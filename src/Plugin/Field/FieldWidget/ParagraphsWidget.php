@@ -1089,6 +1089,9 @@ class ParagraphsWidget extends WidgetBase {
           'callback' => [get_class($this), 'dragDropModeAjax'],
           'wrapper' => $this->fieldWrapperId,
         ],
+        '#limit_validation_errors' => [
+          array_merge($this->fieldParents, [$field_name]),
+        ],
         '#button_type' => 'primary',
       ]);
 
