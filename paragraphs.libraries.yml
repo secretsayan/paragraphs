@@ -70,7 +70,6 @@ drupal.paragraphs.modal:
   dependencies:
     - core/drupal.dialog.ajax
     - core/jquery.once
-    - core/jquery.ui.tabs
 
 # This library will be deleted in paragraphs_library_info_alter when
 # core/sortable is available.
