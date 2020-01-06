@@ -692,9 +692,10 @@ class InlineParagraphsWidget extends WidgetBase {
         }
       }
       elseif ($item_mode == 'preview') {
+        $view_builder = $entity_type_manager->getViewBuilder($paragraphs_entity->getEntityTypeId());
         $element['subform'] = array();
         $element['behavior_plugins'] = [];
-        $element['preview'] = entity_view($paragraphs_entity, 'preview', $paragraphs_entity->language()->getId());
+        $element['preview'] = $view_builder->view($paragraphs_entity, 'preview', $paragraphs_entity->language()->getId());
         $element['preview']['#access'] = $paragraphs_entity->access('view');
       }
       elseif ($item_mode == 'closed') {

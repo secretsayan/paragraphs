@@ -2,8 +2,8 @@
 
 namespace Drupal\paragraphs\Plugin\migrate\source;
 
+use Drupal\Component\Plugin\ConfigurableInterface;
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase as MigrateDrupalSqlBase;
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\State\StateInterface;
@@ -15,7 +15,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
  * Add and implement Configurable Plugin interface to
  * Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase.
  */
-abstract class DrupalSqlBase extends MigrateDrupalSqlBase implements ConfigurablePluginInterface {
+abstract class DrupalSqlBase extends MigrateDrupalSqlBase implements ConfigurableInterface {
 
   /**
    * {@inheritdoc}

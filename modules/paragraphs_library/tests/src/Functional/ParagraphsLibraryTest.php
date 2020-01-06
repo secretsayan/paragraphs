@@ -35,7 +35,7 @@ class ParagraphsLibraryTest extends ParagraphsExperimentalTestBase {
    */
   public function testLibraryItems() {
     // Set default theme.
-    \Drupal::service('theme_handler')->install(['bartik']);
+    \Drupal::service('theme_installer')->install(['bartik']);
     $this->config('system.theme')->set('default', 'bartik')->save();
     $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content', 'administer paragraphs library']);
 

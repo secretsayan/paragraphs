@@ -2,15 +2,10 @@
 
 namespace Drupal\paragraphs\Plugin\EntityReferenceSelection;
 
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Plugin\EntityReferenceSelection\DefaultSelection;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\NestedArray;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Default plugin implementation of the Entity Reference Selection plugin.

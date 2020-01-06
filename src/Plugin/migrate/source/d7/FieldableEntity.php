@@ -2,8 +2,8 @@
 
 namespace Drupal\paragraphs\Plugin\migrate\source\d7;
 
+use Drupal\Component\Plugin\ConfigurableInterface;
 use Drupal\migrate_drupal\Plugin\migrate\source\d7\FieldableEntity as MigrateFieldableEntity;
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\State\StateInterface;
@@ -15,7 +15,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
  * Add and implement Configurable Plugin interface to
  * Drupal\migrate_drupal\Plugin\migrate\source\d7\FieldableEntity.
  */
-abstract class FieldableEntity extends MigrateFieldableEntity implements ConfigurablePluginInterface {
+abstract class FieldableEntity extends MigrateFieldableEntity implements ConfigurableInterface {
 
   /**
    * {@inheritdoc}
