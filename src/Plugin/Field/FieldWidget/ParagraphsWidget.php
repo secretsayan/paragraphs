@@ -1616,7 +1616,7 @@ class ParagraphsWidget extends WidgetBase {
     }
     elseif ($add_mode == 'modal') {
       $this->buildModalAddForm($add_more_elements);
-      $add_more_elements['add_modal_form_area']['#suffix'] = $this->t('to %type', ['%type' => $this->fieldDefinition->getLabel()]);
+      $add_more_elements['add_modal_form_area']['#suffix'] = '<span class="paragraphs-add-suffix">' . $this->t('to %type', ['%type' => $this->fieldDefinition->getLabel()]) . '</span>';
     }
     $add_more_elements['#weight'] = 1;
 
