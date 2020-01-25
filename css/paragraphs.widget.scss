@@ -96,6 +96,13 @@
       // We are using inline-flex here so 'Add type' dropdown button is inline
       // and aligned 'to type' text.
       display: inline-flex;
+      // Remove margins and paddings that come from Claro theme.
+      margin: 0;
+      padding: 0;
+
+      .dropbutton-multiple {
+        margin: 0;
+      }
     }
 
     .dropbutton-wrapper {
@@ -106,11 +113,6 @@
       // Reset some CSS that are coming from core.
       margin-right: 0;
       padding-right: 0;
-    }
-
-    // Reset some CSS that are coming from core.
-    .dropbutton-widget {
-      position: static;
     }
 
     .field-multiple-table {

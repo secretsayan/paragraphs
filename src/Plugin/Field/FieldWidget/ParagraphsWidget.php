@@ -645,7 +645,7 @@ class ParagraphsWidget extends WidgetBase {
               '#paragraphs_mode' => 'closed',
               '#paragraphs_show_warning' => TRUE,
               '#attributes' => [
-                'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse'],
+                'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse', 'button--extrasmall'],
                 'title' => $this->t('Collapse'),
               ],
             ];
@@ -669,7 +669,7 @@ class ParagraphsWidget extends WidgetBase {
             '#access' => $paragraphs_entity->access('update') && !$translating_force_close,
             '#paragraphs_mode' => 'edit',
             '#attributes' => [
-              'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit'],
+              'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit', 'button--extrasmall'],
               'title' => $this->t('Edit'),
             ],
           ]);
@@ -2567,7 +2567,7 @@ class ParagraphsWidget extends WidgetBase {
       // order and with the right settings.
       if ($mode === 'closed') {
         $edit_all['#attributes'] = [
-          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit'],
+          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-edit', 'button--extrasmall'],
           'title' => $this->t('Edit all'),
         ];
         $edit_all['#title'] = $this->t('Edit All');
@@ -2576,7 +2576,7 @@ class ParagraphsWidget extends WidgetBase {
       }
       else {
         $collapse_all['#attributes'] = [
-          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse'],
+          'class' => ['paragraphs-icon-button', 'paragraphs-icon-button-collapse', 'button--extrasmall'],
           'title' => $this->t('Collapse all'),
         ];
         $actions['actions']['collapse_all'] = $collapse_all;

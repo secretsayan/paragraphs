@@ -415,7 +415,7 @@ class InlineParagraphsWidget extends WidgetBase {
               'effect' => 'fade',
             ],
             '#access' => $button_access,
-            '#prefix' => '<li class="remove">',
+            '#prefix' => '<li class="remove dropbutton__item  dropbutton__item--extrasmall">',
             '#suffix' => '</li>',
             '#paragraphs_mode' => 'remove',
           ];
@@ -439,7 +439,7 @@ class InlineParagraphsWidget extends WidgetBase {
                 'effect' => 'fade',
               ),
               '#access' => $paragraphs_entity->access('update'),
-              '#prefix' => '<li class="collapse">',
+              '#prefix' => '<li class="collapse dropbutton__item  dropbutton__item--extrasmall">',
               '#suffix' => '</li>',
               '#paragraphs_mode' => 'collapsed',
               '#paragraphs_show_warning' => TRUE,
@@ -482,7 +482,7 @@ class InlineParagraphsWidget extends WidgetBase {
               'effect' => 'fade',
             ),
             '#access' => $paragraphs_entity->access('update'),
-            '#prefix' => '<li class="edit">',
+            '#prefix' => '<li class="edit dropbutton__item  dropbutton__item--extrasmall">',
             '#suffix' => '</li>',
             '#paragraphs_mode' => 'edit',
           );
@@ -542,7 +542,7 @@ class InlineParagraphsWidget extends WidgetBase {
               'wrapper' => $widget_state['ajax_wrapper_id'],
               'effect' => 'fade',
             ],
-            '#prefix' => '<li class="confirm-remove">',
+            '#prefix' => '<li class="confirm-remove dropbutton__item  dropbutton__item--extrasmall">',
             '#suffix' => '</li>',
             '#paragraphs_mode' => 'removed',
           ];
@@ -560,7 +560,7 @@ class InlineParagraphsWidget extends WidgetBase {
               'wrapper' => $widget_state['ajax_wrapper_id'],
               'effect' => 'fade',
             ],
-            '#prefix' => '<li class="restore">',
+            '#prefix' => '<li class="restore dropbutton__item  dropbutton__item--extrasmall">',
             '#suffix' => '</li>',
             '#paragraphs_mode' => 'edit',
           ];
@@ -580,7 +580,7 @@ class InlineParagraphsWidget extends WidgetBase {
             if ($show_links > 1) {
               $element['top']['links']['#theme_wrappers'] = array('dropbutton_wrapper', 'paragraphs_dropbutton_wrapper');
               $element['top']['links']['prefix'] = array(
-                '#markup' => '<ul class="dropbutton">',
+                '#markup' => '<ul class="dropbutton dropbutton--multiple dropbutton--extrasmall">',
                 '#weight' => -999,
               );
               $element['top']['links']['suffix'] = array(
@@ -1037,7 +1037,7 @@ class InlineParagraphsWidget extends WidgetBase {
       $drop_button = TRUE;
       $add_more_elements['#theme_wrappers'] = ['dropbutton_wrapper'];
       $add_more_elements['prefix'] = [
-        '#markup' => '<ul class="dropbutton">',
+        '#markup' => '<ul class="dropbutton dropbutton--multiple dropbutton--extrasmall">',
         '#weight' => -999,
       ];
       $add_more_elements['suffix'] = [
@@ -1064,7 +1064,7 @@ class InlineParagraphsWidget extends WidgetBase {
       ];
 
       if ($drop_button) {
-        $add_more_elements['add_more_button_' . $machine_name]['#prefix'] = '<li>';
+        $add_more_elements['add_more_button_' . $machine_name]['#prefix'] = '<li class="dropbutton__item dropbutton__item--extrasmall">';
         $add_more_elements['add_more_button_' . $machine_name]['#suffix'] = '</li>';
       }
     }
