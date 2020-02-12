@@ -65,13 +65,25 @@
     }
   }
 
-  // Hide plugin summary when on behavior tab and paragraph is collapsed.
-  .behavior-active .paragraphs-expanded-description .paragraphs-plugin-wrapper {
-    display: none;
+  // Behavior tab is active.
+  .behavior-active {
+    // Hide plugin summary.
+    .paragraphs-expanded-description .paragraphs-plugin-wrapper,
+    .paragraphs-content {
+      display: none;
+    }
+
+    // Display paragraphs behavior.
+    .paragraphs-behavior {
+      display: block;
+    }
   }
 
-  // Hide content summary when on content tab and paragraph is collapsed.
-  .content-active .paragraphs-expanded-description .paragraphs-content-wrapper {
-    display: none;
+  // Content tab is active.
+  .content-active {
+    // Hide content summary.
+    .paragraphs-expanded-description .paragraphs-content-wrapper {
+      display: none;
+    }
   }
 }

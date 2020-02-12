@@ -124,7 +124,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     foreach ($buttons as $key => $button) {
       $this->assertEqual($button->getValue(), $options[$key]);
     }
-    $this->assertTrue(count($buttons) == count($options), 'The amount of drop down options matches with the given array');
+    $this->assertEquals(count($buttons), count($options), 'The amount of drop down options matches with the given array');
   }
 
   /**
@@ -142,7 +142,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     foreach ($buttons as $key => $button) {
       $this->assertEqual($button->getValue(), $options[$key]);
     }
-    $this->assertTrue(count($buttons) == count($options), 'The amount of select options matches with the given array');
+    $this->assertEquals(count($buttons), count($options), 'The amount of select options matches with the given array');
     $this->assertNotEqual($this->xpath('//*[@name="' . $paragraphs_field .'_add_more"]'), [], 'The add button is displayed');
   }
 
