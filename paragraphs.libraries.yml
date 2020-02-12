@@ -1,12 +1,12 @@
 drupal.paragraphs.admin:
   dependencies:
-      - core/jquery
-      - core/drupal
-      - core/drupalSettings
-      - core/jquery.once
-      - core/jquery.form
-      - core/drupal.ajax
-      - core/drupal.dropbutton
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+    - core/jquery.form
+    - core/drupal.ajax
+    - core/drupal.dropbutton
   css:
     theme:
       css/paragraphs.admin.css: {}
@@ -68,6 +68,7 @@ drupal.paragraphs.modal:
     theme:
       css/paragraphs.modal.css: {}
   dependencies:
+    - core/drupal.dialog
     - core/drupal.dialog.ajax
     - core/jquery.once
 
