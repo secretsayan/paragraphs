@@ -256,13 +256,11 @@ class ParagraphsExperimentalWidgetButtonsTest extends ParagraphsExperimentalTest
     ]);
     $field->save();
 
-    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
-    $display_repository = \Drupal::service('entity_display.repository');
-    $form_display = $display_repository->getFormDisplay($entity_type, $content_type_name)
+    $form_display = entity_get_form_display($entity_type, $content_type_name, 'default')
       ->setComponent($paragraphs_field_name, ['type' => $widget_type]);
     $form_display->save();
 
-    $view_display = $display_repository->getViewDisplay($entity_type, $content_type_name)
+    $view_display = entity_get_display($entity_type, $content_type_name, 'default')
       ->setComponent($paragraphs_field_name, ['type' => 'entity_reference_revisions_entity_view']);
     $view_display->save();
 

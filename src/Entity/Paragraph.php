@@ -452,7 +452,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
     // Add content summary items.
     $this->summaryCount = 0;
-    $components = \Drupal::service('entity_display.repository')->getFormDisplay('paragraph', $this->getType())->getComponents();
+    $components = entity_get_form_display('paragraph', $this->getType(), 'default')->getComponents();
     uasort($components, 'Drupal\Component\Utility\SortArray::sortByWeightElement');
     foreach (array_keys($components) as $field_name) {
       // Components can be extra fields, check if the field really exists.

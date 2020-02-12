@@ -50,13 +50,8 @@
   padding: 0 5px;
 }
 
-.js .behavior-active .paragraphs-expanded-description .paragraphs-plugin-wrapper,
-.js .behavior-active .paragraphs-content {
+.js .behavior-active .paragraphs-expanded-description .paragraphs-plugin-wrapper {
   display: none;
-}
-
-.js .behavior-active .paragraphs-behavior {
-  display: block;
 }
 
 .js .content-active .paragraphs-expanded-description .paragraphs-content-wrapper {

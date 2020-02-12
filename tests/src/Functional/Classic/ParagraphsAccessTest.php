@@ -72,8 +72,8 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     ];
     $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
 
-    $view_display = \Drupal::service('entity_display.repository')->getViewDisplay('paragraph', 'images');
-    $view_display->setComponent('field_images_demo', ['settings' => ['image_style' => 'medium']]);
+    $view_display = entity_get_display('paragraph', 'images', 'default')
+      ->setComponent('field_images_demo', ['settings' => ['image_style' => 'medium']]);
     $view_display->save();
   }
 

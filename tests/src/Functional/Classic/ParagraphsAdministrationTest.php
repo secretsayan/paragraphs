@@ -492,7 +492,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Attempt to remove the Paragraph.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
-    $this->assertNotEmpty($elements, "'Confirm removal' button appears.");
+    $this->assertTrue(!empty($elements), "'Confirm removal' button appears.");
     // Restore the Paragraph and fix the broken reference.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_restore');
     $node = $this->drupalGetNodeByTitle('Example publish/unpublish');
@@ -518,7 +518,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Remove the Paragraph and save the node.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
-    $this->assertNotEmpty($elements, "'Confirm removal' button appears.");
+    $this->assertTrue(!empty($elements), "'Confirm removal' button appears.");
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_confirm_remove');
     $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertText('choke test has been updated.');
