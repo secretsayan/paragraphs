@@ -147,7 +147,16 @@
     }
 
     .draggable .tabledrag-handle {
+      min-width: 50px;
       margin-left: 0;
+
+      // Fix active focus.
+      &:focus {
+        &::before {
+          margin-left: .1em;
+          margin-right: .1em;
+        }
+      }
     }
 
     .tabledrag-handle .handle {
