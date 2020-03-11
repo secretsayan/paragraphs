@@ -135,7 +135,7 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
     $this->clickLink('Edit');
     $this->assertText($default_icon_name);
     $file = $entity_repository->loadEntityByUuid('file', $paragraph_type->get('icon_uuid'));
-    $this->assertTrue($file);
+    $this->assertNotEmpty($file);
   }
 
   /**

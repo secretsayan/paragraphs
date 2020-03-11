@@ -89,7 +89,9 @@ class ParagraphsTypePermissionsTest extends BrowserTestBase {
       'type' => 'image',
       'settings' => ['image_style' => 'medium', 'image_link' => 'file'],
     ];
-    $display = entity_get_display('paragraph', 'images', 'default');
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
+    $display_repository = \Drupal::service('entity_display.repository');
+    $display = $display_repository->getViewDisplay('paragraph', 'images');
     $display->setComponent('field_images_demo', $display_options)
       ->save();
 
@@ -97,7 +99,7 @@ class ParagraphsTypePermissionsTest extends BrowserTestBase {
       'type' => 'image',
       'settings' => ['image_style' => 'large', 'image_link' => 'file'],
     ];
-    $display = entity_get_display('paragraph', 'text_image', 'default');
+    $display = $display_repository->getViewDisplay('paragraph', 'text_image');
     $display->setComponent('field_image_demo', $display_options)
       ->save();
   }
@@ -130,8 +132,8 @@ class ParagraphsTypePermissionsTest extends BrowserTestBase {
       'text',
     ];
     foreach ($paragraph_types as $paragraph_type) {
-      entity_get_form_display('paragraph', $paragraph_type, 'default')
-        ->setComponent('status', [
+      $form_display = \Drupal::service('entity_display.repository')->getFormDisplay('paragraph', $paragraph_type);
+      $form_display->setComponent('status', [
           'type' => 'boolean_checkbox'
         ])
         ->save();
