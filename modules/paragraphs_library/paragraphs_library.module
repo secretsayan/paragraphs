@@ -136,10 +136,13 @@ function paragraphs_library_preprocess_paragraph(&$variables) {
     if ($library_item->access('view')) {
       $view_builder = \Drupal::entityTypeManager()
         ->getViewBuilder('paragraphs_library_item');
-      $library_item_render_array = $view_builder->view($library_item);
+      $library_item_render_array = $view_builder->view($library_item, $variables['elements']['field_reusable_paragraph'][0]['#view_mode']);
 
       // This will remove all fields other then field_reusable_paragraph.
-      $variables['content'] = $view_builder->build($library_item_render_array)['paragraphs'];
+      $build = $view_builder->build($library_item_render_array);
+      if (!empty($build['paragraphs'])) {
+        $variables['content'] = $build['paragraphs'];
+      }
     }
   }
 }

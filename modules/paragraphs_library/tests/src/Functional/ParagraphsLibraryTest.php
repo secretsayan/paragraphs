@@ -106,6 +106,77 @@ class ParagraphsLibraryTest extends ParagraphsExperimentalTestBase {
     $this->drupalGet('node/' . $node_one->id());
     $this->assertText('re_usable_text');
 
+    // Assert that the correct view mode is used.
+    $notext_view_mode = \Drupal::entityTypeManager()->getStorage('entity_view_mode')->create([
+      'id' => "paragraph.notext",
+      'label' => 'No label view mode',
+      'targetEntityType' => 'paragraph',
+      'cache' => FALSE,
+    ]);
+    $notext_view_mode->enable();
+    $notext_view_mode->save();
+
+    $display_storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+    $notest_display = $display_storage->create([
+      'status' => TRUE,
+      'id' => "paragraph.$paragraph_type.notext",
+      'targetEntityType' => 'paragraph',
+      'bundle' => $paragraph_type,
+      'mode' => 'notext',
+      'content' => [],
+    ]);
+    $notest_display->save();
+
+    $alternative_view_mode = \Drupal::entityTypeManager()->getStorage('entity_view_mode')->create([
+      'id' => 'paragraphs_library_item.alternative',
+      'label' => 'Alternative view mode',
+      'targetEntityType' => 'paragraphs_library_item',
+      'cache' => FALSE,
+    ]);
+    $alternative_view_mode->enable();
+    $alternative_view_mode->save();
+
+    $display_storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+    $alternative_display = $display_storage->create([
+      'status' => TRUE,
+      'id' => 'paragraphs_library_item.paragraphs_library_item.alternative',
+      'targetEntityType' => 'paragraphs_library_item',
+      'bundle' => 'paragraphs_library_item',
+      'mode' => 'alternative',
+      'content' => [
+        'paragraphs' => [
+          'label' => 'hidden',
+          'type' => 'entity_reference_revisions_entity_view',
+          'region' => 'content',
+          'settings' => [
+            'view_mode' => 'notext',
+          ],
+          'third_party_settings' => [],
+          'weight' => 0,
+        ],
+      ],
+    ]);
+    $alternative_display->save();
+
+    $this->drupalGet('node/' . $node_one->id());
+    $this->assertText('re_usable_text');
+
+    /** @var \Drupal\Core\Entity\Entity\EntityViewDisplay $from_library_view_display */
+    $from_library_view_display = $display_storage->load('paragraph.from_library.default');
+    $field_reusable_paragraph_component = $from_library_view_display->getComponent('field_reusable_paragraph');
+    $field_reusable_paragraph_component['settings']['view_mode'] = 'alternative';
+    $from_library_view_display->setComponent('field_reusable_paragraph', $field_reusable_paragraph_component);
+    $from_library_view_display->save();
+
+    $this->drupalGet('node/' . $node_one->id());
+    $this->assertNoText('re_usable_text');
+
+    $from_library_view_display = $display_storage->load('paragraph.from_library.default');
+    $field_reusable_paragraph_component = $from_library_view_display->getComponent('field_reusable_paragraph');
+    $field_reusable_paragraph_component['settings']['view_mode'] = 'default';
+    $from_library_view_display->setComponent('field_reusable_paragraph', $field_reusable_paragraph_component);
+    $from_library_view_display->save();
+
     // Create a new node with the library paragraph.
     $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_from_library_add_more');
     $edit = [
