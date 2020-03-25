@@ -46,6 +46,7 @@ class ParagraphsExperimentalBehaviorsTest extends ParagraphsExperimentalTestBase
       'behavior_plugins[test_bold_text][enabled]' => TRUE,
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertSame(['test_bold_text' => ['enabled' => TRUE]], \Drupal::config("paragraphs.paragraphs_type.$paragraph_type")->get('behavior_plugins'));
 
     // Add a note that uses the behavior plugin give it an empty setting.
     $this->drupalGet('node/add/paragraphed_test');
