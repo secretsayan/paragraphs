@@ -73,6 +73,9 @@ function paragraphs_library_paragraphs_widget_actions_alter(&$widget_actions, &$
         'wrapper' => $widget_state['ajax_wrapper_id'],
         'effect' => 'fade',
       ],
+      '#attributes' => [
+        'class' => ['button--small'],
+      ],
     ];
   }
   elseif ($allow_library_conversion) {
@@ -89,6 +92,9 @@ function paragraphs_library_paragraphs_widget_actions_alter(&$widget_actions, &$
         'wrapper' => $widget_state['ajax_wrapper_id'],
       ],
       '#access' => \Drupal::entityTypeManager()->getAccessControlHandler('paragraphs_library_item')->createAccess(),
+      '#attributes' => [
+        'class' => ['button--small'],
+      ],
     ];
   }
 }

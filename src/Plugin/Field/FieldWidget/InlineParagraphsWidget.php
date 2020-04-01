@@ -418,6 +418,9 @@ class InlineParagraphsWidget extends WidgetBase {
             '#prefix' => '<li class="remove dropbutton__item  dropbutton__item--extrasmall">',
             '#suffix' => '</li>',
             '#paragraphs_mode' => 'remove',
+            '#attributes' => [
+              'class' => ['button--small'],
+            ],
           ];
 
         }
@@ -1052,7 +1055,7 @@ class InlineParagraphsWidget extends WidgetBase {
         '#type' => 'submit',
         '#name' => strtr($this->fieldIdPrefix, '-', '_') . '_' . $machine_name . '_add_more',
         '#value' => $this->t('Add @type', ['@type' => $label]),
-        '#attributes' => ['class' => ['field-add-more-submit']],
+        '#attributes' => ['class' => ['field-add-more-submit', 'button--small']],
         '#limit_validation_errors' => [array_merge($this->fieldParents, [$field_name, 'add_more'])],
         '#submit' => [[get_class($this), 'addMoreSubmit']],
         '#ajax' => [

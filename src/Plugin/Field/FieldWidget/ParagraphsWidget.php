@@ -601,6 +601,9 @@ class ParagraphsWidget extends WidgetBase {
             'wrapper' => $widget_state['ajax_wrapper_id'],
           ],
           '#access' => $this->duplicateButtonAccess($paragraphs_entity),
+          '#attributes' => [
+            'class' => ['button--small'],
+          ],
         ];
 
         // Force the closed mode when the user cannot edit the Paragraph.
@@ -625,6 +628,9 @@ class ParagraphsWidget extends WidgetBase {
             ],
             '#access' => $this->removeButtonAccess($paragraphs_entity),
             '#paragraphs_mode' => 'remove',
+            '#attributes' => [
+              'class' => ['button--small'],
+            ],
           ];
         }
 
@@ -942,6 +948,7 @@ class ParagraphsWidget extends WidgetBase {
         'class' => [
           'paragraph-type-add-modal-button',
           'js-show',
+          'button--small',
         ],
       ],
     ];
