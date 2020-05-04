@@ -137,7 +137,7 @@ class ParagraphsExperimentalAddWidgetTest extends WebDriverTestBase {
     $this->assertContains($icon_two->getFilename(), $button_two->getAttribute('style'));
 
     // Find the add button in the nested paragraph with xpath.
-    $element = $this->xpath('//div[contains(@class, "form-item")]/div/div[contains(@class, "paragraph-type-add-modal")]/input');
+    $element = $this->xpath('//div[contains(@class, "form-item")]/div/div/div[contains(@class, "paragraph-type-add-modal")]/input');
     $element[0]->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
 

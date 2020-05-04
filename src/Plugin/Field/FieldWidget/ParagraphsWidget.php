@@ -933,7 +933,6 @@ class ParagraphsWidget extends WidgetBase {
         'class' => [
           'paragraph-type-add-modal',
           'first-button',
-          'paragraphs-add-wrapper',
         ],
       ],
       '#access' => $this->allowReferenceChanges(),
@@ -1194,6 +1193,8 @@ class ParagraphsWidget extends WidgetBase {
 
     if (($this->realItemCount < $cardinality || $cardinality == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) && !$form_state->isProgrammed() && $this->allowReferenceChanges()) {
       $elements['add_more'] = $this->buildAddActions();
+      // Add the class to hide the add actions in the Behavior perspective.
+      $elements['add_more']['#attributes']['class'][] = 'paragraphs-add-wrapper';
     }
 
     $elements['#allow_reference_changes'] = $this->allowReferenceChanges();
@@ -1560,7 +1561,7 @@ class ParagraphsWidget extends WidgetBase {
   protected function buildDropbutton(array $elements = []) {
     $build = [
       '#type' => 'container',
-      '#attributes' => ['class' => ['paragraphs-dropbutton-wrapper', 'paragraphs-add-wrapper']],
+      '#attributes' => ['class' => ['paragraphs-dropbutton-wrapper']],
     ];
 
     $operations = [];
@@ -1601,7 +1602,7 @@ class ParagraphsWidget extends WidgetBase {
         '#type' => 'submit',
         '#name' => $this->fieldIdPrefix . '_' . $machine_name . '_add_more',
         '#value' => $add_mode == 'modal' ? $label : $this->t('Add @type', ['@type' => $label]),
-        '#attributes' => ['class' => ['field-add-more-submit', 'paragraphs-add-wrapper']],
+        '#attributes' => ['class' => ['field-add-more-submit']],
         '#limit_validation_errors' => [array_merge($this->fieldParents, [$this->fieldDefinition->getName(), 'add_more'])],
         '#submit' => [[get_class($this), 'addMoreSubmit']],
         '#ajax' => [
@@ -1616,15 +1617,21 @@ class ParagraphsWidget extends WidgetBase {
       }
     }
 
-    // Determine if buttons should be rendered as dropbuttons.
-    if (count($options) > 1 && $add_mode == 'dropdown') {
-      $add_more_elements = $this->buildDropbutton($add_more_elements);
+    // Define the way how buttons are rendered and add them to a container.
+    if ($add_mode == 'dropdown') {
+      if (count($add_more_elements) > 1) {
+        $add_more_elements = $this->buildDropbutton($add_more_elements);
+      }
+      else {
+        $add_more_elements['#attributes']['class'][] = 'paragraphs-dropbutton-wrapper';
+      }
       $add_more_elements['#suffix'] = $this->t('to %type', ['%type' => $this->fieldDefinition->getLabel()]);
     }
     elseif ($add_mode == 'modal') {
       $this->buildModalAddForm($add_more_elements);
       $add_more_elements['add_modal_form_area']['#suffix'] = '<span class="paragraphs-add-suffix">' . $this->t('to %type', ['%type' => $this->fieldDefinition->getLabel()]) . '</span>';
     }
+    $add_more_elements['#type'] = 'container';
     $add_more_elements['#weight'] = 1;
 
     return $add_more_elements;
@@ -1644,9 +1651,6 @@ class ParagraphsWidget extends WidgetBase {
 
     $add_more_elements = [
       '#type' => 'container',
-      '#attributes' => [
-        'class' => ['paragraphs-add-wrapper'],
-      ],
     ];
 
     $add_more_elements['add_more_select'] = [
