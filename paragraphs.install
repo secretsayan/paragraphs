@@ -342,16 +342,8 @@ function paragraphs_update_8016() {
  * Update the revision metadata keys to remove revision uid.
  */
 function paragraphs_update_8017() {
-  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type = $entity_definition_update_manager->getEntityType('paragraph');
-  if ($metadata_keys = $entity_type->get('revision_metadata_keys')) {
-    if (is_array($metadata_keys) && isset($metadata_keys['revision_user'])) {
-      unset($metadata_keys['revision_user']);
-      $metadata_keys['revision_default'] = 'revision_default';
-      $entity_type->set('revision_metadata_keys', $metadata_keys);
-      $entity_definition_update_manager->updateEntityType($entity_type);
-    }
-  }
+  // Moved function content to paragraphs_update_8021(), see
+  // https://www.drupal.org/project/paragraphs/issues/2833935.
 }
 
 /**
