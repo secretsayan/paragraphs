@@ -726,7 +726,7 @@ class ParagraphsWidget extends WidgetBase {
 
         $context = [
           'form' => $form,
-          'widget' => self::getWidgetState($parents, $field_name, $form_state, $widget_state),
+          'widget' => self::getWidgetState($parents, $field_name, $form_state),
           'items' => $items,
           'delta' => $delta,
           'element' => $element,
