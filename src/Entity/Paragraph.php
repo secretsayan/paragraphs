@@ -150,18 +150,17 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     if (($parent = $this->getParentEntity()) && $parent->hasField($this->get('parent_field_name')->value)) {
       $parent_field = $this->get('parent_field_name')->value;
       $field = $parent->get($parent_field);
-      $found = FALSE;
+      $label = $parent->label() . ' > ' . $field->getFieldDefinition()->getLabel();
+      // A previous or draft revision or a deleted stale Paragraph.
+      $postfix = ' (previous revision)';
       foreach ($field as $value) {
-        if ($value->entity->id() == $this->id()) {
-          $found = TRUE;
+        if ($value->entity && $value->entity->getRevisionId() == $this->getRevisionId()) {
+          $postfix = '';
           break;
         }
       }
-      if ($found) {
-        $label = $parent->label() . ' > ' . $field->getFieldDefinition()->getLabel();
-      } else {
-        // A previous or draft revision or a deleted stale Paragraph.
-        $label = $parent->label() . ' > ' . $field->getFieldDefinition()->getLabel() . ' (previous revision)';
+      if ($postfix) {
+        $label .= $postfix;
       }
     }
     else {
