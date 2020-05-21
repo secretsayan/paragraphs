@@ -1241,7 +1241,7 @@ class InlineParagraphsWidget extends WidgetBase {
   protected function isContentReferenced() {
     $target_type = $this->getFieldSetting('target_type');
     $target_type_info = \Drupal::entityTypeManager()->getDefinition($target_type);
-    return $target_type_info->isSubclassOf('\Drupal\Core\Entity\ContentEntityInterface');
+    return $target_type_info->entityClassImplements('\Drupal\Core\Entity\ContentEntityInterface');
   }
 
   /**
