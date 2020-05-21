@@ -35,8 +35,6 @@ class ParagraphsExperimentalDuplicateFeatureTest extends ParagraphsExperimentalT
     $this->drupalPostForm(NULL, [], 'field_paragraphs_text_paragraph_add_more');
 
     // Create a node with a Paragraph.
-    $text_01 = 'recognizable_text_01';
-    $text_02 = 'recognizable_text_02';
     $edit = [
       'title[0][value]' => 'paragraphs_mode_test',
       'field_paragraphs[0][subform][field_text][0][value]' => 'A',

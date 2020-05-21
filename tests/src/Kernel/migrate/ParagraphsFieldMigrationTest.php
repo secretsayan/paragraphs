@@ -64,8 +64,6 @@ class ParagraphsFieldMigrationTest extends ParagraphsMigrationTestBase {
 
     $total_bundles = count(ParagraphsType::loadMultiple());
 
-    $bundles_from_field_collections = count($this->getMigration('d7_field_collection_type')->getSourcePlugin());
-
     $this->assertFieldInstanceExists('node', 'paragraphs_test', 'field_field_collection_test');
     $field = FieldConfig::loadByName('node', 'paragraphs_test', 'field_field_collection_test');
 

@@ -291,7 +291,7 @@ function template_preprocess_paragraph(&$variables) {
   }
 
   $paragraph_type = $variables['elements']['#paragraph']->getParagraphType();
-  foreach ($paragraph_type->getEnabledBehaviorPlugins() as $plugin_id => $plugin_value) {
+  foreach ($paragraph_type->getEnabledBehaviorPlugins() as $plugin_value) {
     $plugin_value->preprocess($variables);
   }
 
@@ -403,7 +403,7 @@ function paragraphs_migration_plugins_alter(array &$migrations) {
   /** @var \Drupal\migrate\Plugin\MigrateSourcePluginManager $source_plugin_manager */
   $source_plugin_manager = \Drupal::service('plugin.manager.migrate.source');
 
-  foreach ($migrations as $key => &$migration) {
+  foreach ($migrations as &$migration) {
     if (!empty($migration['source'])) {
       $configuration = $migration['source'];
       $migration_stub = $migration_plugin_manager->createStubMigration($migration);

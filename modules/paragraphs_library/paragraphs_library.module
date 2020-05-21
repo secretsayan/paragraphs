@@ -177,7 +177,7 @@ function paragraphs_library_views_pre_render(ViewExecutable $view) {
  */
 function _paragraphs_library_count_usage(array $usage_data) {
   $count = 0;
-  foreach ($usage_data as $entity_type => $entities) {
+  foreach ($usage_data as $entities) {
     // We only want to register usages by different entities, ignoring usages
     // accross revisions / translations / fields of the same entity.
     $count += count($entities);

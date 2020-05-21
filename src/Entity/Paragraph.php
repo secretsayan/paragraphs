@@ -151,7 +151,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       $parent_field = $this->get('parent_field_name')->value;
       $field = $parent->get($parent_field);
       $found = FALSE;
-      foreach ($field as $key => $value) {
+      foreach ($field as $value) {
         if ($value->entity->id() == $this->id()) {
           $found = TRUE;
           break;
@@ -525,7 +525,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
     // Add behaviors summary items.
     if ($show_behavior_summary) {
       $paragraphs_type = $this->getParagraphType();
-      foreach ($paragraphs_type->getEnabledBehaviorPlugins() as $plugin_id => $plugin) {
+      foreach ($paragraphs_type->getEnabledBehaviorPlugins() as $plugin) {
         if ($plugin_summary = $plugin->settingsSummary($this)) {
           foreach ($plugin_summary as $plugin_summary_element) {
             if (!is_array($plugin_summary_element)) {
@@ -561,7 +561,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
     if ($show_behavior_info) {
       $paragraphs_type = $this->getParagraphType();
-      foreach ($paragraphs_type->getEnabledBehaviorPlugins() as $plugin_id => $plugin) {
+      foreach ($paragraphs_type->getEnabledBehaviorPlugins() as $plugin) {
         if ($plugin_info = $plugin->settingsIcon($this)) {
           $icons = array_merge($icons, $plugin_info);
         }
@@ -647,7 +647,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
   protected function getFileSummary($field_name) {
     $summary = '';
     if ($this->get($field_name)->entity) {
-      foreach ($this->get($field_name) as $file_key => $file_value) {
+      foreach ($this->get($field_name) as $file_value) {
 
         $text = '';
         if ($file_value->description != '') {
