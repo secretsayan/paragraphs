@@ -143,16 +143,12 @@
     }
 
     .field-multiple-drag {
-      display: flex;
-      align-items: center;
-      padding-top: 14px;
-      min-width: 40px;
+      vertical-align: top;
     }
 
     .draggable .tabledrag-handle {
+      min-width: 50px;
       margin-left: 0;
-      padding-right: .25em;
-      width: 23px;
 
       // Fix active focus.
       &:focus {
@@ -161,26 +157,10 @@
           margin-right: .1em;
         }
       }
-
-      // Claro theme fix for the handle icon position.
-      &::after {
-        margin-left: 0;
-      }
-
-      // Scale the icon on hover.
-      &:hover .handle {
-        transform: scale(1.25);
-      }
-    }
-
-    .tabledrag-changed {
-      text-decoration: none;
     }
 
     .tabledrag-handle .handle {
       height: 22px;
-      margin-left: 0;
-      margin-right: 0;
     }
 
     .delta-order {
