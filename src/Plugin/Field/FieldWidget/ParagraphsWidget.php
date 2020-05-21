@@ -2727,12 +2727,8 @@ class ParagraphsWidget extends WidgetBase {
 
     $cardinality = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
 
-    // Hide the button if field cardinality is one.
-    if ($cardinality == 1) {
-      return FALSE;
-    }
-
-    return TRUE;
+    // Hide the button if field cardinality is reached.
+    return !($cardinality !== FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED && $this->realItemCount === $cardinality);
   }
 
   /**

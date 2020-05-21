@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\paragraphs\Functional\Experimental;
 
+use Drupal\field\Entity\FieldStorageConfig;
+
 /**
  * Tests paragraphs duplicate feature.
  *
@@ -179,6 +181,37 @@ class ParagraphsExperimentalDuplicateFeatureTest extends ParagraphsExperimentalT
     $second_paragraph_text_nr_found = substr_count($page_text, $second_paragraph_text);
     $this->assertSame(1, $second_paragraph_text_nr_found);
 
+  }
+
+  /**
+   * Tests duplicate paragraph feature for fields with a limited cardinality.
+   */
+  public function testDuplicateButtonWithLimitedCardinality() {
+    $this->addParagraphedContentType('paragraphed_test');
+    /** @var \Drupal\field\FieldStorageConfigInterface $field_storage */
+    $field_storage = FieldStorageConfig::load('node.field_paragraphs');
+    $field_storage->setCardinality(2)->save();
+
+    $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content']);
+    // Add a Paragraph type.
+    $paragraph_type = 'text_paragraph';
+    $this->addParagraphsType($paragraph_type);
+
+    // Add a text field to the text_paragraph type.
+    static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'text', 'Text', 'text_long', [], []);
+    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
+
+    $edit = [
+      'title[0][value]' => 'paragraphs_mode_test',
+      'field_paragraphs[0][subform][field_text][0][value]' => 'A',
+      'field_paragraphs[1][subform][field_text][0][value]' => 'B',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
+
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    $this->assertNoField('field_paragraphs_0_duplicate');
+    $this->assertNoField('field_paragraphs_1_duplicate');
   }
 
 }
