@@ -13,6 +13,7 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Render\Element;
+use Drupal\field_group\FormatterHelper;
 use Drupal\paragraphs\ParagraphInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
@@ -648,10 +649,13 @@ class InlineParagraphsWidget extends WidgetBase {
         ];
 
         field_group_attach_groups($element['subform'], $context);
-        if (function_exists('field_group_form_pre_render')) {
+        if (method_exists(FormatterHelper::class, 'formProcess')) {
+          $element['subform']['#process'][] = [FormatterHelper::class, 'formProcess'];
+        }
+        elseif (function_exists('field_group_form_pre_render')) {
           $element['subform']['#pre_render'][] = 'field_group_form_pre_render';
         }
-        if (function_exists('field_group_form_process')) {
+        elseif (function_exists('field_group_form_process')) {
           $element['subform']['#process'][] = 'field_group_form_process';
         }
       }
@@ -1500,7 +1504,7 @@ class InlineParagraphsWidget extends WidgetBase {
     $target_type = $field_definition->getSetting('target_type');
     $paragraph_type = \Drupal::entityTypeManager()->getDefinition($target_type);
     if ($paragraph_type) {
-      return $paragraph_type->isSubclassOf(ParagraphInterface::class);
+      return $paragraph_type->entityClassImplements(ParagraphInterface::class);
     }
 
     return FALSE;

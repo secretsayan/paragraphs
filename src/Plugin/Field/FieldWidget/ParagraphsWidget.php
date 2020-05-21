@@ -16,6 +16,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\SubformState;
 use Drupal\Core\Render\Element;
 use Drupal\Core\TypedData\TranslationStatusInterface;
+use Drupal\field_group\FormatterHelper;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -766,10 +767,13 @@ class ParagraphsWidget extends WidgetBase {
         ];
 
         field_group_attach_groups($element['subform'], $context);
-        if (function_exists('field_group_form_pre_render')) {
+        if (method_exists(FormatterHelper::class, 'formProcess')) {
+          $element['subform']['#process'][] = [FormatterHelper::class, 'formProcess'];
+        }
+        elseif (function_exists('field_group_form_pre_render')) {
           $element['subform']['#pre_render'][] = 'field_group_form_pre_render';
         }
-        if (function_exists('field_group_form_process')) {
+        elseif (function_exists('field_group_form_process')) {
           $element['subform']['#process'][] = 'field_group_form_process';
         }
       }
