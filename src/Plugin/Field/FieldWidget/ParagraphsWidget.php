@@ -563,7 +563,7 @@ class ParagraphsWidget extends WidgetBase {
         $element['top']['type']['label'] = ['#markup' => $bundle_info['label']];
 
         // Type icon and label bundle.
-        if ($icon_url = $paragraphs_entity->type->entity->getIconUrl()) {
+        if ($icon_url = $paragraphs_entity->getParagraphType()->getIconUrl()) {
           $element['top']['type']['icon'] = [
             '#theme' => 'image',
             '#uri' => $icon_url,
