@@ -203,7 +203,7 @@ function paragraphs_post_update_rebuild_parent_fields(array &$sandbox) {
   }
 
   $current_field = $sandbox['paragraph_field_ids'][$sandbox['current_index']];
-  $revision_column = $current_field['revision_column'];
+  $revision_column = !empty($current_field['revision_column']) ? ($current_field['revision_column']) : $current_field['field_name'] . '_target_revision_id';
   $entity_id_column = $current_field['entity_id_column'];
   $entity_type_id = $current_field['entity_type_id'];
   $field_name = $current_field['field_name'];
