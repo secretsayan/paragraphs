@@ -846,6 +846,7 @@ class ParagraphsWidget extends WidgetBase {
             $element['behavior_plugins'][$plugin_id] = [
               '#type' => 'container',
               '#group' => implode('][', array_merge($element_parents, ['paragraph_behavior'])),
+              '#parents' => array_merge(array_slice($element_parents, 0, -1), ['behavior_plugins', $plugin_id]),
             ];
             $subform_state = SubformState::createForSubform($element['behavior_plugins'][$plugin_id], $form, $form_state);
             if ($plugin_form = $plugin->buildBehaviorForm($paragraphs_entity, $element['behavior_plugins'][$plugin_id], $subform_state)) {
