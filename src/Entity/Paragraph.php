@@ -83,7 +83,7 @@ use Drupal\user\UserInterface;
  *       }
  *     },
  *     "entity_form_display" = {
- *       "type" = "entity_reference_paragraphs"
+ *       "type" = "paragraphs"
  *     },
  *     "entity_view_display" = {
  *       "type" = "entity_reference_revisions_entity_view"

@@ -117,7 +117,8 @@ class ParagraphsTypeForm extends EntityForm {
     if ($behavior_plugin_definitions = $this->paragraphsBehaviorManager->getApplicableDefinitions($paragraphs_type)) {
       $form['message'] = [
         '#type' => 'container',
-        '#markup' => $this->t('Behavior plugins are only supported by the EXPERIMENTAL paragraphs widget.', [], ['context' => 'paragraphs']),
+        '#markup' => $this->t('Behavior plugins are only supported by the stable paragraphs widget.', [], ['context' =>
+          'paragraphs']),
         '#attributes' => ['class' => ['messages', 'messages--warning']]
       ];
       $form['behavior_plugins'] = [

@@ -27,8 +27,8 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  *
  * @FieldWidget(
  *   id = "paragraphs",
- *   label = @Translation("Paragraphs EXPERIMENTAL"),
- *   description = @Translation("An experimental paragraphs inline form widget."),
+ *   label = @Translation("Paragraphs (stable)"),
+ *   description = @Translation("The stable paragraphs inline form widget."),
  *   field_types = {
  *     "entity_reference_revisions"
  *   }

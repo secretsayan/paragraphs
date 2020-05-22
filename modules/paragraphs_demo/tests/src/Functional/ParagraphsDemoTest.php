@@ -173,7 +173,7 @@ class ParagraphsDemoTest extends BrowserTestBase {
     $this->assertSession()->responseNotContains('Welcome to the Paragraphs Demo module!');
 
     // Check that the dropbutton of Nested Paragraph has the Duplicate function.
-    // For now, this indicates that it is using the EXPERIMENTAL widget.
+    // For now, this indicates that it is using the stable widget.
     $this->drupalGet('node/1/edit');
     $this->assertSession()->buttonExists('field_paragraphs_demo_3_subform_field_paragraphs_demo_0_duplicate');
 

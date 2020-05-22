@@ -26,8 +26,8 @@ use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
  *
  * @FieldWidget(
  *   id = "entity_reference_paragraphs",
- *   label = @Translation("Paragraphs Classic"),
- *   description = @Translation("A paragraphs inline form widget."),
+ *   label = @Translation("Paragraphs Legacy"),
+ *   description = @Translation("The legacy paragraphs inline form widget."),
  *   field_types = {
  *     "entity_reference_revisions"
  *   }

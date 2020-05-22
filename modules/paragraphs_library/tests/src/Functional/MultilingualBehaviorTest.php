@@ -3,7 +3,7 @@
 namespace Drupal\Tests\paragraphs_library\Functional;
 
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\Tests\paragraphs\Functional\Experimental\ParagraphsExperimentalTestBase;
+use Drupal\Tests\paragraphs\Functional\WidgetStable\ParagraphsTestBase;
 
 /**
  * Tests paragraphs library multilingual functionality.
@@ -11,7 +11,7 @@ use Drupal\Tests\paragraphs\Functional\Experimental\ParagraphsExperimentalTestBa
  * @package Drupal\paragraphs_library\Tests
  * @group paragraphs_library
  */
-class MultilingualBehaviorTest extends ParagraphsExperimentalTestBase {
+class MultilingualBehaviorTest extends ParagraphsTestBase {
 
   /**
    * {@inheritdoc}

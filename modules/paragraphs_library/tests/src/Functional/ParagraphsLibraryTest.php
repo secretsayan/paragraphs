@@ -3,14 +3,14 @@
 namespace Drupal\Tests\paragraphs_library\Functional;
 
 use Drupal\Core\Url;
-use Drupal\Tests\paragraphs\Functional\Experimental\ParagraphsExperimentalTestBase;
+use Drupal\Tests\paragraphs\Functional\WidgetStable\ParagraphsTestBase;
 
 /**
  * Tests paragraphs library functionality.
  *
  * @group paragraphs_library
  */
-class ParagraphsLibraryTest extends ParagraphsExperimentalTestBase {
+class ParagraphsLibraryTest extends ParagraphsTestBase {
 
   /**
    * Modules to enable.
