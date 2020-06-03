@@ -38,7 +38,7 @@
       $('.paragraphs-dropdown-actions', context).once('paragraphs-add-above-button').each(function () {
         var $actions = $(this);
         if ($actions.closest('.paragraph-top').hasClass('add-above-on')) {
-          var $button = $('<input class="paragraphs-dropdown-action paragraphs-dropdown-action--add-above button js-form-submit form-submit" type="submit" value="' + Drupal.t('Add above') + '">');
+          var $button = $('<input class="paragraphs-dropdown-action paragraphs-dropdown-action--add-above button button--small js-form-submit form-submit" type="submit" value="' + Drupal.t('Add above') + '">');
           // "Mousedown" is used since the original actions created by paragraphs
           // use the event "focusout" to hide the actions dropdown.
           $button.on('mousedown', clickHandler);

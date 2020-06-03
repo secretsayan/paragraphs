@@ -117,6 +117,8 @@ class ParagraphsClientsideButtonsTest extends WebDriverTestBase {
     $dialog->pressButton('text');
     $assert_session->assertWaitOnAjaxRequest();
     $session->wait(2000);
+    // Check that the add above button has the button--small class.
+    $page->find('xpath', '//input[@class="paragraphs-dropdown-action paragraphs-dropdown-action--add-above button button--small js-form-submit form-submit"]');
     // At this point we should have 3 injected "Add above" buttons.
     $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
     $this->assertEquals(3, count($all_add_above_buttons));
