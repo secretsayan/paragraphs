@@ -209,7 +209,7 @@ trait ParagraphsTestBaseTrait {
     $component = $default_form_display->getComponent($paragraphs_field);
 
     $updated_component = $component;
-    if ($field_widget === NULL || $field_widget === $component['type']) {
+    if ($field_widget === NULL || (isset($component['type']) && $field_widget === $component['type'])) {
       // The widget stays the same.
       $updated_component['settings'] = $settings + $component['settings'];
     }
