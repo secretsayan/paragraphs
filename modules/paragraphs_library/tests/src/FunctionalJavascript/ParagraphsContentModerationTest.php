@@ -3,6 +3,7 @@
 namespace Drupal\Tests\paragraphs_library\FunctionalJavascript;
 
 use Behat\Mink\Element\Element;
+use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
@@ -60,7 +61,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
    */
   public function setUp() {
     parent::setUp();
-    $this->addParagraphedContentType('paragraphed_moderated_test', 'field_paragraphs', 'entity_reference_paragraphs');
+    $this->addParagraphedContentType('paragraphed_moderated_test', 'field_paragraphs');
 
     $this->addParagraphsType('text');
     $this->addFieldtoParagraphType('text', 'field_text', 'text');
@@ -260,10 +261,11 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $this->drupalGet("/node/{$host_node_id}/edit");
     $page->fillField('title[0][value]', 'Host page 1 (rev 4)');
     $page->fillField('field_paragraphs[1][subform][field_text][0][value]', 'Direct paragraph text 2 modified again');
+    $row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(3)');
+    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $row);
+    $dropdown->click();
     $paragraph3_remove_button = $assert_session->elementExists('css', 'input[name="field_paragraphs_2_remove"]');
     $paragraph3_remove_button->press();
-    $paragraph3_confirm_remove_button = $assert_session->waitForElement('css', 'input[name="field_paragraphs_2_confirm_remove"]');
-    $paragraph3_confirm_remove_button->press();
     $assert_session->assertWaitOnAjaxRequest();
     $page->selectFieldOption('moderation_state[0][state]', 'draft');
     $page->find('css', 'a[href="#edit-revision-information"]')->click();
@@ -421,6 +423,27 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $assert_session->pageTextContains('Content types');
     $assert_session->elementNotExists('css', 'a[href$="' . $this->workflow->id() . '/type/paragraph"]');
     $assert_session->elementExists('css', 'a[href$="' . $this->workflow->id() . '/type/node"]');
+
+    // Promote a library and assert that is published when created.
+    $paragraph_type = ParagraphsType::load('text');
+    $paragraph_type->setThirdPartySetting('paragraphs_library', 'allow_library_conversion', TRUE);
+    $paragraph_type->save();
+    $this->drupalGet('/node/add/paragraphed_moderated_test');
+    $page->fillField('title[0][value]', 'Host page 1');
+    $dropbutton_paragraphs = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper .dropbutton-arrow');
+    $dropbutton_paragraphs->click();
+    $add_text_paragraph = $assert_session->elementExists('css', '#field-paragraphs-text-add-more');
+    $add_text_paragraph->press();
+    $textfield = $assert_session->waitForElement('css', 'input[name="field_paragraphs[0][subform][field_text][0][value]"]');
+    $this->assertNotNull($textfield);
+    $page->fillField('field_paragraphs[0][subform][field_text][0][value]', 'Promoted library item');
+    $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
+    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
+    $dropdown->click();
+    $add_above_button = $assert_session->elementExists('css', 'input[name="field_paragraphs_0_promote_to_library"]', $first_row);
+    $add_above_button->click();
+    $library_item = $this->getLastEntityOfType('paragraphs_library_item', TRUE);
+    $this->assertEquals('published', $library_item->moderation_state->value);
   }
 
   /**
