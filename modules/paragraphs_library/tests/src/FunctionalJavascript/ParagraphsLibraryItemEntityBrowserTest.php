@@ -65,7 +65,7 @@ class ParagraphsLibraryItemEntityBrowserTest extends EntityBrowserWebDriverTestB
       'entity_types[paragraphs_library_item]' => TRUE,
       'settings[paragraphs_library_item][paragraphs_library_item][translatable]' => TRUE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
+    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
 
     $this->addParagraphsType('text');
     $this->addFieldtoParagraphType('text', 'field_text', 'text');
@@ -105,7 +105,7 @@ JS;
     // processing in the iframe.
     sleep(1);
     $this->waitForAjaxToFinish();
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     // Check that the paragraph was correctly reused.
     $this->assertSession()->pageTextContains('reusable_text');
 

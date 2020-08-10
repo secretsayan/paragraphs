@@ -1291,7 +1291,7 @@ class InlineParagraphsWidget extends WidgetBase {
     $non_remove_mode_item_count = $widget_state['real_item_count'] - $remove_mode_item_count;
 
     if ($elements['#required'] && $non_remove_mode_item_count < 1) {
-      $form_state->setError($elements, t('@name field is required.', ['@name' => $this->fieldDefinition->getLabel()]));
+      $form_state->setError($elements, $this->t('@name field is required.', ['@name' => $this->fieldDefinition->getLabel()]));
     }
 
     static::setWidgetState($elements['#field_parents'], $field_name, $form_state, $widget_state);

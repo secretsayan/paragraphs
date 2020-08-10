@@ -48,7 +48,7 @@ class ParagraphsPreviewTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => $test_text_1,
     ];
     // Preview the article.
-    $this->drupalPostForm(NULL, $edit, t('Preview'));
+    $this->drupalPostForm(NULL, $edit, 'Preview');
     // Check if the text is displayed.
     $this->assertSession()->responseContains($test_text_1);
 
@@ -64,7 +64,7 @@ class ParagraphsPreviewTest extends ParagraphsTestBase {
     $paragraph_1 = $this->xpath('//*[@id="edit-field-paragraphs-0-subform-field-text-0-value"]')[0];
     $this->assertEquals($paragraph_1->getValue(), $test_text_1);
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     $this->clickLink('Edit');
     $this->drupalPostForm(NULL, array(), 'field_paragraphs_text_add_more');
@@ -72,7 +72,7 @@ class ParagraphsPreviewTest extends ParagraphsTestBase {
       'field_paragraphs[1][subform][field_text][0][value]' => $test_text_2,
     ];
     // Preview the article.
-    $this->drupalPostForm(NULL, $edit, t('Preview'));
+    $this->drupalPostForm(NULL, $edit, 'Preview');
     $this->assertSession()->responseContains($test_text_1);
     $this->assertSession()->responseContains($test_text_2);
 
@@ -84,7 +84,7 @@ class ParagraphsPreviewTest extends ParagraphsTestBase {
       'field_paragraphs[1][subform][field_text][0][value]' => $new_test_text_2,
     ];
     // Preview the article.
-    $this->drupalPostForm(NULL, $edit, t('Preview'));
+    $this->drupalPostForm(NULL, $edit, 'Preview');
     $this->assertSession()->responseContains($test_text_1);
     $this->assertSession()->responseContains($new_test_text_2);
 
@@ -100,7 +100,7 @@ class ParagraphsPreviewTest extends ParagraphsTestBase {
     $paragraph_2 = $this->xpath('//*[@id="edit-field-paragraphs-1-subform-field-text-0-value"]')[0];
     $this->assertEquals($paragraph_1->getValue(), $test_text_1);
     $this->assertEquals($paragraph_2->getValue(), $new_test_text_2);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     $this->assertSession()->responseContains($test_text_1);
     $this->assertSession()->responseContains($new_test_text_2);

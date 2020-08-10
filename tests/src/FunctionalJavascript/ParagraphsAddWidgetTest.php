@@ -76,7 +76,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->drupalPostForm(NULL, $edit, 'Update');
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Add a Paragraph type.
     $paragraph_type = 'text_paragraph';
@@ -149,7 +149,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $edit = [
       'title[0][value]' => 'Example title',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Check the created paragraphed test.
     $this->assertSession()->pageTextContainsOnce('paragraphed_test Example title has been created.');
@@ -204,7 +204,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Update');
     $this->assertSession()->assertWaitOnAjaxRequest();
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Add a Paragraph types.
     $this->addParagraphsType('test_1');

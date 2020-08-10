@@ -42,28 +42,28 @@ class ParagraphsUninstallTest extends BrowserTestBase {
   public function testUninstall() {
 
     // Uninstall the module paragraphs_demo.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_demo]' => TRUE], t('Uninstall'));
-    $this->drupalPostForm(NULL, [], t('Uninstall'));
+    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_demo]' => TRUE], 'Uninstall');
+    $this->drupalPostForm(NULL, [], 'Uninstall');
 
     // Delete library data.
     $this->clickLink('Remove Paragraphs library items');
-    $this->drupalPostForm(NULL, [], t('Delete all Paragraphs library items'));
+    $this->drupalPostForm(NULL, [], 'Delete all Paragraphs library items');
 
     // Uninstall the library module.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_library]' => TRUE], t('Uninstall'));
-    $this->drupalPostForm(NULL, [], t('Uninstall'));
+    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_library]' => TRUE], 'Uninstall');
+    $this->drupalPostForm(NULL, [], 'Uninstall');
 
     // Delete paragraphs data.
     $this->clickLink('Remove Paragraphs');
-    $this->drupalPostForm(NULL, [], t('Delete all Paragraphs'));
+    $this->drupalPostForm(NULL, [], 'Delete all Paragraphs');
 
     // Uninstall the module paragraphs.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs]' => TRUE], t('Uninstall'));
-    $this->drupalPostForm(NULL, [], t('Uninstall'));
-    $this->assertSession()->pageTextContains(t('The selected modules have been uninstalled.'));
-    $this->assertSession()->pageTextNotContains(t('Paragraphs demo'));
-    $this->assertSession()->pageTextNotContains(t('Paragraphs library'));
-    $this->assertSession()->pageTextNotContains(t('Paragraphs'));
+    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs]' => TRUE], 'Uninstall');
+    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
+    $this->assertSession()->pageTextNotContains('Paragraphs demo');
+    $this->assertSession()->pageTextNotContains('Paragraphs library');
+    $this->assertSession()->pageTextNotContains('Paragraphs');
   }
 
 }

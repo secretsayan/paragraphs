@@ -61,7 +61,7 @@ class ParagraphsWidgetElementsTest extends WebDriverTestBase {
       'settings[paragraph][text][translatable]' => TRUE,
       'settings[paragraph][text][settings][language][language_alterable]' => TRUE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
+    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
     $settings = [
       'add_mode' => 'modal',
     ];
@@ -81,7 +81,7 @@ class ParagraphsWidgetElementsTest extends WebDriverTestBase {
       'title[0][value]' => 'Title',
       'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'First',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Translate the node.
     $node = $this->getNodeByTitle('Title');
     $this->drupalGet('node/' . $node->id() . '/translations/add/en/sr');

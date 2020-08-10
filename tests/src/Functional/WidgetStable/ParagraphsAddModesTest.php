@@ -19,11 +19,11 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     $this->addParagraphedContentType('paragraphed_test');
     // Edit the field.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields');
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
 
     // Check that the current field does not allow to add default values.
     $this->assertSession()->pageTextContains('No widget available for: field_paragraphs.');
-    $this->drupalPostForm(NULL, [], t('Save settings'));
+    $this->drupalPostForm(NULL, [], 'Save settings');
     $this->assertSession()->pageTextContains('Saved field_paragraphs configuration.');
     $this->assertSession()->statusCodeEquals(200);
   }
@@ -37,8 +37,8 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
 
     // Edit the field and save when there are no Paragraphs types available.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields');
-    $this->clickLink(t('Edit'));
-    $this->drupalPostForm(NULL, [], t('Save settings'));
+    $this->clickLink('Edit');
+    $this->drupalPostForm(NULL, [], 'Save settings');
     $this->assertSession()->pageTextContains('Saved field_paragraphs configuration.');
   }
 
@@ -189,7 +189,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     $this->setDefaultParagraphType('paragraphed_test', 'paragraphs', 'paragraphs_settings_edit', 'text_image');
     $this->removeDefaultParagraphType('paragraphed_test');
     $edit = ['title[0][value]' => 'New Host'];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/1/edit');
     $elements = $this->xpath('//table[@id="paragraphs-values"]/tbody');
     $header = $this->xpath('//table[@id="paragraphs-values"]/thead');

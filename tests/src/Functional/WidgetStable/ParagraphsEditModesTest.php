@@ -50,7 +50,7 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->drupalPostForm(NULL, [], "field_paragraphs_settings_edit");
     $edit = ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Add a paragraph.
     $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
     $this->drupalPostForm(NULL, NULL, 'field_paragraphs_title_add_more');
@@ -65,16 +65,16 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
       'files[field_paragraphs_0_subform_field_image_0]' => $file_system->realpath($files[0]->uri),
       'field_paragraphs[1][subform][field_title][0][value]' => 'Title example',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->clickLink(t('Edit'));
-    $this->drupalPostForm(NULL, [], t('Add user_paragraph'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->clickLink('Edit');
+    $this->drupalPostForm(NULL, [], 'Add user_paragraph');
     $edit = [
       'field_paragraphs[2][subform][field_user][0][target_id]' => $this->admin_user->label() . ' (' . $this->admin_user->id() . ')',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Assert the summary is correctly generated.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">' . $files[0]->filename . '</span>, <span class="summary-content">text_summary</span>');
     $this->assertSession()->responseContains('<span class="summary-content">' . $this->admin_user->label());
     $this->assertSession()->responseContains('<span class="summary-content">Title example');
@@ -91,35 +91,35 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     // Remove image.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Assert the summary is correctly generated.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">text_summary');
 
     $this->addParagraphsType('nested_paragraph');
     static::fieldUIAddNewField('admin/structure/paragraphs_type/nested_paragraph', 'nested_content', 'Nested Content', 'entity_reference_revisions', ['settings[target_type]' => 'paragraph'], []);
     $this->drupalGet('admin/structure/paragraphs_type/nested_paragraph/form-display');
-    $this->drupalPostForm(NULL, ['fields[field_nested_content][type]' => 'entity_reference_paragraphs'], t('Save'));
+    $this->drupalPostForm(NULL, ['fields[field_nested_content][type]' => 'entity_reference_paragraphs'], 'Save');
 
     $test_user = $this->drupalCreateUser([]);
 
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostForm(NULL, NULL, t('Add nested_paragraph'));
-    $this->drupalPostForm(NULL, NULL, t('field_paragraphs_0_subform_field_nested_content_user_paragraph_add_more'));
+    $this->drupalPostForm(NULL, NULL, 'Add nested_paragraph');
+    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_0_subform_field_nested_content_user_paragraph_add_more');
     $edit = [
       'title[0][value]' => 'Node title',
       'field_paragraphs[0][subform][field_nested_content][0][subform][field_user][0][target_id]' => $test_user->label() . ' (' . $test_user->id() . ')',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Create an orphaned ER field item by deleting the target entity.
     $test_user->delete();
 
     $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['title' => 'Node title']);
     $this->drupalGet('node/' . current($nodes)->id() . '/edit');
-    $this->drupalPostForm(NULL, [], t('field_paragraphs_0_edit'));
-    $this->drupalPostForm(NULL, [], t('field_paragraphs_0_collapse'));
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_collapse');
     $this->assertSession()->statusCodeEquals(200);
 
     // Add a Block Paragraphs type.
@@ -143,7 +143,7 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
     $this->assertSession()->responseContains('<span class="summary-content">Llama custom block');
     $edit = ['title[0][value]' => 'Test llama block'];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Delete the block.
     $after_block2->delete();
     // Attempt to edit the node when the node is deleted.
@@ -161,18 +161,18 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
       'title[0][value]' => 'Test link',
       'field_paragraphs[0][subform][field_link][0][uri]' => 'http://www.google.com',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Check the summary when no link title is provided.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">http://www.google.com');
     // Set a link title.
     $this->drupalPostForm(NULL, NULL, 'field_paragraphs_0_edit');
     $edit = [
       'field_paragraphs[0][subform][field_link][0][title]' => 'Link title',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     // Check the summary when the link title is set.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">Link title');
 
     // Allow the user to select if the paragraphs is published or not.

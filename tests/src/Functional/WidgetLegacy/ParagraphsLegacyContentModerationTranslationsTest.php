@@ -114,7 +114,7 @@ class ParagraphsLegacyContentModerationTranslationsTest extends ParagraphsTestBa
       'settings[paragraph][text][fields][field_untranslatable]' => FALSE,
       'settings[paragraph][container][fields][field_paragraphs]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
+    $this->drupalPostForm(NULL, $edit, 'Save configuration');
   }
 
   /**

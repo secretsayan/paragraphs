@@ -69,7 +69,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => 'Fist paragraph',
       'field_paragraphs[1][subform][field_text][0][value]' => 'Second paragraph',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->drupalGetNodeByTitle('Autocollapse test node');
 
     // Set the settings to "Open" edit mode without autocollapse.

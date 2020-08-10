@@ -45,7 +45,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_paragraphs][type]' => 'paragraphs',
     ];
-    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, t('Save'));
+    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, 'Save');
     $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
 
     // Create a node with a Paragraph.
@@ -55,13 +55,13 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => $text,
     ];
     $this->drupalPostForm(NULL, [], 'field_paragraphs_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     // Test the 'Open' edit mode.
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', $text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains($text);
 
     // Test the 'Closed' edit mode.
@@ -80,7 +80,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     // Verify that we have warning message for each paragraph.
     $this->assertEquals(2, count($this->xpath("//*[contains(@class, 'paragraphs-icon-changed')]")));
     $this->assertSession()->responseContains('<span class="summary-content">' . $closed_mode_text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextContains($closed_mode_text);
 
@@ -97,7 +97,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextContains('You have unsaved changes on this Paragraph item.');
     $this->assertEquals(1, count($this->xpath("//*[contains(@class, 'paragraphs-icon-changed')]")));
     $this->assertSession()->pageTextContains($preview_mode_text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextContains($preview_mode_text);
 
@@ -105,7 +105,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Click "Remove" button.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_remove');
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextNotContains($preview_mode_text);
   }
@@ -134,7 +134,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_paragraphs][type]' => 'paragraphs',
     ];
-    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, t('Save'));
+    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, 'Save');
     $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
 
     // Create a node with a Paragraph.
@@ -144,7 +144,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => $text,
     ];
     $this->drupalPostForm(NULL, [], 'field_paragraphs_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     // Checking visible buttons on "Open" mode.
@@ -177,7 +177,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_nested][type]' => 'paragraphs',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_nested_paragraph_add_more');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_2_subform_field_nested_nested_paragraph_add_more');
@@ -187,11 +187,11 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
 
     // Tests hook_paragraphs_widget_actions_alter.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostForm(NULL, NULL, t('Add text'));
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->buttonNotExists('edit-field-paragraphs-0-top-links-test-button');
     \Drupal::state()->set('paragraphs_test_dropbutton', TRUE);
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostForm(NULL, NULL, t('Add text'));
+    $this->drupalPostForm(NULL, NULL, 'Add text');
     $this->assertSession()->buttonNotExists('edit-field-paragraphs-0-top-links-test-button');
 
     ConfigurableLanguage::createFromLangcode('sr')->save();
@@ -283,7 +283,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_paragraphs][type]' => 'paragraphs',
     ];
-    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, t('Save'));
+    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/form-display', $edit, 'Save');
 
     // Checking hidden button on "Open" mode.
     $this->drupalGet('node/add/paragraphed_test');

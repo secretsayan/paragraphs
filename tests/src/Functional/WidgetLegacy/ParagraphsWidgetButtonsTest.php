@@ -32,13 +32,13 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => $text,
     ];
     $this->drupalPostForm(NULL, [], 'field_paragraphs_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     // Test the 'Open' mode.
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', $text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains($text);
 
     // Test the 'Closed' mode.
@@ -59,7 +59,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $nr_found = substr_count($page_text, 'You have unsaved changes on this Paragraph item.');
     $this->assertGreaterThan(1, $nr_found);
     $this->assertSession()->responseContains('<span class="summary-content">' . $closed_mode_text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextContains($closed_mode_text);
 
@@ -75,7 +75,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
     $this->assertSession()->pageTextContains('You have unsaved changes on this Paragraph item.');
     $this->assertSession()->pageTextContains($preview_mode_text);
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextContains($preview_mode_text);
 
@@ -90,7 +90,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', $preview_mode_text);
     $restore_text = 'restore_text';
     $edit = ['field_paragraphs[0][subform][field_text][0][value]' => $restore_text];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextContains($restore_text);
 
@@ -102,7 +102,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextContains('Deleted Paragraph: text_paragraph');
     // Click "Confirm Removal" button.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_confirm_remove');
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test ' . $node->label() . ' has been updated.');
     $this->assertSession()->pageTextNotContains($restore_text);
   }

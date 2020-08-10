@@ -22,9 +22,9 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
 
     // Attempt to delete the content type not used yet.
     $this->drupalGet('admin/structure/paragraphs_type');
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->assertSession()->pageTextContains('This action cannot be undone.');
-    $this->clickLink(t('Cancel'));
+    $this->clickLink('Cancel');
 
     // Add a test node with a Paragraph.
     $this->drupalGet('node/add/paragraphed_test');
@@ -32,16 +32,16 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
     $edit = ['title[0][value]' => 'test_node'];
     $table_rows = $this->xpath('//table[contains(@class, :class)]/tbody/tr', [':class' => 'field-multiple-table']);
     $this->assertEquals(1, count($table_rows));
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test test_node has been created.');
 
     // Attempt to delete the paragraph type already used.
     $this->drupalGet('admin/structure/paragraphs_type');
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->assertSession()->pageTextContains('paragraph_type_test Paragraphs type is used by 1 piece of content on your site. You can not remove this paragraph_type_test Paragraphs type until you have removed all from the content.');
 
     // Delete all entities of that Paragraph type.
-    $this->drupalPostForm(NULL, [], t('Delete existing Paragraph'));
+    $this->drupalPostForm(NULL, [], 'Delete existing Paragraph');
     $this->assertSession()->pageTextContains('Entity is successfully deleted.');
     $node = $this->drupalGetNodeByTitle('test_node');
     $this->drupalGet('node/' . $node->id() . '/edit');
@@ -49,7 +49,7 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
     $this->assertEquals(0, count($table_rows));
 
     // @todo Remove this when https://www.drupal.org/node/2846549 is resolved.
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Add two different Paragraphs to the node.
@@ -57,14 +57,14 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
     $this->drupalPostForm(NULL, [], 'paragraphs_text_add_more');
     $table_rows = $this->xpath('//table[contains(@class, :class)]/tbody/tr', [':class' => 'field-multiple-table']);
     $this->assertEquals(2, count($table_rows));
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     // Attempt to delete the Paragraph type.
     $this->drupalGet('admin/structure/paragraphs_type');
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->assertSession()->pageTextContains('paragraph_type_test Paragraphs type is used by 1 piece of content on your site. You can not remove this paragraph_type_test Paragraphs type until you have removed all from the content.');
-    $this->drupalPostForm(NULL, [], t('Delete existing Paragraph'));
+    $this->drupalPostForm(NULL, [], 'Delete existing Paragraph');
     $this->assertSession()->pageTextContains('Entity is successfully deleted.');
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Delete');
     // Check that the Paragraph of the deleted type is removed and the rest
     // remains.
     $node = $this->drupalGetNodeByTitle('test_node');

@@ -2208,7 +2208,7 @@ class ParagraphsWidget extends WidgetBase {
     $widget_state = static::getWidgetState($elements['#field_parents'], $field_name, $form_state);
 
     if ($elements['#required'] && $widget_state['real_item_count'] < 1) {
-      $form_state->setError($elements, t('@name field is required.', ['@name' => $this->fieldDefinition->getLabel()]));
+      $form_state->setError($elements, $this->t('@name field is required.', ['@name' => $this->fieldDefinition->getLabel()]));
     }
 
     static::setWidgetState($elements['#field_parents'], $field_name, $form_state, $widget_state);

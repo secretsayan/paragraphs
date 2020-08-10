@@ -14,6 +14,7 @@ use Drupal\Core\Field\ChangedFieldItemList;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TypedData\TranslatableInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\entity_reference_revisions\EntityNeedsSaveTrait;
@@ -100,6 +101,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
 
   use EntityNeedsSaveTrait;
   use EntityPublishedTrait;
+  use StringTranslationTrait;
 
   /**
    * The behavior plugin data for the paragraph entity.
@@ -164,7 +166,7 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
       }
     }
     else {
-      $label = t('Orphaned @type: @summary', ['@summary' => Unicode::truncate(strip_tags($this->getSummary()), 50, FALSE, TRUE), '@type' => $this->get('type')->entity->label()]);
+      $label = $this->t('Orphaned @type: @summary', ['@summary' => Unicode::truncate(strip_tags($this->getSummary()), 50, FALSE, TRUE), '@type' => $this->get('type')->entity->label()]);
     }
     return $label;
   }

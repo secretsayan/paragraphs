@@ -133,7 +133,7 @@ abstract class ParagraphsTestBase extends BrowserTestBase {
     foreach ($paragraphs_types as $paragraphs_type) {
       $edit['settings[handler_settings][target_bundles_drag_drop][' . $paragraphs_type . '][enabled]'] = $selected;
     }
-    $this->drupalPostForm(NULL, $edit, t('Save settings'));
+    $this->drupalPostForm(NULL, $edit, 'Save settings');
   }
 
   /**
@@ -151,7 +151,7 @@ abstract class ParagraphsTestBase extends BrowserTestBase {
   protected function setParagraphsTypeWeight($content_type, $paragraphs_type, $weight, $paragraphs_field) {
     $this->drupalGet('admin/structure/types/manage/' . $content_type . '/fields/node.' . $content_type . '.' . $paragraphs_field);
     $edit['settings[handler_settings][target_bundles_drag_drop][' . $paragraphs_type . '][weight]'] = $weight;
-    $this->drupalPostForm(NULL, $edit, t('Save settings'));
+    $this->drupalPostForm(NULL, $edit, 'Save settings');
   }
 
   /**
@@ -169,8 +169,8 @@ abstract class ParagraphsTestBase extends BrowserTestBase {
   protected function setDefaultParagraphType($content_type, $paragraphs_name, $paragraphs_field_name, $default_type) {
     $this->drupalGet('admin/structure/types/manage/' . $content_type . '/form-display');
     $this->drupalPostForm(NULL, [], $paragraphs_field_name);
-    $this->drupalPostForm(NULL, ['fields[' . $paragraphs_name . '][settings_edit_form][settings][default_paragraph_type]' => $default_type], t('Update'));
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, ['fields[' . $paragraphs_name . '][settings_edit_form][settings][default_paragraph_type]' => $default_type], 'Update');
+    $this->drupalPostForm(NULL, [], 'Save');
   }
 
   /**
@@ -201,7 +201,7 @@ abstract class ParagraphsTestBase extends BrowserTestBase {
   protected function setParagraphsWidgetMode($content_type, $paragraphs_field, $mode) {
     $this->drupalGet('admin/structure/types/manage/' . $content_type . '/form-display');
     $this->drupalPostForm(NULL, [], $paragraphs_field . '_settings_edit');
-    $this->drupalPostForm(NULL, ['fields[' . $paragraphs_field . '][settings_edit_form][settings][edit_mode]' => $mode], t('Update'));
+    $this->drupalPostForm(NULL, ['fields[' . $paragraphs_field . '][settings_edit_form][settings][edit_mode]' => $mode], 'Update');
     $this->drupalPostForm(NULL, [], 'Save');
   }
 

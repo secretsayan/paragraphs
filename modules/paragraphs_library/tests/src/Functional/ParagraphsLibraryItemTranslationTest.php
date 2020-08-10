@@ -92,7 +92,7 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
       'settings[paragraphs_library_item][paragraphs_library_item][translatable]' => TRUE,
       'settings[node][paragraphed_test][settings][language][language_alterable]' => TRUE
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
+    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
 
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();

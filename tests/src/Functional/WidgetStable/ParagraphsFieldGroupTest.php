@@ -41,18 +41,18 @@ class ParagraphsFieldGroupTest extends ParagraphsTestBase {
       'label' => 'paragraph_field_group_title',
       'group_name' => 'field'
     ];
-    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type . '/form-display/add-group', $edit, t('Save and continue'));
+    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type . '/form-display/add-group', $edit, 'Save and continue');
     $edit = [
       'format_settings[label]' => 'field_group'
     ];
-    $this->drupalPostForm(NULL, $edit, t('Create group'));
+    $this->drupalPostForm(NULL, $edit, 'Create group');
 
     // Put the text field into the field group.
     $edit = [
       'fields[group_field][region]' => 'content',
       'fields[field_text][parent]' => 'group_field'
     ];
-    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type . '/form-display', $edit, t('Save'));
+    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type . '/form-display', $edit, 'Save');
 
     // Create a node with a paragraph.
     $this->drupalGet('node/add/' . $content_type);
@@ -67,7 +67,7 @@ class ParagraphsFieldGroupTest extends ParagraphsTestBase {
       'title[0][value]' => 'paragraphed_title',
       'field_paragraphs[0][subform][field_text][0][value]' => 'paragraph_value',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
   }
 
 }

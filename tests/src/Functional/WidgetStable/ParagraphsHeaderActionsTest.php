@@ -84,7 +84,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     $edit = [
       'title[0][value]' => 'Test',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Test has been created.');
 
     $node = $this->getNodeByTitle('Test');
@@ -114,7 +114,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextNotContains('Third text');
     $this->assertSession()->buttonExists('field_paragraphs_collapse_all');
     $this->assertSession()->buttonExists('field_paragraphs_edit_all');
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Check that the drag and drop button is present when there is a paragraph
     // and that it is not shown when the paragraph is deleted.
@@ -126,7 +126,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     // Disable show multiple actions.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_settings_edit');
-    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => FALSE], t('Update'));
+    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => FALSE], 'Update');
     $this->drupalPostForm(NULL, [], 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Check that the collapse/edit all actions are not present.
@@ -137,7 +137,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     // Enable show "Collapse / Edit all" actions.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_settings_edit');
-    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => TRUE], t('Update'));
+    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][collapse_edit_all]' => TRUE], 'Update');
     $this->drupalPostForm(NULL, [], 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Check that the collapse/edit all actions are present.
@@ -186,7 +186,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     );
 
     $this->drupalGet('admin/structure/paragraphs_type/nested_paragraph/form-display');
-    $this->drupalPostForm(NULL, ['fields[field_nested][type]' => 'paragraphs'], t('Save'));
+    $this->drupalPostForm(NULL, ['fields[field_nested][type]' => 'paragraphs'], 'Save');
     $this->setParagraphsWidgetSettings($nested_paragraph_type, 'nested', ['edit_mode' => 'closed'], 'paragraphs', 'paragraph');
 
     // Checks that Collapse/Edit all button is presented.
@@ -213,7 +213,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     $edit = [
       'title[0][value]' => 'Test',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Test has been created.');
 
     $node = $this->getNodeByTitle('Test');
@@ -299,7 +299,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
     $edit = [
       'title[0][value]' => 'Test',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Test has been created.');
 
     $node = $this->getNodeByTitle('Test');
@@ -347,7 +347,7 @@ class ParagraphsHeaderActionsTest extends ParagraphsTestBase {
       'title[0][value]' => 'Title',
       'field_paragraphs[0][subform][field_text][0][value]' => 'First',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $this->clickLink('Translate');
     $this->clickLink('Add');
     // Assert that the drag and drop button is not present while translating.

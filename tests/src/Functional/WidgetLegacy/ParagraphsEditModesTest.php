@@ -40,7 +40,7 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->drupalPostForm(NULL, [], "field_paragraphs_settings_edit");
     $edit = ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Add a paragraph.
     $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
@@ -56,10 +56,10 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
       'files[field_paragraphs_0_subform_field_image_0]' => $file_system->realpath($files[0]->uri),
       'field_paragraphs[1][subform][field_title][0][value]' => 'Title example',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Assert the summary is correctly generated.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">' . $files[0]->filename . '</span>, <span class="summary-content">text_summary</span>');
     $this->assertSession()->responseContains('<span class="summary-content">Title example');
 
@@ -75,10 +75,10 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     // Remove image.
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
     $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Assert the summary is correctly generated.
-    $this->clickLink(t('Edit'));
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">text_summary');
 
     // Add a Block Paragraphs type.
@@ -92,8 +92,8 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
       'title[0][value]' => 'Node with a Block Paragraph',
       'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'system_breadcrumb_block',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->clickLink(t('Edit'));
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">Breadcrumbs');
   }
 
