@@ -267,7 +267,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     //
     // This case covers full execution of
     // ParagraphsWidget::prepareDeltaPosition() when list is empty.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val(-100)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val(-100)");
     $page->find('xpath', '//*[@name="button_add_modal"]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_nested")]')->click();
@@ -281,7 +281,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     // paragraph respectively.
     //
     // Add 2 additional paragraphs in base field.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val('')");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val('')");
     for ($i = 1; $i <= 2; $i++) {
       $page->find('xpath', '//*[@name="button_add_modal" and not(ancestor::table)]')->click();
       $this->assertSession()->assertWaitOnAjaxRequest();
@@ -295,7 +295,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertEquals('test_2', $base_paragraphs[2]->getText(), 'Last paragraph should be type "test_2".');
 
     // Add new paragraph to 1st position - set delta to 0 for base paragraphs.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val(0)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val(0)");
     $page->find('xpath', '//*[@name="button_add_modal" and not(ancestor::table)]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_3")]')->click();
@@ -307,7 +307,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertEquals('test_3', $base_paragraphs[0]->getText(), '1st paragraph should be type "test_3".');
 
     // Add new paragraph to 3rd position - set delta to 2 for base paragraphs.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val(2)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val(2)");
     $page->find('xpath', '//*[@name="button_add_modal" and not(ancestor::table)]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_2")]')->click();
@@ -319,7 +319,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertEquals('test_2', $base_paragraphs[2]->getText(), '3rd paragraph should be type "test_2".');
 
     // Add new paragraph to last position - using really big delta.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val(1000)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val(1000)");
     $page->find('xpath', '//*[@name="button_add_modal" and not(ancestor::table)]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_1")]')->click();
@@ -331,7 +331,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertEquals('test_1', $base_paragraphs[5]->getText(), 'Last paragraph should be type "test_1".');
 
     // Clear delta base paragraphs.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').last().val('')");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val('')");
     $page->find('xpath', '//*[@name="button_add_modal" and not(ancestor::table)]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_3")]')->click();
@@ -376,28 +376,28 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Add new paragraph to first position.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val(0)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').first().val(0)");
     $page->find('xpath', '//*[@name="button_add_modal" and ancestor::table]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_3")]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Add new paragraph to 2nd position - using float value for index.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val(1.1111)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').first().val(1.1111)");
     $page->find('xpath', '//*[@name="button_add_modal" and ancestor::table]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_2")]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Add new paragraph to first position - using negative index.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val(-100)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').first().val(-100)");
     $page->find('xpath', '//*[@name="button_add_modal" and ancestor::table]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_2")]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Add new paragraph to last position - using some text as position.
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val('some_text')");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').first().val('some_text')");
     $page->find('xpath', '//*[@name="button_add_modal" and ancestor::table]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_3")]')->click();
@@ -430,9 +430,9 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertSession()->assertWaitOnAjaxRequest();
     // Attempt to add a new Paragraph above and cancel.
     $page->find('xpath', '//*[@name="button_add_modal"]')->click();
-    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-modal-delta').first().val(0)");
+    $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').first().val(0)");
     $this->assertSession()->elementExists('css', '.ui-dialog-titlebar-close')->press();
-    $delta = $this->getSession()->evaluateScript("jQuery('paragraph-type-add-modal-delta').val()");
+    $delta = $this->getSession()->evaluateScript("jQuery('.paragraph-type-add-delta').val()");
     $this->assertEquals($delta, '');
     // Add a new Paragraph with the Add button at the bottom.
     $page->find('xpath', '//*[@name="button_add_modal"]')->click();

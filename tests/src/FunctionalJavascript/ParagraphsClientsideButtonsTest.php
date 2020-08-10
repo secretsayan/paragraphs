@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\paragraphs\FunctionalJavascript;
 
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
@@ -271,7 +272,31 @@ class ParagraphsClientsideButtonsTest extends WebDriverTestBase {
     $dialog->pressButton('text');
     $assert_session->assertWaitOnAjaxRequest();
 
-    // 5 paragraphs, we expect 5 injected buttons.
+    // 5 paragraphs, we expect 4 injected buttons as the cardinality of the
+    // nested paragraph is one and we cannot Add Above.
+    $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
+    $this->assertEquals(4, count($all_add_above_buttons));
+
+    // Remove the new added Paragraph.
+    $rich_paragraph_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr:nth-of-type(2) .field--name-field-nested-paragraphs tr.draggable');
+    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $rich_paragraph_row);
+    $dropdown->click();
+    $remove_button = $assert_session->buttonExists('field_paragraphs_3_subform_field_nested_paragraphs_0_remove');
+    $remove_button->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    // Set the config to allow more than one Paragraph.
+    $field_storage = FieldStorageConfig::loadByName('paragraph', 'field_nested_paragraphs');
+    $field_storage->setCardinality(-1);
+    $field_storage->save();
+    // Add the Paragraph back.
+    $add_paragraph_rich_row->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    $dialog = $page->find('xpath', '//div[contains(@class, "ui-dialog")]');
+    $dialog->pressButton('text');
+    $assert_session->assertWaitOnAjaxRequest();
+
+    // 5 paragraphs, we expect 5 injected buttons as the cardinality of the
+    // nested paragraph is unlimited.
     $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
     $this->assertEquals(5, count($all_add_above_buttons));
 

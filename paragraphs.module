@@ -314,6 +314,10 @@ function template_preprocess_paragraphs_add_dialog(&$variables) {
       // $add variable for the add button.
       $variables['add'] = $variables['element'][$key];
     }
+    elseif ($key == 'add_more_delta') {
+      // Add the delta to the add wrapper.
+      $variables['add'][$key] = $variables['element'][$key];
+    }
     else {
       // Buttons for the paragraph types in the modal form.
       $variables['buttons'][$key] = $variables['element'][$key];
