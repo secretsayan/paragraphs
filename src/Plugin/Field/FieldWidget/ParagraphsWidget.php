@@ -1207,6 +1207,10 @@ class ParagraphsWidget extends WidgetBase {
     $elements['#paragraphs_widget'] = TRUE;
     $elements['#attached']['library'][] = 'paragraphs/drupal.paragraphs.widget';
 
+    if (\Drupal::theme()->getActiveTheme()->getName() == 'seven') {
+      $elements['#attached']['library'][] = 'paragraphs/paragraphs.seven';
+    }
+
     return $elements;
   }
 
@@ -1608,7 +1612,7 @@ class ParagraphsWidget extends WidgetBase {
         '#type' => 'submit',
         '#name' => $this->fieldIdPrefix . '_' . $machine_name . '_add_more',
         '#value' => $add_mode == 'modal' ? $label : $this->t('Add @type', ['@type' => $label]),
-        '#attributes' => ['class' => ['field-add-more-submit']],
+        '#attributes' => ['class' => ['field-add-more-submit', 'button--small']],
         '#limit_validation_errors' => [array_merge($this->fieldParents, [$this->fieldDefinition->getName(), 'add_more'])],
         '#submit' => [[get_class($this), 'addMoreSubmit']],
         '#ajax' => [
