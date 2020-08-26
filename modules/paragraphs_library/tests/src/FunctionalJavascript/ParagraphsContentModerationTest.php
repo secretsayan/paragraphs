@@ -3,9 +3,9 @@
 namespace Drupal\Tests\paragraphs_library\FunctionalJavascript;
 
 use Behat\Mink\Element\Element;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
 use Drupal\Tests\paragraphs\Traits\ParagraphsLastEntityQueryTrait;
 
@@ -444,6 +444,35 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $add_above_button->click();
     $library_item = $this->getLastEntityOfType('paragraphs_library_item', TRUE);
     $this->assertEquals('published', $library_item->moderation_state->value);
+
+    // Assert the unpublished indicator for library items.
+    ParagraphsType::load('text')->setThirdPartySetting('paragraphs_library', 'allow_library_conversion', TRUE)->save();
+    $this->drupalGet('node/add');
+    $title = $assert_session->fieldExists('Title');
+    $title->setValue('Paragraph test');
+    $element = $page->find('xpath', '//*[contains(@class, "dropbutton-toggle")]');
+    $element->click();
+    $button = $page->findButton('Add text');
+    $button->press();
+    $assert_session->waitForElementVisible('css', '.ui-dialog');
+    $page->fillField('field_paragraphs[0][subform][field_text][0][value]', 'This is a reusable text UPDATED.');
+    $first_row = $assert_session->elementExists('css', '#field-paragraphs-add-more-wrapper tr.draggable:nth-of-type(1)');
+    $dropdown = $assert_session->elementExists('css', '.paragraphs-dropdown', $first_row);
+    $dropdown->click();
+    $page->pressButton('Promote to library');
+    $assert_session->assertWaitOnAjaxRequest();
+    // New library items are published by default.
+    $status_icon = $page->find('css', '.paragraph-formatter.paragraphs-icon-view');
+    $this->assertNull($status_icon);
+    // Archive the library item and assert there is a unpublished icon.
+    $edit_button = $page->find('css', 'input[name^="field_reusable_paragraph_edit_button"]');
+    $edit_button->press();
+    $assert_session->waitForElementVisible('css', '.ui-dialog');
+    $assert_session->elementExists('css', '.ui-dialog')->selectFieldOption('moderation_state[0][state]', 'archived');
+    $page->find('css', '.ui-dialog-buttonset button:contains("Save")')->press();
+    $assert_session->assertWaitOnAjaxRequest();
+    $status_icon = $page->find('css', '.paragraphs-icon-view');
+    $this->assertTrue($status_icon->isVisible());
   }
 
   /**
