@@ -87,6 +87,17 @@ class ParagraphsBehaviorPluginsTest extends KernelTestBase {
     $plugin = $paragraph->getParagraphType()->getBehaviorPlugins()->getEnabled();
     $this->assertEquals($plugin['test_text_color']->settingsSummary($paragraph)[0], ['label' => 'Text color', 'value' => 'blue']);
 
+    // Settings another behavior settings should retain the original behaviors
+    // from another plugin.
+    \Drupal::entityTypeManager()->getStorage('paragraph')->resetCache();
+    $paragraph = Paragraph::load($paragraph->id());
+    $paragraph->setBehaviorSettings('test_another_id', ['foo' => 'bar']);
+    $paragraph->save();
+
+    $paragraph = Paragraph::load($paragraph->id());
+    $settings = $paragraph->getAllBehaviorSettings();
+    $this->assertArrayHasKey('test_text_color', $settings);
+    $this->assertArrayHasKey('test_another_id', $settings);
   }
 
   /**

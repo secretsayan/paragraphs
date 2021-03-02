@@ -221,6 +221,8 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
    * {@inheritdoc}
    */
   public function setBehaviorSettings($plugin_id, array $settings) {
+    // Get existing behaviors first.
+    $this->getAllBehaviorSettings();
     // Set behavior settings fields.
     $this->unserializedBehaviorSettings[$plugin_id] = $settings;
   }
