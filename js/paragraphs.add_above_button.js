@@ -15,6 +15,15 @@
    */
   var clickHandler = function (event) {
     event.preventDefault();
+    // We need to stop event propagation in order to prevent triggering jQuery
+    // UI dialog.js mousedown method. This method order call is not predictable.
+    // When we are in dialog for editing reusable library (parent dialog) then
+    // for 'Add Paragraph' button it will be called before child dialog
+    // creation, but for 'Add above' button it will be called after child dialog
+    // creation and this will result in moving parent dialog in front of
+    // child dialog.
+    event.stopPropagation();
+
     var $button = $(this);
 
     // Find delta for row without interference of unrelated table rows.
