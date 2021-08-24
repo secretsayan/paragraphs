@@ -110,7 +110,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->assertEquals($text_paragraph_2->get('parent_type')->value, 'paragraph');
 
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     $assert_session = $this->assertSession();
     $assert_session->hiddenFieldValueEquals('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]', 'field_paragraphs][0][paragraphs_container_paragraphs');
@@ -133,8 +133,8 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][1][_weight]')
       ->setValue(0);
 
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Complete drag & drop');
+    $this->submitForm([], 'Save');
 
     // Check the new structure of the node and its paragraphs.
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
@@ -210,7 +210,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     // Change the path of the text paragraph to the empty container as its
     // parent.
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     // Ensure that the summary is displayed correctly.
     $this->assertSession()->elementTextContains('css', '.paragraphs-dragdrop-wrapper li:nth-of-type(1)', 'Test text 1');
@@ -219,7 +219,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->assertSession()
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]')
       ->setValue('field_paragraphs][1][paragraphs_container_paragraphs');
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
+    $this->submitForm([], 'Complete drag & drop');
 
     // Ensure the summary is displayed correctly for the collapsed paragraphs.
     $this->assertSession()->elementTextNotContains('css', '.field--name-field-paragraphs tbody tr:nth-of-type(1) .paragraph-summary', 'Test text 1');
@@ -227,12 +227,12 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
 
     // Ensure that the summary was updated correctly when going back to drag and
     // drop mode.
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
     $this->assertSession()->elementTextNotContains('css', '.paragraphs-dragdrop-wrapper li:nth-of-type(1)', 'Test text 1');
     $this->assertSession()->elementTextContains('css', '.paragraphs-dragdrop-wrapper li:nth-of-type(2)', 'Test text 1');
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
+    $this->submitForm([], 'Complete drag & drop');
 
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     // Check that the parent of the text paragraph is the second paragraph
     // container.
@@ -337,7 +337,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $edit = [
       'field_paragraphs[2][subform][paragraphs_container_paragraphs][0][subform][field_text][0][value]' => 'new paragraph',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Drag & drop');
+    $this->submitForm($edit, 'Drag & drop');
 
     // Change the structure of the node, third text paragraph goes to first
     // container, the first text paragraph goes to the second container (child
@@ -370,7 +370,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       ->setValue(1);
 
     // Save immediately, without separately confirming the widget changes.
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     // Reset the cache to make sure that the loaded parents are the new ones.
     \Drupal::entityTypeManager()->getStorage('paragraph')->resetCache();
@@ -450,7 +450,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     // Change the path of the text paragraph to the empty container as its
     // parent.
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     // Make sure that the second paragraph field is still displayed normally by
     // checking that it displays the edit button, as it is closed by default.
@@ -462,7 +462,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->assertSession()
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]')
       ->setValue('field_paragraphs][1][paragraphs_container_paragraphs');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     // Check that the parent of the text paragraph is the second paragraph
     // container.
@@ -548,16 +548,16 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       'field_paragraphs[1][_weight]' => 2,
       'field_paragraphs[2][_weight]' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Drag & drop');
+    $this->submitForm($edit, 'Drag & drop');
 
     // Change the path of the text paragraph to the empty container as its
     // parent.
     $this->assertSession()
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]')
       ->setValue('field_paragraphs][1][paragraphs_container_paragraphs');
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
+    $this->submitForm([], 'Complete drag & drop');
 
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     // Check that the parent of the text paragraph is the second paragraph
     // container.
@@ -633,7 +633,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     // Delete the first container, move the text 2 paragraph into the second
     // container.
     $this->getSession()->getPage()->pressButton('field_paragraphs_0_remove');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     $assert_session = $this->assertSession();
 
@@ -649,8 +649,8 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][1][_weight]')
       ->setValue(0);
 
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Complete drag & drop');
+    $this->submitForm([], 'Save');
 
     // Check that the parent of the text paragraph is the second paragraph
     // container.
@@ -715,7 +715,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->assertEquals($text_paragraph_2->get('parent_type')->value, 'paragraph');
 
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     $assert_session = $this->assertSession();
     $assert_session->hiddenFieldValueEquals('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]', 'field_paragraphs][0][paragraphs_container_paragraphs');
@@ -738,8 +738,8 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][_weight]')
       ->setValue(2);
 
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Complete drag & drop');
+    $this->submitForm([], 'Save');
 
     // Check the new structure of the node and its paragraphs.
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
@@ -818,7 +818,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->assertEquals($text_paragraph_2->get('parent_type')->value, 'paragraph');
 
     $this->drupalGet('/node/' . $node->id() . '/edit');
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     $assert_session = $this->assertSession();
     $assert_session->hiddenFieldValueEquals('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][_path]', 'field_paragraphs][0][paragraphs_container_paragraphs][0][paragraphs_container_paragraphs');
@@ -842,8 +842,8 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
       ->hiddenFieldExists('field_paragraphs[dragdrop][field_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][0][dragdrop][paragraphs_container_paragraphs][list][1][_weight]')
       ->setValue(2);
 
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Complete drag & drop');
+    $this->submitForm([], 'Save');
 
     // Check the new structure of the node and its paragraphs.
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
@@ -884,10 +884,10 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
     $this->getSession()->getPage()->pressButton('Add text');
 
     // Enable drag and drop.
-    $this->drupalPostForm(NULL, [], 'Drag & drop');
+    $this->submitForm([], 'Drag & drop');
 
     // Complete drag and drop.
-    $this->drupalPostForm(NULL, [], 'Complete drag & drop');
+    $this->submitForm([], 'Complete drag & drop');
     $this->assertSession()->fieldExists('field_paragraphs[0][subform][field_text][0][value]');
     $this->assertSession()->pageTextNotContains('Title field is required.');
 

@@ -38,13 +38,14 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
 
     // Set edit mode to closed.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
-    $this->drupalPostForm(NULL, [], "field_paragraphs_settings_edit");
+    $this->submitForm([], "field_paragraphs_settings_edit");
     $edit = ['fields[field_paragraphs][settings_edit_form][settings][edit_mode]' => 'closed'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Add a paragraph.
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_title_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'field_paragraphs_image_text_paragraph_add_more');
+    $this->submitForm([], 'field_paragraphs_title_add_more');
 
     $files = $this->getTestFiles('image');
     $file_system = \Drupal::service('file_system');
@@ -56,7 +57,7 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
       'files[field_paragraphs_0_subform_field_image_0]' => $file_system->realpath($files[0]->uri),
       'field_paragraphs[1][subform][field_title][0][value]' => 'Title example',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Assert the summary is correctly generated.
     $this->clickLink('Edit');
@@ -64,18 +65,18 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     $this->assertSession()->responseContains('<span class="summary-content">Title example');
 
     // Edit and remove alternative text.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->submitForm([], 'field_paragraphs_0_edit');
     $edit = [
       'field_paragraphs[0][subform][field_image][0][alt]' => 'alternative_text_summary',
     ];
-    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_collapse');
+    $this->submitForm($edit, 'field_paragraphs_0_collapse');
     // Assert the summary is correctly generated.
     $this->assertSession()->responseContains('<span class="summary-content">alternative_text_summary</span>, <span class="summary-content">text_summary</span>');
 
     // Remove image.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_subform_field_image_0_remove_button');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'field_paragraphs_0_edit');
+    $this->submitForm([], 'field_paragraphs_0_subform_field_image_0_remove_button');
+    $this->submitForm([], 'Save');
 
     // Assert the summary is correctly generated.
     $this->clickLink('Edit');
@@ -87,12 +88,12 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
 
     // Test the summary of a Block field.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_block_paragraph_add_more');
+    $this->submitForm([], 'field_paragraphs_block_paragraph_add_more');
     $edit = [
       'title[0][value]' => 'Node with a Block Paragraph',
       'field_paragraphs[0][subform][field_block][0][plugin_id]' => 'system_breadcrumb_block',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->clickLink('Edit');
     $this->assertSession()->responseContains('<span class="summary-content">Breadcrumbs');
   }

@@ -202,12 +202,12 @@ class ParagraphsStableEditPerspectivesUiTest extends WebDriverTestBase {
     $edit = [
       'settings[target_type]' => 'paragraph',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save field settings');
-    $this->drupalPostForm(NULL, NULL, 'Save settings');
+    $this->submitForm($edit, 'Save field settings');
+    $this->submitForm([], 'Save settings');
     $this->drupalGet('admin/structure/types/manage/testcontent/form-display');
     $page->selectFieldOption('fields[field_testparagraphfield][type]', 'paragraphs');
     $this->assertSession()->assertWaitOnAjaxRequest();
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
     $this->drupalGet('node/add/testcontent');
     $style_selector = $page->find('css', '.paragraphs-tabs');
     $this->assertFalse($style_selector->isVisible());
@@ -228,7 +228,8 @@ class ParagraphsStableEditPerspectivesUiTest extends WebDriverTestBase {
     $edit = [
       'behavior_plugins[test_bold_text][enabled]' => TRUE,
     ];
-    $this->drupalPostForm('admin/structure/paragraphs_type/' . $paragraph_type, $edit, 'Save');
+    $this->drupalGet('admin/structure/paragraphs_type/' . $paragraph_type);
+    $this->submitForm($edit, 'Save');
 
     $this->addParagraphedContentType('testcontent');
     $this->addParagraphsField('testcontent', 'field_paragraphs2', 'node');

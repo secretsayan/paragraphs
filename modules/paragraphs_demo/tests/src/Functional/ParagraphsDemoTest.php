@@ -81,9 +81,9 @@ class ParagraphsDemoTest extends BrowserTestBase {
 
     // Set edit mode to open.
     $this->drupalGet('admin/structure/types/manage/paragraphed_content_demo/form-display');
-    $this->drupalPostForm(NULL, [], "field_paragraphs_demo_settings_edit");
+    $this->submitForm([], "field_paragraphs_demo_settings_edit");
     $edit = ['fields[field_paragraphs_demo][settings_edit_form][settings][edit_mode]' => 'open'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Check for all pre-configured paragraphs_types.
     $this->drupalGet('admin/structure/paragraphs_type');
@@ -144,7 +144,7 @@ class ParagraphsDemoTest extends BrowserTestBase {
 
     $this->drupalGet('node/add/paragraphed_content_demo');
     $this->assertSession()->responseContains('<h4 class="label">Paragraphs</h4>');
-    $this->drupalPostForm(NULL, NULL, 'Add Text');
+    $this->submitForm([], 'Add Text');
     $this->assertSession()->responseNotContains('<strong data-drupal-selector="edit-field-paragraphs-demo-title">Paragraphs</strong>');
     $this->assertSession()->responseContains('<h4 class="label">Paragraphs</h4>');
     $edit = array(
@@ -152,11 +152,11 @@ class ParagraphsDemoTest extends BrowserTestBase {
       'moderation_state[0][state]' => 'published',
       'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'Paragraph text',
     );
-    $this->drupalPostForm(NULL, $edit, 'Add User');
+    $this->submitForm($edit, 'Add User');
     $edit = [
       'field_paragraphs_demo[1][subform][field_user_demo][0][target_id]' => $admin_user->label() . ' (' . $admin_user->id() . ')',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     $this->assertSession()->pageTextContains('Paragraphed article Paragraph title has been created.');
     $this->assertSession()->pageTextContains('Paragraph title');

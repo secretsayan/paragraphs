@@ -32,11 +32,13 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = array(
       'predefined_langcode' => 'de',
     );
-    $this->drupalPostForm('admin/config/regional/language/add', $edit, 'Add language');
+    $this->drupalGet('admin/config/regional/language/add');
+    $this->submitForm($edit, 'Add language');
     $edit = array(
       'predefined_langcode' => 'fr',
     );
-    $this->drupalPostForm('admin/config/regional/language/add', $edit, 'Add language');
+    $this->drupalGet('admin/config/regional/language/add');
+    $this->submitForm($edit, 'Add language');
 
     // Create article content type with a paragraphs field.
     $this->addParagraphedContentType('article', 'field_paragraphs');
@@ -45,7 +47,8 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = array(
       'language_configuration[content_translation]' => TRUE,
     );
-    $this->drupalPostForm('admin/structure/types/manage/article', $edit, 'Save content type');
+    $this->drupalGet('admin/structure/types/manage/article');
+    $this->submitForm($edit, 'Save content type');
     $this->drupalGet('admin/structure/types/manage/article');
 
     // Ensue the paragraphs field itself isn't translatable - this would be a
@@ -53,7 +56,8 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = array(
       'translatable' => FALSE,
     );
-    $this->drupalPostForm('admin/structure/types/manage/article/fields/node.article.field_paragraphs', $edit, 'Save settings');
+    $this->drupalGet('admin/structure/types/manage/article/fields/node.article.field_paragraphs');
+    $this->submitForm($edit, 'Save settings');
 
     // Add Paragraphs type.
     $this->addParagraphsType('test_paragraph_type');
@@ -79,7 +83,7 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = [
       'title[0][value]' => 'Title English',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Add french translation.
     $this->clickLink('Translate');
@@ -90,7 +94,7 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = array(
       'title[0][value]' => 'Title French',
     );
-    $this->drupalPostForm(NULL, $edit, 'Save (this translation)');
+    $this->submitForm($edit, 'Save (this translation)');
     $this->assertSession()->pageTextContains('article Title French has been updated.');
 
     // Add german translation.
@@ -102,7 +106,7 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
     $edit = array(
       'title[0][value]' => 'Title German',
     );
-    $this->drupalPostForm(NULL, $edit, 'Save (this translation)');
+    $this->submitForm($edit, 'Save (this translation)');
     $this->assertSession()->pageTextContains('article Title German has been updated.');
   }
 

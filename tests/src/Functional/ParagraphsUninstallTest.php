@@ -42,24 +42,27 @@ class ParagraphsUninstallTest extends BrowserTestBase {
   public function testUninstall() {
 
     // Uninstall the module paragraphs_demo.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_demo]' => TRUE], 'Uninstall');
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->drupalGet('admin/modules/uninstall');
+    $this->submitForm(['uninstall[paragraphs_demo]' => TRUE], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
     // Delete library data.
     $this->clickLink('Remove Paragraphs library items');
-    $this->drupalPostForm(NULL, [], 'Delete all Paragraphs library items');
+    $this->submitForm([], 'Delete all Paragraphs library items');
 
     // Uninstall the library module.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs_library]' => TRUE], 'Uninstall');
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->drupalGet('admin/modules/uninstall');
+    $this->submitForm(['uninstall[paragraphs_library]' => TRUE], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
     // Delete paragraphs data.
     $this->clickLink('Remove Paragraphs');
-    $this->drupalPostForm(NULL, [], 'Delete all Paragraphs');
+    $this->submitForm([], 'Delete all Paragraphs');
 
     // Uninstall the module paragraphs.
-    $this->drupalPostForm('admin/modules/uninstall', ['uninstall[paragraphs]' => TRUE], 'Uninstall');
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->drupalGet('admin/modules/uninstall');
+    $this->submitForm(['uninstall[paragraphs]' => TRUE], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
     $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
     $this->assertSession()->pageTextNotContains('Paragraphs demo');
     $this->assertSession()->pageTextNotContains('Paragraphs library');

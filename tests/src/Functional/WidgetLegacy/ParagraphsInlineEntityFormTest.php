@@ -45,28 +45,28 @@ class ParagraphsInlineEntityFormTest extends ParagraphsTestBase {
     $edit = [
       'fields[field_article][type]' => 'inline_entity_form_simple',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Set the paragraphs widget mode to preview.
     $this->setParagraphsWidgetMode('article', 'field_paragraphs', 'preview');
 
     // Create node with one paragraph.
     $this->drupalGet('node/add/article');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_simple_add_more');
+    $this->submitForm([], 'field_paragraphs_simple_add_more');
 
     // Set the values and save.
     $edit = [
       'title[0][value]' => 'Dummy1',
       'field_paragraphs[0][subform][field_article][0][inline_entity_form][title][0][value]' => 'Dummy2',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Go back into edit page.
     $node = $this->getNodeByTitle('Dummy1');
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Try to open the previewed paragraph.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->submitForm([], 'field_paragraphs_0_edit');
   }
 
   /**
@@ -98,21 +98,21 @@ class ParagraphsInlineEntityFormTest extends ParagraphsTestBase {
       'settings[target_type]' => 'paragraph',
       'cardinality' => '-1',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save field settings');
+    $this->submitForm($edit, 'Save field settings');
 
     // Enable IEF simple widget.
     $this->drupalGet('admin/structure/paragraphs_type/simple/form-display');
     $edit = [
       'fields[field_article][type]' => 'inline_entity_form_simple',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Set the paragraphs widget mode to preview.
     $this->setParagraphsWidgetMode('article', 'field_paragraphs', 'preview');
 
     // Create node with one paragraph.
     $this->drupalGet('node/add/article');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_simple_add_more');
+    $this->submitForm([], 'field_paragraphs_simple_add_more');
 
     // Set the values and save.
     $edit = [
@@ -120,14 +120,14 @@ class ParagraphsInlineEntityFormTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_article][0][inline_entity_form][title][0][value]' => 'Basic page 1',
     ];
 
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Go back into edit page.
     $node = $this->getNodeByTitle('Article 1');
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Create second paragraph.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_simple_add_more');
+    $this->submitForm([], 'field_paragraphs_simple_add_more');
 
     // Set the values of second paragraph and change the order.
     $edit = [
@@ -135,7 +135,7 @@ class ParagraphsInlineEntityFormTest extends ParagraphsTestBase {
       'field_paragraphs[0][_weight]' => -1,
       'field_paragraphs[1][_weight]' => -2,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
   }
 
 }

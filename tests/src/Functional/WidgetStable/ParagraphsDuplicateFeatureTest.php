@@ -33,8 +33,9 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
 
     // Add a text field to the text_paragraph type.
     static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'text', 'Text', 'text_long', [], []);
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_text_paragraph_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'field_paragraphs_text_paragraph_add_more');
+    $this->submitForm([], 'field_paragraphs_text_paragraph_add_more');
 
     // Create a node with a Paragraph.
     $edit = [
@@ -43,14 +44,14 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
       'field_paragraphs[1][subform][field_text][0][value]' => 'B',
       'field_paragraphs[2][subform][field_text][0][value]' => 'C',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Click "Duplicate" button on A and move C to the first position.
     $edit = ['field_paragraphs[2][_weight]' => -1];
-    $this->drupalPostForm(NULL, $edit, 'field_paragraphs_0_duplicate');
+    $this->submitForm($edit, 'field_paragraphs_0_duplicate');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', 'A');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][_weight]', 1);
     $this->assertSession()->fieldValueEquals('field_paragraphs[1][subform][field_text][0][value]', 'B');
@@ -69,7 +70,7 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
     ];
 
     // Save and check if all paragraphs are present in the correct order.
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', 'A');
     $this->assertSession()->fieldValueEquals('field_paragraphs[1][subform][field_text][0][value]', 'A');
@@ -77,9 +78,9 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
     $this->assertSession()->fieldValueEquals('field_paragraphs[3][subform][field_text][0][value]', 'B');
 
     // Delete the second A, then duplicate C.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_1_remove');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_2_duplicate');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'field_paragraphs_1_remove');
+    $this->submitForm([], 'field_paragraphs_2_duplicate');
+    $this->submitForm([], 'Save');
 
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', 'A');
@@ -92,10 +93,10 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
     // Disable show duplicate action.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->assertSession()->pageTextContains('Features: Duplicate, Collapse / Edit all');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_settings_edit');
-    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][duplicate]' => FALSE], 'Update');
+    $this->submitForm([], 'field_paragraphs_settings_edit');
+    $this->submitForm(['fields[field_paragraphs][settings_edit_form][settings][features][duplicate]' => FALSE], 'Update');
     $this->assertSession()->pageTextContains('Features: Collapse / Edit all');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Check that the duplicate action is not present.
     $this->assertSession()->buttonNotExists('field_paragraphs_0_duplicate');
@@ -104,10 +105,10 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
     // Enable show duplicate action.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/form-display');
     $this->assertSession()->pageTextContains('Features: Collapse / Edit all');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_settings_edit');
-    $this->drupalPostForm(NULL, ['fields[field_paragraphs][settings_edit_form][settings][features][duplicate]' => TRUE], 'Update');
+    $this->submitForm([], 'field_paragraphs_settings_edit');
+    $this->submitForm(['fields[field_paragraphs][settings_edit_form][settings][features][duplicate]' => TRUE], 'Update');
     $this->assertSession()->pageTextContains('Features: Duplicate, Collapse / Edit all');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Check that the duplicate action is present.
     $this->assertSession()->buttonExists('field_paragraphs_0_duplicate');
@@ -136,30 +137,32 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
       'settings[target_type]' => 'paragraph',
       'cardinality' => '-1',
     ], []);
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_nested_paragraph_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'field_paragraphs_nested_paragraph_add_more');
 
     // Create a node with a Paragraph.
     $edit = [
       'title[0][value]' => 'paragraphs_mode_test',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     // Add a text field to nested paragraph.
     $text = 'recognizable_text';
-    $this->drupalPostForm('node/' . $node->id() . '/edit', [], 'field_paragraphs_0_subform_field_nested_text_add_more');
+    $this->drupalGet('node/' . $node->id() . '/edit');
+    $this->submitForm([], 'field_paragraphs_0_subform_field_nested_text_add_more');
     $edit = [
       'field_paragraphs[0][subform][field_nested][0][subform][field_text][0][value]' => $text,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Switch mode to closed.
     $this->setParagraphsWidgetMode('paragraphed_test', 'field_paragraphs', 'closed');
     $this->drupalGet('node/' . $node->id() . '/edit');
 
     // Click "Duplicate" button.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_duplicate');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_0_edit');
+    $this->submitForm([], 'field_paragraphs_0_duplicate');
+    $this->submitForm([], 'field_paragraphs_0_edit');
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_nested][0][subform][field_text][0][value]', $text);
     $this->assertSession()->fieldValueEquals('field_paragraphs[1][subform][field_nested][0][subform][field_text][0][value]', $text);
 
@@ -171,7 +174,7 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
 
     // Save and check if the changed text paragraph value of the duplicated
     // paragraph is not the same as in the original paragraph.
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     $page_text = $this->getSession()->getPage()->getText();
     $text_nr_found = substr_count($page_text, $text);
@@ -199,14 +202,15 @@ class ParagraphsDuplicateFeatureTest extends ParagraphsTestBase {
 
     // Add a text field to the text_paragraph type.
     static::fieldUIAddNewField('admin/structure/paragraphs_type/' . $paragraph_type, 'text', 'Text', 'text_long', [], []);
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'field_paragraphs_text_paragraph_add_more');
 
     $edit = [
       'title[0][value]' => 'paragraphs_mode_test',
       'field_paragraphs[0][subform][field_text][0][value]' => 'A',
       'field_paragraphs[1][subform][field_text][0][value]' => 'B',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle('paragraphs_mode_test');
 
     $this->drupalGet('node/' . $node->id() . '/edit');

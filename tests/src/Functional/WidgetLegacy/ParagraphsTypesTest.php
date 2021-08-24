@@ -30,9 +30,9 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
 
     // Add a test node with a Paragraph.
     $this->drupalGet('node/add/paragraphed_test');
-    $this->drupalPostForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
+    $this->submitForm([], 'paragraphs_paragraph_type_test_add_more');
     $edit = ['title[0][value]' => 'test_node'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test test_node has been created.');
 
     // Attempt to delete the paragraph type already used.
@@ -68,7 +68,7 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
       'id' => 'test_paragraph_type_icon',
       'files[icon_file]' => $fileSystem->realpath($test_files[0]->uri),
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
+    $this->submitForm($edit, 'Save and manage fields');
     $this->assertSession()->pageTextContains('Saved the Test paragraph type Paragraphs type.');
 
     // Check if the icon has been saved.
@@ -90,8 +90,8 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
 
     // Delete the icon.
     $this->drupalGet('admin/structure/paragraphs_type/test_paragraph_type_icon');
-    $this->drupalPostForm(NULL, [], 'icon_file_remove_button');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'icon_file_remove_button');
+    $this->submitForm([], 'Save');
 
     // Check that the icon file usage has been deregistered.
     $usages = $file_usage->listUsage($file);
@@ -120,7 +120,7 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
       'id' => 'test_paragraph_type_icon',
       'files[icon_file]' => $fileSystem->realpath($test_files[0]->uri),
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
+    $this->submitForm($edit, 'Save and manage fields');
     $this->assertSession()->pageTextContains('Saved the Test paragraph type Paragraphs type.');
 
     // Check if the icon is created from defaults if not exists.
@@ -155,7 +155,7 @@ class ParagraphsTypesTest extends ParagraphsTestBase {
       'id' => 'test_paragraph_type_description',
       'description' => $description_markup,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
+    $this->submitForm($edit, 'Save and manage fields');
     $this->assertSession()->pageTextContains("Saved the $label Paragraphs type.");
 
     // Check if the description has been saved.

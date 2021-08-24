@@ -65,7 +65,7 @@ class ParagraphsUiTest extends ParagraphsTestBase {
       'title[0][value]' => 'Llama test',
       'paragraphs[0][subform][field_text_demo][0][value]' => '<iframe src="https://www.llamatest.neck"></iframe>',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Llama test has been created.');
     // Assert that the summary contains the html text.
     $node = $this->getNodeByTitle('Llama test');
@@ -77,7 +77,7 @@ class ParagraphsUiTest extends ParagraphsTestBase {
     $edit = [
       'paragraphs[0][subform][field_text_demo][0][value]' => '<iframe src="https://www.llamatest.neck" class="this-is-a-pretty-long-class-that-needs-to-be-really-long-for-testing-purposes-so-we-have-a-better-summary-test-and-it-has-exactly-144-characters"></iframe>',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test Llama test has been updated.');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->pageTextContains('<iframe src="https://www.llamatest.neck" class="this-is-a-pretty-long-class-that-needs-to-be-really-long-for-testing-purposes-so-we-');
@@ -88,7 +88,7 @@ class ParagraphsUiTest extends ParagraphsTestBase {
     $edit = [
       'paragraphs[0][subform][field_text_demo][0][value]' => '<iframe src="https://www.llamatest.neck" class="this-is-a-pretty-long-class-that-needs-to-be-really-long-for-testing-purposes-so-we-have-a-better-summary-test-and-it-has-exactly-144-characters"></iframe><h1>This is a title</h1>',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->responseContains('class="paragraphs-description paragraphs-collapsed-description"><div class="paragraphs-content-wrapper"><span class="summary-content">This is a title');
   }
@@ -101,19 +101,19 @@ class ParagraphsUiTest extends ParagraphsTestBase {
 
     // Create a new content type.
     $this->drupalGet('admin/structure/types/add');
-    $this->drupalPostForm(NULL, [
+    $this->submitForm([
       'name' => 'Test',
       'type' => 'test',
     ], 'Save and manage fields');
 
     // Add a new paragraphs field to the content type.
     $this->clickLink('Add field');
-    $this->drupalPostForm(NULL, [
+    $this->submitForm([
       'new_storage_type' => 'field_ui:entity_reference_revisions:paragraph',
       'label' => 'Paragraph',
       'field_name' => 'paragraph',
     ], 'Save and continue');
-    $this->drupalPostForm(NULL, [], 'Save field settings');
+    $this->submitForm([], 'Save field settings');
 
     // Visit the "Manage form display" page of the new content type.
     $this->drupalGet('admin/structure/types/manage/test/form-display');

@@ -41,10 +41,11 @@ class ParagraphsSummaryFormatterTest extends ParagraphsTestBase {
     // Set display format to paragraphs summary.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/display');
     $edit = ['fields[field_paragraphs][type]' => 'paragraph_summary'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     // Add a paragraph.
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'field_paragraphs_text_paragraph_add_more');
-    $this->drupalPostForm(NULL, NULL, 'field_paragraphs_title_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'field_paragraphs_text_paragraph_add_more');
+    $this->submitForm([], 'field_paragraphs_title_add_more');
 
     // Create a node with a text.
     $edit = [
@@ -52,13 +53,13 @@ class ParagraphsSummaryFormatterTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => 'text_summary',
       'field_paragraphs[1][subform][field_title][0][value]' => 'Title example',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, [], 'Add user_paragraph');
+    $this->submitForm([], 'Add user_paragraph');
     $edit = [
       'field_paragraphs[2][subform][field_user][0][target_id]' => $this->admin_user->label() . ' (' . $this->admin_user->id() . ')',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Assert the summary is correctly generated.
     $this->assertSession()->pageTextContains($this->admin_user->label());

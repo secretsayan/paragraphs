@@ -64,7 +64,8 @@ class ParagraphsUiTest extends ParagraphsTestBase {
       'settings[paragraph][text_image][fields][field_text_demo]' => TRUE,
       'settings[node][paragraphed_content_demo][settings][language][language_alterable]' => TRUE
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
   }
 
   /**
@@ -93,22 +94,23 @@ class ParagraphsUiTest extends ParagraphsTestBase {
     $form_display_edit = [
       'fields[field_content][type]' => 'entity_reference_paragraphs',
     ];
-    $this->drupalPostForm($bundle_path . '/form-display', $form_display_edit, 'Save');
+    $this->drupalGet($bundle_path . '/form-display');
+    $this->submitForm($form_display_edit, 'Save');
 
     // Attempt to create a paragraphed node with an empty required field.
     $title = 'Empty';
     $this->drupalGet('node/add/paragraphed_content_demo');
-    $this->drupalPostForm(NULL, ['title[0][value]' => $title], 'Save');
+    $this->submitForm(['title[0][value]' => $title], 'Save');
     $this->assertSession()->pageTextContains($field_title . ' field is required');
 
     // Attempt to create a paragraphed node with only a paragraph in the
     // "remove" mode in the required field.
     $title = 'Remove mode';
     $this->drupalGet('node/add/paragraphed_content_demo');
-    $this->drupalPostForm(NULL, [], 'field_content_text_image_add_more');
-    $this->drupalPostForm(NULL, [], 'field_content_0_remove');
+    $this->submitForm([], 'field_content_text_image_add_more');
+    $this->submitForm([], 'field_content_0_remove');
     $this->assertSession()->pageTextNotContains($field_title . ' field is required');
-    $this->drupalPostForm(NULL, ['title[0][value]' => $title], 'Save');
+    $this->submitForm(['title[0][value]' => $title], 'Save');
     $this->assertSession()->pageTextContains($field_title . ' field is required');
   }
 

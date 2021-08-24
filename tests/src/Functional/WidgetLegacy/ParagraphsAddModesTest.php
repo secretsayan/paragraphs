@@ -24,7 +24,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
 
     // Check that the current field does not allow to add default values.
     $this->assertSession()->pageTextContains('No widget available for: paragraphs_field.');
-    $this->drupalPostForm(NULL, [], 'Save settings');
+    $this->submitForm([], 'Save settings');
     $this->assertSession()->pageTextContains('Saved paragraphs_field configuration.');
     $this->assertSession()->statusCodeEquals(200);
   }
@@ -39,7 +39,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     // Edit the field and save when there are no Paragraphs types available.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, [], 'Save settings');
+    $this->submitForm([], 'Save settings');
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
   }
 
@@ -55,7 +55,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     $this->addParagraphedContentType('paragraphed_test', 'paragraphs', 'entity_reference_paragraphs');
     // Enter to the field config since the weight is set through the form.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields/node.paragraphed_test.paragraphs');
-    $this->drupalPostForm(NULL, [], 'Save settings');
+    $this->submitForm([], 'Save settings');
 
     $this->setAddMode('paragraphed_test', 'paragraphs', 'dropdown');
 
@@ -89,7 +89,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     $this->addParagraphedContentType('paragraphed_test', 'paragraphs', 'entity_reference_paragraphs');
     // Enter to the field config since the weight is set through the form.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields/node.paragraphed_test.paragraphs');
-    $this->drupalPostForm(NULL, [], 'Save settings');
+    $this->submitForm([], 'Save settings');
 
     $this->setAddMode('paragraphed_test', 'paragraphs', 'select');
 
@@ -187,7 +187,7 @@ class ParagraphsAddModesTest extends ParagraphsTestBase {
     $this->setDefaultParagraphType('paragraphed_test', 'paragraphs', 'paragraphs_settings_edit', 'text_image');
     $this->removeDefaultParagraphType('paragraphed_test');
     $edit = ['title[0][value]' => 'New Host'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->drupalGet('node/1/edit');
     $this->assertSession()->pageTextContains('No Paragraph added yet.');
   }

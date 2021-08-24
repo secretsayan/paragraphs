@@ -69,7 +69,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => 'Fist paragraph',
       'field_paragraphs[1][subform][field_text][0][value]' => 'Second paragraph',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node = $this->drupalGetNodeByTitle('Autocollapse test node');
 
     // Set the settings to "Open" edit mode without autocollapse.
@@ -492,7 +492,8 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'settings[handler_settings][negate]' => 0,
       'settings[handler_settings][target_bundles_drag_drop][text][enabled]' => 1,
     ];
-    $this->drupalPostForm('admin/structure/types/manage/paragraphed_test/fields/node.paragraphed_test.paragraphs', $edit, 'Save settings');
+    $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields/node.paragraphed_test.paragraphs');
+    $this->submitForm($edit, 'Save settings');
 
     $this->drupalGet('node/add/paragraphed_test');
     $this->assertSession()->fieldNotExists('paragraphs[add_more][add_more_select]');
@@ -501,7 +502,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
       'title[0][value]' => 'Demo text title',
       'paragraphs[0][subform][field_text_demo][0][value]' => 'Demo text for the detail page',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('Demo text for the detail page');
   }
 

@@ -131,7 +131,7 @@ class ParagraphsClientsideButtonsTest extends WebDriverTestBase {
       'field_paragraphs[1][subform][field_text][0][value]' => 'Second text',
       'field_paragraphs[2][subform][field_text][0][value]' => 'Third text',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $node_id = $this->getLastEntityOfType('node');
 
     // Make sure we honor the widget settings when injecting the button.
@@ -324,7 +324,7 @@ class ParagraphsClientsideButtonsTest extends WebDriverTestBase {
     // We have one more injected add_more button.
     $all_add_above_buttons = $page->findAll('css', '#edit-field-paragraphs-wrapper input.paragraphs-dropdown-action--add-above');
     $this->assertEquals(6, count($all_add_above_buttons));
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     $this->drupalGet("/node/{$node_id}/edit");
     $edit_all_button = $assert_session->buttonExists('field_paragraphs_edit_all');

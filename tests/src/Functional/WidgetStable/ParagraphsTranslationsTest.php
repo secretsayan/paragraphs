@@ -104,7 +104,7 @@ class ParagraphsTranslationsTest extends ParagraphsTestBase {
       'settings[paragraph][text_untranslatable_hide][fields][field_text_untranslatable_hide]' => FALSE,
       'settings[paragraph][container][fields][field_paragraphs]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
   }
 
   /**

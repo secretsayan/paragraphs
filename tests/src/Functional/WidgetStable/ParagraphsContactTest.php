@@ -39,10 +39,10 @@ class ParagraphsContactTest extends ParagraphsTestBase {
     $this->addParagraphsField($contact_form->id(), 'paragraphs', 'contact_message');
     // Add a paragraph to the contact form.
     $this->drupalGet('contact/test_contact_form');
-    $this->drupalPostForm(NULL, [], 'paragraphs_paragraphs_contact_add_more');
+    $this->submitForm([], 'paragraphs_paragraphs_contact_add_more');
     // Check that the paragraph is displayed.
     $this->assertSession()->pageTextContains('paragraphs_contact');
-    $this->drupalPostForm(NULL, [], 'paragraphs_0_remove');
+    $this->submitForm([], 'paragraphs_0_remove');
     $elements = $this->xpath('//table[starts-with(@id, :id)]/tbody', [':id' => 'paragraphs-values']);
     $header = $this->xpath('//table[starts-with(@id, :id)]/thead', [':id' => 'paragraphs-values']);
     $this->assertEquals($elements, []);

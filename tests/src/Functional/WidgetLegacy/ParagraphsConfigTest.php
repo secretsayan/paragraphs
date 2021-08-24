@@ -48,19 +48,21 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'settings[node][paragraphed_test][translatable]' => TRUE,
       'settings[node][paragraphed_test][fields][paragraphs_field]' => FALSE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Create a node with a paragraph.
-    $this->drupalPostForm('node/add/paragraphed_test', [], 'paragraphs_field_paragraph_type_test_add_more');
+    $this->drupalGet('node/add/paragraphed_test');
+    $this->submitForm([], 'paragraphs_field_paragraph_type_test_add_more');
     $edit = ['title[0][value]' => 'paragraphed_title'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Attempt to add a translation.
     $node = $this->drupalGetNodeByTitle('paragraphed_title');
     $this->drupalGet('node/' . $node->id() . '/translations');
     $this->clickLink('Add');
     // Save the translation.
-   $this->drupalPostForm(NULL, [], 'Save (this translation)');
+   $this->submitForm([], 'Save (this translation)');
     $this->assertSession()->pageTextContains('paragraphed_test paragraphed_title has been updated.');
   }
 
@@ -95,7 +97,8 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'settings[node][paragraphed_test][translatable]' => TRUE,
       'settings[node][paragraphed_test][fields][paragraphs_field]' => FALSE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Check error message is still not displayed.
     $this->drupalGet('admin/config/regional/content-language');
@@ -112,7 +115,8 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'settings[node][paragraphed_test][translatable]' => TRUE,
       'settings[node][paragraphed_test][fields][paragraphs_field]' => TRUE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Check content type field management error.
     $this->drupalGet('admin/structure/types/manage/paragraphed_test/fields/node.paragraphed_test.paragraphs_field');
@@ -126,8 +130,8 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'label' => 'new_no_paragraphs_field',
       'field_name' => 'new_no_paragraphs_field',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and continue');
-    $this->drupalPostForm(NULL, [], 'Save field settings');
+    $this->submitForm($edit, 'Save and continue');
+    $this->submitForm([], 'Save field settings');
     $this->assertSession()->pageTextNotContains('Paragraphs fields do not support translation.');
     $this->assertSession()->responseNotContains('<div class="messages messages--warning');
   }
@@ -148,7 +152,7 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
     $edit = [
       'required' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
 
     // Assert that the field is displayed in the form as required.
@@ -157,10 +161,10 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
     $edit = [
       'title[0][value]' => 'test_title',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphs field is required.');
-    $this->drupalPostForm(NULL, [], 'paragraphs_paragraph_type_test_add_more');
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm([], 'paragraphs_paragraph_type_test_add_more');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('paragraphed_test test_title has been created.');
   }
 
@@ -206,7 +210,7 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'settings[handler_settings][negate]' => 0,
       'settings[handler_settings][target_bundles_drag_drop][paragraph_type_test][enabled]' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
 
     $this->drupalGet('node/add/paragraphed_test');
@@ -229,7 +233,7 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
       'settings[handler_settings][negate]' => 1,
       'settings[handler_settings][target_bundles_drag_drop][text][enabled]' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
 
     $this->drupalGet('node/add/paragraphed_test');

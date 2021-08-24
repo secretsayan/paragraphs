@@ -94,7 +94,7 @@ class ParagraphsContentModerationTranslationsTest extends ParagraphsTestBase {
     $edit = [
       'behavior_plugins[test_bold_text][enabled]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Add a text field to the text_paragraph type.
     static::fieldUIAddNewField('admin/structure/paragraphs_type/text', 'text', 'Text', 'text_long', [], []);
@@ -121,7 +121,7 @@ class ParagraphsContentModerationTranslationsTest extends ParagraphsTestBase {
       'settings[paragraph][text][fields][field_untranslatable]' => FALSE,
       'settings[paragraph][container][fields][field_paragraphs]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
   }
 
   /**

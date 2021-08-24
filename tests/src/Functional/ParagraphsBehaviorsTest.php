@@ -45,7 +45,7 @@ class ParagraphsBehaviorsTest extends ParagraphsTestBase {
     $edit = [
       'behavior_plugins[test_bold_text][enabled]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSame(['test_bold_text' => ['enabled' => TRUE]], \Drupal::config("paragraphs.paragraphs_type.$paragraph_type")->get('behavior_plugins'));
 
     // Add a note that uses the behavior plugin give it an empty setting.
@@ -55,7 +55,7 @@ class ParagraphsBehaviorsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => 'Non-bold text',
       'field_paragraphs[0][behavior_plugins][test_bold_text][bold_text]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $bolded_elements = $this->getSession()->getPage()->findAll('css', '.bold_plugin_text');
     $this->assertEmpty(count($bolded_elements), 'Test plugin did not add a CSS class.');
 
@@ -73,7 +73,7 @@ class ParagraphsBehaviorsTest extends ParagraphsTestBase {
       'field_paragraphs[0][subform][field_text][0][value]' => 'Bold text',
       'field_paragraphs[0][behavior_plugins][test_bold_text][bold_text]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $bolded_elements = $this->getSession()->getPage()->findAll('css', '.bold_plugin_text');
     $this->assertGreaterThan(0, count($bolded_elements), 'Test plugin added a CSS class.');
 

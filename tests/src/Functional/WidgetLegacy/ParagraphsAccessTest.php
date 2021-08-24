@@ -70,7 +70,8 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
       'settings[paragraph][text_image][fields][field_text_demo]' => TRUE,
       'settings[node][paragraphed_content_demo][settings][language][language_alterable]' => TRUE
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     $view_display = \Drupal::service('entity_display.repository')->getViewDisplay('paragraph', 'images');
     $view_display->setComponent('field_images_demo', ['settings' => ['image_style' => 'medium']]);
@@ -103,7 +104,8 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $edit = array(
       'settings[uri_scheme]' => 'private',
     );
-    $this->drupalPostForm('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo/storage', $edit, 'Save field settings');
+    $this->drupalGet('admin/structure/paragraphs_type/images/fields/paragraph.images.field_images_demo/storage');
+    $this->submitForm($edit, 'Save field settings');
 
     // Set the form display to legacy.
     $form_display = EntityFormDisplay::load('node.paragraphed_content_demo.default')
@@ -114,7 +116,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $this->drupalGet('node/add/paragraphed_content_demo');
 
     // Add a new paragraphs images item.
-    $this->drupalPostForm(NULL, NULL, 'Add images');
+    $this->submitForm([], 'Add images');
 
     $images = $this->getTestFiles('image');
 
@@ -134,19 +136,19 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
       'files[field_paragraphs_demo_0_subform_field_images_demo_0][]' => $file_path,
     );
 
-    $this->drupalPostForm(NULL, $edit, 'Upload');
+    $this->submitForm($edit, 'Upload');
 
     $edit = array(
       'files[field_paragraphs_demo_0_subform_field_images_demo_1][]' => $file_path_2,
     );
 
-    $this->drupalPostForm(NULL,  $edit, 'Preview');
+    $this->submitForm($edit, 'Preview');
     $image_style = ImageStyle::load('medium');
     $img1_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage.jpg');
     $image_url = file_url_transform_relative($img1_url);
     $this->assertSession()->responseContains($image_url);
     $this->clickLink('Back to content editing');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'Save');
 
     $node = $this->drupalGetNodeByTitle('Security test node');
 
@@ -175,21 +177,21 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $this->loginAsAdmin($admin_user);
     // Create a new demo node.
     $this->drupalGet('node/add/paragraphed_content_demo');
-    $this->drupalPostForm(NULL, NULL, 'Add text');
+    $this->submitForm([], 'Add text');
     $this->assertSession()->pageTextContains('Text');
     $edit = [
       'title[0][value]' => 'delete_permissions',
       'field_paragraphs_demo[0][subform][field_text_demo][0][value]' => 'Test',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     // Edit the node.
     $this->clickLink('Edit');
     // Check the remove button is present.
     $this->assertNotNull($this->xpath('//*[@name="field_paragraphs_demo_0_remove"]'));
     // Delete the Paragraph and save.
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_demo_0_remove');
-    $this->drupalPostForm(NULL, [], 'field_paragraphs_demo_0_confirm_remove');
-    $this->drupalPostForm(NULL, [], 'Save');
+    $this->submitForm([], 'field_paragraphs_demo_0_remove');
+    $this->submitForm([], 'field_paragraphs_demo_0_confirm_remove');
+    $this->submitForm([], 'Save');
     $node = $this->getNodeByTitle('delete_permissions');
     $this->assertSession()->addressEquals('node/' . $node->id());
   }
