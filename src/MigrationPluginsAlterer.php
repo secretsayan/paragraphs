@@ -85,11 +85,16 @@ final class MigrationPluginsAlterer {
    *   The migration configuration to process.
    */
   public function paragraphsMigrationBundleAdjust(array &$migration) {
-    if (!$this->paragraphsMigrationPrepareProcess($migration['process'], 'bundle')) {
+    // @see https://www.drupal.org/project/drupal/releases/9.1.4
+    // @see https://www.drupal.org/project/drupal/issues/2565931
+    $key = version_compare(\Drupal::VERSION, '9.1.4', '<')
+      ? 'bundle'
+      : 'bundle_mapped';
+    if (!$this->paragraphsMigrationPrepareProcess($migration['process'], $key)) {
       return;
     }
 
-    $bundle_process = &$migration['process']['bundle'];
+    $bundle_process = &$migration['process'][$key];
     $bundle_process[] = [
       'plugin' => 'paragraphs_process_on_value',
       'source_value' => 'entity_type',
