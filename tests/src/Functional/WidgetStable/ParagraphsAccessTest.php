@@ -148,7 +148,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $image_style = ImageStyle::load('medium');
     $img1_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage.jpg');
     $image_url = file_url_transform_relative($img1_url);
-    $this->assertSession()->responseContains($image_url, 'Image was found in preview');
+    $this->assertSession()->responseContains($image_url);
     $this->clickLink('Back to content editing');
     $this->submitForm([], 'Save');
 
@@ -157,7 +157,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Check the text and image after publish.
-    $this->assertSession()->responseContains($image_url, 'Image was found in content');
+    $this->assertSession()->responseContains($image_url);
 
     $this->drupalGet($img1_url);
     $this->assertSession()->statusCodeEquals(200);
@@ -170,7 +170,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
     $img_url = $image_style->buildUrl('private://' . date('Y-m') . '/privateImage2.jpg');
     $image_url = file_url_transform_relative($img_url);
     // Check the text and image after publish. Anonymous should not see content.
-    $this->assertSession()->responseNotContains($image_url, 'Image was not found in content');
+    $this->assertSession()->responseNotContains($image_url);
 
     $this->drupalGet($img_url);
     $this->assertSession()->statusCodeEquals(403);
