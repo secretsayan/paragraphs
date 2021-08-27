@@ -39,7 +39,7 @@ class ParagraphsFieldInstanceSettingsTest extends ProcessTestCase {
 
     $value = $this->plugin->transform($source, $this->migrateExecutable, $this->row, 'settings');
 
-    $this->assertArrayEquals($expected, $value);
+    $this->assertEquals($expected, $value);
   }
 
   /**
