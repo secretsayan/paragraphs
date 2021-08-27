@@ -16,7 +16,7 @@ class ParagraphsFieldSettingsTest extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     $this->plugin = new ParagraphsFieldSettings([], 'paragraphs_field_settings', []);
     parent::setUp();
 

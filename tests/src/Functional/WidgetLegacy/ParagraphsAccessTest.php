@@ -35,7 +35,7 @@ class ParagraphsAccessTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     ConfigurableLanguage::create(['id' => 'de', 'label' => '1German'])->save();
     ConfigurableLanguage::create(['id' => 'fr', 'label' => '2French'])->save();

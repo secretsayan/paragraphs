@@ -15,7 +15,7 @@ class ParagraphsFieldInstanceSettingsTest extends ProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->row->expects($this->any())
       ->method('getSourceProperty')

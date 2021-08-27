@@ -22,7 +22,7 @@ class ParagraphsEntityTranslationWithNonTranslatableParagraphs extends Paragraph
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->admin_user = $this->drupalCreateUser([], NULL, TRUE);

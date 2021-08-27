@@ -43,7 +43,7 @@ class ParagraphContentMigrationTest extends ParagraphsMigrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installEntitySchema('file');

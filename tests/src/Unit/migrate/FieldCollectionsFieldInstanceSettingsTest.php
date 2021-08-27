@@ -16,7 +16,7 @@ class FieldCollectionsFieldInstanceSettingsTest extends ProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->plugin = new FieldCollectionFieldInstanceSettings([], 'field_collection_field_instance_settings', [], $this->entityTypeBundleInfo);

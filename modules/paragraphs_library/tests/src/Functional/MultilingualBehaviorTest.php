@@ -25,7 +25,7 @@ class MultilingualBehaviorTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->addParagraphedContentType('paragraphed_test');

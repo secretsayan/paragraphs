@@ -25,7 +25,7 @@ class ParagraphsDragAndDropModeTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_test', 'field_paragraphs');
     $this->addParagraphsType('paragraphs_container');

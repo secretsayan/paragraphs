@@ -40,7 +40,7 @@ class ParagraphsTypePermissionsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->drupalPlaceBlock('system_breadcrumb_block');
     ConfigurableLanguage::create(['id' => 'de', 'label' => '1German'])->save();

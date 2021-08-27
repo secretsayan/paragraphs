@@ -25,7 +25,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Create paragraphs content type.
     $this->drupalCreateContentType(array('type' => 'paragraphs', 'name' => 'Paragraphs'));

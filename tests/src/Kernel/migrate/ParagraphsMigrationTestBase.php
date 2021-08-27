@@ -26,7 +26,7 @@ abstract class ParagraphsMigrationTestBase extends MigrateDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
     $this->loadFixture(__DIR__ . '/../../../fixtures/drupal7.php');
 

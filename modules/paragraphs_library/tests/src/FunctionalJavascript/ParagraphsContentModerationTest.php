@@ -59,7 +59,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_moderated_test', 'field_paragraphs');
 

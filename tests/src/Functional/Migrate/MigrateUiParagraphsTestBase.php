@@ -390,7 +390,7 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->loadFixture(drupal_get_path('module', 'paragraphs') . '/tests/fixtures/drupal7.php');

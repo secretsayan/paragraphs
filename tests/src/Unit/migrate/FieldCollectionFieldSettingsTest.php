@@ -16,7 +16,7 @@ class FieldCollectionFieldSettingsTest extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     $this->plugin = new FieldCollectionFieldSettings([], 'field_collection_field_settings', []);
     parent::setUp();
 
