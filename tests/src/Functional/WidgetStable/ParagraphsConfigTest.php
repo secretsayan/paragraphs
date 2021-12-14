@@ -182,8 +182,8 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
 
     $this->drupalGet('node/add/paragraphed_test');
-    $this->assertSession()->pageTextContains('Add paragraph_type_test');
-    $this->assertSession()->pageTextNotContains('Add text');
+    $this->assertSession()->buttonExists('Add paragraph_type_test');
+    $this->assertSession()->responseNotContains('Add text');
     $edit = [
       'title[0][value]' => 'Testing included types'
     ];
@@ -229,8 +229,8 @@ class ParagraphsConfigTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextContains('Saved paragraphs configuration.');
 
     $this->drupalGet('node/add/paragraphed_test');
-    $this->assertSession()->pageTextContains('Add paragraph_type_test');
-    $this->assertSession()->pageTextNotContains('Add text');
+    $this->assertSession()->buttonExists('Add paragraph_type_test');
+    $this->assertSession()->responseNotContains('Add text');
     $edit = [
       'title[0][value]' => 'Testing excluded types'
     ];

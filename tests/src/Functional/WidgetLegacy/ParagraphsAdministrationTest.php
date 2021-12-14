@@ -315,30 +315,30 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->drupalGet('node/' . $node->id() . '/edit');
     // Check both paragraphs in edit page.
     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', 'Test text 1');
-    $this->assertSession()->responseContains('<a href="' . $img1_url . '" type="' . $img1_mime . '; length=' . $img1_size . '">' . $files[0]->filename . '</a>');
+    $this->assertSession()->elementTextContains('css', 'A[href="' . $img1_url . '"][type^="' . $img1_mime . '"]', $files[0]->filename);
     $this->assertSession()->fieldValueEquals('field_paragraphs[1][subform][field_text][0][value]', 'Test text 2');
-    $this->assertSession()->responseContains('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
+    $this->assertSession()->elementTextContains('css', 'A[href="' . $img2_url . '"][type^="' . $img2_mime . '"]', $files[1]->filename);
     // Remove 2nd paragraph.
     $this->getSession()->getPage()->find('css', '[name="field_paragraphs_1_remove"]')->press();
     // Confirm the removal.
     $this->submitForm([], 'Confirm removal');
     $this->assertSession()->fieldNotExists('field_paragraphs[1][subform][field_text][0][value]');
-    $this->assertSession()->responseNotContains('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
+    $this->assertSession()->elementNotExists('css', 'A[href="' . $img2_url . '"][type^="' . $img2_mime . '"]');
     // Assert the paragraph is not deleted unless the user saves the node.
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertSession()->responseContains('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
+    $this->assertSession()->elementTextContains('css', 'A[href="' . $img2_url . '"][type^="' . $img2_mime . '"]', $files[1]->filename);
     // Remove the second paragraph.
     $this->getSession()->getPage()->find('css', '[name="field_paragraphs_1_remove"]')->press();
     // Confirm the removal.
     $this->submitForm([], 'Confirm removal');
-    $this->assertSession()->responseNotContains('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
+    $this->assertSession()->elementNotExists('css', 'A[href="' . $img2_url . '"][type^="' . $img2_mime . '"]');
     $edit = [
       'field_paragraphs[0][subform][field_image][0][alt]' => 'test_alt',
     ];
     $this->submitForm($edit, 'Save');
     // Assert the paragraph is deleted after the user saves the node.
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertSession()->responseNotContains('<a href="' . $img2_url . '" type="' . $img2_mime . '; length=' . $img2_size . '">' . $files[1]->filename . '</a>');
+    $this->assertSession()->elementNotExists('css', 'A[href="' . $img2_url . '"][type^="' . $img2_mime . '"]');
 
     // Delete the node.
     $this->clickLink('Delete');
@@ -496,7 +496,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->assertSession()->fieldExists('field_paragraphs[0][subform][field_entity_reference][1][target_id]');
     $this->submitForm([], 'Add another item');
     // Assert the validation message.
-    $this->assertSession()->pageTextContains('There are no entities matching "foo".');
+    $this->assertSession()->pageTextMatches('/There are no (entities|content items) matching "foo"./');
     // Attempt to remove the Paragraph.
     $this->submitForm([], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
@@ -524,7 +524,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     // Try to save with an invalid reference.
     $edit = ['field_paragraphs[0][subform][field_entity_reference][0][target_id]' => 'foo'];
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->pageTextContains('There are no entities matching "foo".');
+    $this->assertSession()->pageTextMatches('/There are no (entities|content items) matching "foo"./');
     // Remove the Paragraph and save the node.
     $this->submitForm([], 'field_paragraphs_0_remove');
     $elements = $this->xpath('//*[@name="field_paragraphs_0_confirm_remove"]');
