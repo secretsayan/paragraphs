@@ -409,7 +409,9 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
     $session->pageTextContains('Provide credentials for the database of the Drupal site you want to upgrade.');
 
     $driver = $connection_options['driver'];
-    $connection_options['prefix'] = $connection_options['prefix']['default'];
+    if (floatval(\Drupal::VERSION) < 9.3) {
+      $connection_options['prefix'] = $connection_options['prefix']['default'];
+    }
 
     // Use the driver connection form to get the correct options out of the
     // database settings. This supports all of the databases we test against.
@@ -506,7 +508,14 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
           $carry[$entity->id()] = (string) $entity->label();
           return $carry;
         });
-        $this->assertEquals($expected_entity_labels, $actual_labels, sprintf('The expected %s entities are not matching the actual ones.', $entity_type_id));
+        if (\Drupal::database()->driver() === 'pgsql') {
+          // On PostgreSQL the entity IDs are not the same so only compare the
+          // labels to ensure we've migrated the expected number of entities.
+          $this->assertEqualsCanonicalizing($expected_entity_labels, $actual_labels, sprintf('The expected %s entities are not matching the actual ones.', $entity_type_id));
+        }
+        else {
+          $this->assertEquals($expected_entity_labels, $actual_labels, sprintf('The expected %s entities are not matching the actual ones.', $entity_type_id));
+        }
       }
       else {
         $this->fail(sprintf('The expected %s entity type is missing.', $entity_type_id));

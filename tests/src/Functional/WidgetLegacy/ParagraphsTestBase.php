@@ -7,6 +7,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
 use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
+use Drupal\user\Entity\Role;
 
 /**
  * Base class for tests.
@@ -66,6 +67,7 @@ abstract class ParagraphsTestBase extends BrowserTestBase {
       'administer node form display',
       'administer paragraph fields',
       'administer paragraph form display',
+      'bypass node access',
     ];
   }
 

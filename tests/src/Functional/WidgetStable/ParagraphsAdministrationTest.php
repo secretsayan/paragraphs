@@ -246,10 +246,14 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
     $this->assertSession()->pageTextContains('article Test article has been created.');
 
     $node = $this->drupalGetNodeByTitle('Test article');
-    $img1_url = file_create_url(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[0]->filename));
-    $img2_url = file_create_url(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[1]->filename));
-    $img1_size = filesize($files[0]->uri);
-    $img2_size = filesize($files[1]->uri);
+    if (floatval(\Drupal::VERSION) >= 9.3) {
+      $img1_url = \Drupal::service('file_url_generator')->generateString(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[0]->filename));
+      $img2_url = \Drupal::service('file_url_generator')->generateString(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[1]->filename));
+    }
+    else {
+      $img1_url = file_create_url(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[0]->filename));
+      $img2_url = file_create_url(\Drupal::token()->replace('public://[date:custom:Y]-[date:custom:m]/' . $files[1]->filename));
+    }
     $img1_mime = \Drupal::service('file.mime_type.guesser')->guess($files[0]->uri);
     $img2_mime = \Drupal::service('file.mime_type.guesser')->guess($files[1]->uri);
 

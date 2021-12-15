@@ -1049,7 +1049,7 @@ class ParagraphsWidget extends WidgetBase {
     $is_multiple = $this->fieldDefinition->getFieldStorageDefinition()->isMultiple();
 
     $field_title = $this->fieldDefinition->getLabel();
-    $description = FieldFilteredMarkup::create(\Drupal::token()->replace($this->fieldDefinition->getDescription()));
+    $description = FieldFilteredMarkup::create(\Drupal::token()->replace($this->fieldDefinition->getDescription() ?? ''));
 
     $elements = array();
     $tabs = '';
@@ -1781,7 +1781,7 @@ class ParagraphsWidget extends WidgetBase {
     }
 
     // Add information into delta mapping for the new element.
-    $original_deltas_size = count($widget_state['original_deltas']);
+    $original_deltas_size = count($widget_state['original_deltas'] ?? []);
     $new_original_deltas[$new_delta] = $original_deltas_size;
     $user_input[$original_deltas_size]['_weight'] = $new_delta;
 
