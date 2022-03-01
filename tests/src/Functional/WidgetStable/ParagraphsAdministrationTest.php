@@ -563,10 +563,27 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
    * Helper function for revision counting.
    */
   private function countRevisions($node, $paragraph1, $paragraph2, $revisions_count) {
-    $node_revisions_count = \Drupal::entityQuery('node')->condition('nid', $node->id())->allRevisions()->count()->execute();
-    $this->assertEquals($node_revisions_count, $revisions_count);
-    $this->assertEquals(\Drupal::entityQuery('paragraph')->condition('id', $paragraph1)->allRevisions()->count()->execute(), $revisions_count);
-    $this->assertEquals(\Drupal::entityQuery('paragraph')->condition('id', $paragraph2)->allRevisions()->count()->execute(), $revisions_count);
+    $node_revisions_count = \Drupal::entityQuery('node')
+      ->condition('nid', $node->id())
+      ->accessCheck(TRUE)
+      ->allRevisions()
+      ->count()
+      ->execute();
+    $this->assertEquals($revisions_count, $node_revisions_count);
+    $paragraph1_revisions_count = \Drupal::entityQuery('paragraph')
+      ->condition('id', $paragraph1)
+      ->accessCheck(TRUE)
+      ->allRevisions()
+      ->count()
+      ->execute();
+    $this->assertEquals($revisions_count, $paragraph1_revisions_count);
+    $paragraph2_revisions_count =\Drupal::entityQuery('paragraph')
+      ->condition('id', $paragraph2)
+      ->accessCheck(TRUE)
+      ->allRevisions()
+      ->count()
+      ->execute();
+    $this->assertEquals($revisions_count, $paragraph2_revisions_count);
   }
 
 }

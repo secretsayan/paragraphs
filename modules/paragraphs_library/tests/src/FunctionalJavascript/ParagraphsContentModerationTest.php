@@ -408,11 +408,13 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $nodes = \Drupal::entityTypeManager()->getStorage('node')->getQuery()
       ->allRevisions()
       ->condition($host_node->getEntityType()->getKey('id'), $host_node->id())
+      ->accessCheck(TRUE)
       ->execute();
     $this->assertEquals(7, count($nodes));
     $library_items = \Drupal::entityTypeManager()->getStorage('paragraphs_library_item')->getQuery()
       ->allRevisions()
       ->condition($library_item->getEntityType()->getKey('id'), $library_item->id())
+      ->accessCheck(TRUE)
       ->execute();
     $this->assertEquals(6, count($library_items));
 
