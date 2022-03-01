@@ -19,7 +19,7 @@ class ParagraphsContentModerationTranslationsTest extends ParagraphsTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'paragraphs_test',
     'paragraphs',

@@ -21,7 +21,7 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'content_translation',
     'migrate_drupal_multilingual',
     'migrate_drupal_ui',

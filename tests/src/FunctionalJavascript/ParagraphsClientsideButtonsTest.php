@@ -24,7 +24,7 @@ class ParagraphsClientsideButtonsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'paragraphs_test',
     'paragraphs',

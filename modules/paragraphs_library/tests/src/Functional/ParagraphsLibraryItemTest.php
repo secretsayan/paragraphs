@@ -23,7 +23,7 @@ class ParagraphsLibraryItemTest extends BrowserTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'paragraphs_library',
     'block',

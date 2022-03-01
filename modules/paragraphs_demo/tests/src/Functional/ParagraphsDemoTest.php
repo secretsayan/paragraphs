@@ -19,7 +19,7 @@ class ParagraphsDemoTest extends BrowserTestBase {
    *
    * @var string[]
    */
-  public static $modules = array(
+  protected static $modules = array(
     'paragraphs_demo',
     'block',
   );

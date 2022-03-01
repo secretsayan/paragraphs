@@ -17,7 +17,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'views',
     'paragraphs_library',
   ];

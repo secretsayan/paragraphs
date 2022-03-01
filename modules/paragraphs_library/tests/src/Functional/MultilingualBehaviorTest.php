@@ -16,7 +16,7 @@ class MultilingualBehaviorTest extends ParagraphsTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'language',
     'content_translation',
     'paragraphs_library',

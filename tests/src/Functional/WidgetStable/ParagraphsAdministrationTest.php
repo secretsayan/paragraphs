@@ -19,7 +19,7 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
    *
    * @var array
    */
-  public static $modules = array(
+  protected static $modules = array(
     'image',
     'file',
     'views'
