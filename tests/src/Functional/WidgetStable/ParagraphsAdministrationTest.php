@@ -259,9 +259,9 @@ class ParagraphsAdministrationTest extends ParagraphsTestBase {
 
     // Check the text and image after publish.
     $this->assertSession()->pageTextContains('Test text 1');
-    $this->assertSession()->responseContains('<img src="' . file_url_transform_relative($img1_url));
+    $this->assertSession()->elementExists('css', 'img[src="' . file_url_transform_relative($img1_url) . '"]');
     $this->assertSession()->pageTextContains('Test text 2');
-    $this->assertSession()->responseContains('<img src="' . file_url_transform_relative($img2_url));
+    $this->assertSession()->elementExists('css', 'img[src="' . file_url_transform_relative($img2_url) . '"]');
 
     // Tests for "Edit mode" settings.
     // Test for closed setting.

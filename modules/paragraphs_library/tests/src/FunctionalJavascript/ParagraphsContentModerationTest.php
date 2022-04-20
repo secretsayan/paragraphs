@@ -7,6 +7,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
+use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
 use Drupal\Tests\paragraphs\Traits\ParagraphsLastEntityQueryTrait;
 
 /**
@@ -16,7 +17,7 @@ use Drupal\Tests\paragraphs\Traits\ParagraphsLastEntityQueryTrait;
  */
 class ParagraphsContentModerationTest extends WebDriverTestBase {
 
-  use ParagraphsTestBaseTrait, FieldUiTestTrait, ParagraphsLastEntityQueryTrait;
+  use ParagraphsTestBaseTrait, FieldUiTestTrait, ParagraphsLastEntityQueryTrait, ParagraphsCoreVersionUiTestTrait;
 
   /**
    * A user with permission to bypass access content.
@@ -113,10 +114,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
       'view all revisions',
     ]);
 
-    $this->drupalPlaceBlock('system_breadcrumb_block');
-    $this->drupalPlaceBlock('local_tasks_block');
-    $this->drupalPlaceBlock('local_actions_block');
-    $this->drupalPlaceBlock('page_title_block');
+    $this->placeDefaultBlocks();
 
     $this->drupalLogin($this->adminUser);
   }

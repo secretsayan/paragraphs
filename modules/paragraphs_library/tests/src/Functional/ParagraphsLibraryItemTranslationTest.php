@@ -2,12 +2,14 @@
 
 namespace Drupal\Tests\paragraphs_library\Functional;
 
+use Drupal\block\Entity\Block;
 use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\paragraphs\FunctionalJavascript\LoginAdminTrait;
 use Drupal\Tests\paragraphs\FunctionalJavascript\ParagraphsTestBaseTrait;
+use Drupal\Tests\paragraphs\Traits\ParagraphsCoreVersionUiTestTrait;
 
 /**
  * Tests the multilingual functionality of the Paragraphs Library.
@@ -19,6 +21,7 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
   use ParagraphsTestBaseTrait;
   use LoginAdminTrait;
   use FieldUiTestTrait;
+  use ParagraphsCoreVersionUiTestTrait;
 
   /**
    * Modules to enable.
@@ -48,10 +51,7 @@ class ParagraphsLibraryItemTranslationTest extends BrowserTestBase {
     parent::setUp();
     $this->addParagraphedContentType('paragraphed_test');
 
-    $this->drupalPlaceBlock('system_breadcrumb_block');
-    $this->drupalPlaceBlock('local_tasks_block');
-    $this->drupalPlaceBlock('local_actions_block');
-    $this->drupalPlaceBlock('page_title_block');
+    $this->placeDefaultBlocks();
 
     // Add a second language (German) to the site.
     ConfigurableLanguage::createFromLangcode('de')->save();
