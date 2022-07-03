@@ -1,4 +1,4 @@
-(function ($, Drupal) {
+(function ($, Drupal, once) {
 
   'use strict';
 
@@ -131,7 +131,7 @@
       });
 
       // Initialization.
-      $topLevelParWidgets.once('paragraphs-bodytabs').each(function() {
+      $(once('paragraphs-bodytabs', $topLevelParWidgets)).each(function() {
         var $parWidget = $(this);
         var $parTabs = $parWidget.find('.paragraphs-tabs');
 
@@ -185,5 +185,5 @@
       }
     }
   };
-})(jQuery, Drupal);
+})(jQuery, Drupal, once);
 

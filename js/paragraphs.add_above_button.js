@@ -3,7 +3,7 @@
  * Paragraphs actions JS code for paragraphs actions button.
  */
 
-(function ($, Drupal) {
+(function ($, Drupal, once) {
 
   'use strict';
 
@@ -50,7 +50,7 @@
    */
   Drupal.behaviors.paragraphsAddAboveButton = {
     attach: function (context, settings) {
-      $('.paragraphs-dropdown-actions', context).once('paragraphs-add-above-button').each(function () {
+      $(once('paragraphs-add-above-button', '.paragraphs-dropdown-actions', context)).each(function () {
         var $actions = $(this);
         if ($actions.closest('.paragraph-top').hasClass('add-above-on')) {
           var $add_above = false;
@@ -74,4 +74,4 @@
     }
   };
 
-})(jQuery, Drupal);
+})(jQuery, Drupal, once);
