@@ -949,6 +949,7 @@ class ParagraphsWidget extends WidgetBase {
       '#name' => 'button_add_modal',
       '#attributes' => [
         'class' => [
+          'field-add-more-submit',
           'paragraph-type-add-modal-button',
           'js-show',
           'button--small',
