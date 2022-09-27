@@ -35,8 +35,8 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
    */
   public function testLibraryItems() {
     // Set default theme.
-    \Drupal::service('theme_installer')->install(['bartik']);
-    $this->config('system.theme')->set('default', 'bartik')->save();
+    \Drupal::service('theme_installer')->install(['claro']);
+    $this->config('system.theme')->set('default', 'claro')->save();
     $this->loginAsAdmin(['create paragraphed_test content', 'edit any paragraphed_test content', 'administer paragraphs library']);
 
     // Add a Paragraph type with a text field.
@@ -54,7 +54,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     ];
     $this->submitForm($edit, 'Save');
     $this->clickLink('re usable paragraph label');
-    $this->assertSession()->responseContains('bartik/css/base/elements.css');
+    $this->assertSession()->responseContains('claro/css/base/elements.css');
     $this->clickLink('Edit');
     $this->assertSession()->responseNotContains('class="messages messages--warning"');
     $items = \Drupal::entityQuery('paragraphs_library_item')
