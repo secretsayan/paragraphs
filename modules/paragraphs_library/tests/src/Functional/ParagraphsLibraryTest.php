@@ -294,6 +294,7 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertSession()->linkExists('Manage fields');
     $this->assertSession()->linkExists('Manage form display');
     $this->assertSession()->linkExists('Manage display');
+    $this->assertSession()->buttonExists('Save configuration');
     // Assert that users can create fields to
     $this->clickLink('Manage fields');
     $this->clickLink('Add field');
