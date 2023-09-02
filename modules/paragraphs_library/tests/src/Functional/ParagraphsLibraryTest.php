@@ -297,7 +297,12 @@ class ParagraphsLibraryTest extends ParagraphsTestBase {
     $this->assertSession()->buttonExists('Save configuration');
     // Assert that users can create fields to
     $this->clickLink('Manage fields');
-    $this->clickLink('Add field');
+    if (version_compare(\Drupal::VERSION, '10.1', '>=')) {
+      $this->clickLink('Create a new field');
+    }
+    else {
+      $this->clickLink('Add field');
+    }
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextNotContains('plugin does not exist');
     $this->drupalGet('admin/config/content');
