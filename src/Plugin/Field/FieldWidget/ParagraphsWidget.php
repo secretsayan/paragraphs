@@ -2343,7 +2343,11 @@ class ParagraphsWidget extends WidgetBase {
           }
         }
 
-        $paragraphs_entity->setNeedsSave(TRUE);
+        # Set NeedsSave to True only if the entity is new or its value has changed.
+        if($paragraphs_entity->isNew() || $paragraphs_entity->isChanged()){
+          $paragraphs_entity->setNeedsSave(TRUE);
+        }
+
         $item['entity'] = $paragraphs_entity;
         $item['target_id'] = $paragraphs_entity->id();
         $item['target_revision_id'] = $paragraphs_entity->getRevisionId();
