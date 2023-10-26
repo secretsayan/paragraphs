@@ -5,6 +5,7 @@
  * Contains paragraphs.module
  */
 
+use \Drupal\Core\Field\FieldTypeCategoryManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -174,6 +175,28 @@ function paragraphs_form_field_config_edit_form_alter(&$form, FormStateInterface
     ),
     '#weight' => 0,
   );
+}
+
+function paragraphs_field_ui_preconfigured_options_alter(array &$options, $field_type) {
+
+  if (version_compare(\Drupal::VERSION, '10.2', '<')) {
+    return;
+  }
+
+  // Move the preconfigured paragraph option to the generic category so it is available
+  // as a top-level option in the new field type selection UI in Drupal 10.2+.
+  if ($field_type == 'entity_reference_revisions' && !empty($options['paragraph'])) {
+    $options['paragraph']['weight'] = -15;
+    $options['paragraph']['category'] = FieldTypeCategoryManagerInterface::FALLBACK_CATEGORY;;
+    $options['paragraph']['description'] = t('Create structured content.');
+  }
+}
+
+/**
+ * Implements hook_preprocess_form_element__new_storage_type().
+ */
+function paragraphs_preprocess_form_element__new_storage_type(&$variables) {
+  $variables['#attached']['library'][] = 'paragraphs/paragraph-field-type-icon';
 }
 
 /**
