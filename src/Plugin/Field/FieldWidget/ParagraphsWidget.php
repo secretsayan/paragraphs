@@ -17,6 +17,7 @@ use Drupal\Core\Form\SubformState;
 use Drupal\Core\Render\Element;
 use Drupal\Core\TypedData\TranslationStatusInterface;
 use Drupal\field_group\FormatterHelper;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -2343,13 +2344,8 @@ class ParagraphsWidget extends WidgetBase {
           }
         }
 
-        # Checking each field one by one to ensure they are equal.
-        $original_paragraph = \Drupal\paragraphs\Entity\Paragraph::load($paragraphs_entity->id());
-        $old_setting = $original_paragraph->getAllBehaviorSettings();
-        $new_setting = $paragraphs_entity->getAllBehaviorSettings();
 
-
-        if ( $this->hasBehaviorSettingsChanged($old_setting, $new_setting) || $paragraphs_entity->isChanged()) {
+        if (  $paragraphs_entity->isChanged() || $this->hasBehaviorSettingsChanged($paragraphs_entity)) {
           $paragraphs_entity->setNeedsSave(TRUE);
         }
 
@@ -2367,7 +2363,11 @@ class ParagraphsWidget extends WidgetBase {
     return $values;
   }
 
-  public function hasBehaviorSettingsChanged(array $old_setting, array $new_setting) : bool{
+  public function hasBehaviorSettingsChanged(Paragraph $paragraphs_entity) : bool{
+    # Checking each field one by one to ensure they are equal.
+    $original_paragraph = Paragraph::load($paragraphs_entity->id());
+    $old_setting = $original_paragraph->getAllBehaviorSettings();
+    $new_setting = $paragraphs_entity->getAllBehaviorSettings();
 
     $return_setting_old = $this->flatten($old_setting);
 
