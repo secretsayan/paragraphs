@@ -2343,8 +2343,13 @@ class ParagraphsWidget extends WidgetBase {
           }
         }
 
-        # Set NeedsSave to True only if the entity is new or its value has changed.
-        if($paragraphs_entity->isNew() || $paragraphs_entity->isChanged()){
+        # Checking each field one by one to ensure they are equal.
+        $original_paragraph = \Drupal\paragraphs\Entity\Paragraph::load($paragraphs_entity->id());
+        $old_setting = $original_paragraph->getAllBehaviorSettings();
+        $new_setting = $paragraphs_entity->getAllBehaviorSettings();
+
+
+        if ( $this->hasBehaviorSettingsChanged($old_setting, $new_setting) || $paragraphs_entity->isChanged()) {
           $paragraphs_entity->setNeedsSave(TRUE);
         }
 
@@ -2360,6 +2365,31 @@ class ParagraphsWidget extends WidgetBase {
       }
     }
     return $values;
+  }
+
+  public function hasBehaviorSettingsChanged(array $old_setting, array $new_setting) : bool{
+
+    $return_setting_old = $this->flatten($old_setting);
+
+    $return_setting_new = $this->flatten($new_setting);
+
+    if(count($return_setting_old) !== count($return_setting_new)){
+      return true;
+    }
+
+    // checking the difference
+    $diff_setting = array_diff($return_setting_old, $return_setting_new);
+
+    return !empty($diff_setting);
+  }
+
+  public function flatten(array $setting) : array{
+    $return_setting = [];
+    array_walk_recursive($setting, function($a, $b) use (&$return_setting) {
+      $return_setting[$b] = $a;
+    });
+
+    return $return_setting;
   }
 
   /**
