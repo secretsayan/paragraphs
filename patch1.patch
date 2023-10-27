@@ -1,0 +1,61 @@
+diff --git a/src/Plugin/Field/FieldWidget/ParagraphsWidget.php b/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
+index 5e31eed..4cdebff 100644
+--- a/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
++++ b/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
+@@ -17,6 +17,7 @@ use Drupal\Core\Form\SubformState;
+ use Drupal\Core\Render\Element;
+ use Drupal\Core\TypedData\TranslationStatusInterface;
+ use Drupal\field_group\FormatterHelper;
++use Drupal\paragraphs\Entity\Paragraph;
+ use Drupal\paragraphs\ParagraphInterface;
+ use Drupal\paragraphs\Plugin\EntityReferenceSelection\ParagraphSelection;
+ use Symfony\Component\Validator\ConstraintViolationInterface;
+@@ -2343,7 +2344,11 @@ class ParagraphsWidget extends WidgetBase {
+           }
+         }
+ 
+-        $paragraphs_entity->setNeedsSave(TRUE);
++
++        if (  $paragraphs_entity->isChanged() || $this->hasBehaviorSettingsChanged($paragraphs_entity)) {
++          $paragraphs_entity->setNeedsSave(TRUE);
++        }
++
+         $item['entity'] = $paragraphs_entity;
+         $item['target_id'] = $paragraphs_entity->id();
+         $item['target_revision_id'] = $paragraphs_entity->getRevisionId();
+@@ -2358,6 +2363,35 @@ class ParagraphsWidget extends WidgetBase {
+     return $values;
+   }
+ 
++  public function hasBehaviorSettingsChanged(Paragraph $paragraphs_entity) : bool{
++    # Checking each field one by one to ensure they are equal.
++    $original_paragraph = Paragraph::load($paragraphs_entity->id());
++    $old_setting = $original_paragraph->getAllBehaviorSettings();
++    $new_setting = $paragraphs_entity->getAllBehaviorSettings();
++
++    $return_setting_old = $this->flatten($old_setting);
++
++    $return_setting_new = $this->flatten($new_setting);
++
++    if(count($return_setting_old) !== count($return_setting_new)){
++      return true;
++    }
++
++    // checking the difference
++    $diff_setting = array_diff($return_setting_old, $return_setting_new);
++
++    return !empty($diff_setting);
++  }
++
++  public function flatten(array $setting) : array{
++    $return_setting = [];
++    array_walk_recursive($setting, function($a, $b) use (&$return_setting) {
++      $return_setting[$b] = $a;
++    });
++
++    return $return_setting;
++  }
++
+   /**
+    * {@inheritdoc}
+    */
