@@ -2345,7 +2345,7 @@ class ParagraphsWidget extends WidgetBase {
         }
 
 
-        if (  $paragraphs_entity->isChanged() || $this->hasBehaviorSettingsChanged($paragraphs_entity)) {
+        if ($this->isChangedAbsolute($paragraphs_entity) || $this->hasBehaviorSettingsChanged($paragraphs_entity)) {
           $paragraphs_entity->setNeedsSave(TRUE);
         }
 
@@ -2361,6 +2361,18 @@ class ParagraphsWidget extends WidgetBase {
       }
     }
     return $values;
+  }
+
+  public function isChangedAbsolute(Paragraph $paragraphs_entity): bool {
+    if(!$paragraphs_entity->isChanged()){
+      return false;
+    }
+
+     if($paragraphs_entity->isTranslatable() && !$paragraphs_entity->hasTranslationChanges()){
+       return false;
+     }
+
+     return true;
   }
 
   public function hasBehaviorSettingsChanged(Paragraph $paragraphs_entity) : bool{
